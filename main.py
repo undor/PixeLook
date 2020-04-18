@@ -1,8 +1,8 @@
 from VideoCapture import *
 
-def main():
+def __main__():
     print("hello world!")
     open_webcam()
 
 if __name__ == "__main__":
-    main()
+    __main__()
