@@ -7,5 +7,6 @@ Dor Arad & Tomer Keren
 * OpenCV
 * Torch
 * tkinter
+* Dlib 
 
 ## Used DB ##
