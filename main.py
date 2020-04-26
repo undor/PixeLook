@@ -2,7 +2,7 @@ from VideoCapture import *
 
 def __main__():
     print("hello world!")
-    open_webcam()
+    start_camera()
 
 if __name__ == "__main__":
     __main__()
