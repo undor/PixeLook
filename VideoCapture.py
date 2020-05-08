@@ -1,9 +1,17 @@
 import numpy as np
+import torch
+from torch.autograd import Variable
+
 import tkinter as tk
 import cv2
 import os
 import dlib
+
+import HeadPose
+from HeadPose import head_pose_detect_DL
 from imutils import face_utils
+
+
 
 ## General attributes for eyes recognisition
 detector = dlib.get_frontal_face_detector()
@@ -15,14 +23,16 @@ model_points = np.loadtxt('face_model_points.csv', delimiter=',')
 width_precent = 20
 height_precent = 50
 
+
+
 def face_landmark_detector(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     rects = detector(gray, 0)
     if (np.size(rects) > 0):
         shape = predictor(gray, rects[0])
         shape = face_utils.shape_to_np(shape)
-        return True, shape
-    return False, error_img
+        return True, shape ,rects[0]
+    return False, error_img , 0
 
 def head_pose_detect(img, shape):
         image_points = np.array([shape[30], shape[8], shape[45], shape[36], shape[54], shape[48]], dtype="double")
@@ -71,15 +81,17 @@ def eye_detector(img, shape):
         left_eye = get_eye(shape,44,46,45,42)
         return right_eye, left_eye
 
+
+
 def start_camera():
         cap = cv2.VideoCapture(1)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         while True:
             ret, frame = cap.read()
-            is_face, face_landmark = face_landmark_detector(frame)
+            is_face, face_landmark ,rect = face_landmark_detector(frame)
             if is_face:
-                img = head_pose_detect(frame, face_landmark)
+                img = head_pose_detect_DL(frame,rect)
                 r_eye, l_eye = eye_detector(frame, face_landmark)
                 cv2.rectangle(img,r_eye[0],r_eye[1],(0,255,0), 1)
                 cv2.rectangle(img, l_eye[0], l_eye[1], (0, 255, 0),1)
