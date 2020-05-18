@@ -11,8 +11,6 @@ class GazeNet (nn.Module):
         self.fc1 = nn.Linear(3600,500,bias=True)
         self.fc2 = nn.Linear(502, 2, bias=True)
 
-
-
     def init_weights(self):
         nn.init.normal_(self.conv1.weight,mean=0, std=0.1)
         nn.init.normal_(self.conv2.weight, mean=0,std=0.01)
