@@ -8,18 +8,18 @@ import os
 import dlib
 
 import HeadPose
-from HeadPose import head_pose_detect_DL
+from HeadPose.HeadPose import head_pose_detect_DL
 from imutils import face_utils
 
 
 
 ## General attributes for eyes recognisition
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(os.getcwd() + "/shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor(os.getcwd() + "/HeadPose/model/shape_predictor_68_face_landmarks.dat")
 error_img = cv2.imread(os.getcwd() + "/error.jpg")
 
 ### General attributes for head pose
-model_points = np.loadtxt('face_model_points.csv', delimiter=',')
+model_points = np.loadtxt('./HeadPose/model/face_model_points.csv', delimiter=',')
 width_precent = 20
 height_precent = 50
 

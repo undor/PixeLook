@@ -16,8 +16,8 @@ class GazeNet (nn.Module):
     def init_weights(self):
         nn.init.normal_(self.conv1.weight,mean=0, std=0.1)
         nn.init.normal_(self.conv2.weight, mean=0,std=0.01)
-        nn.init.xavier_normal(self.fc1.weight)
-        nn.init.xavier_normal(self.fc2.weight)
+        nn.init.xavier_normal_(self.fc1.weight)
+        nn.init.xavier_normal_(self.fc2.weight)
 
     def forward(self, eye_img,head_pose):
         x = F.max_pool2d(self.conv1(eye_img), kernel_size=2, stride=2)

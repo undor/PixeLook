@@ -1,6 +1,6 @@
 from VideoCapture import *
-import MPIIDataLoader
-import trainNet
+import DataPreProccess.MPIIDataLoader as MPIIDataLoader
+import DataPreProccess.trainNet as trainNet
 import h5py
 import numpy as np
 
