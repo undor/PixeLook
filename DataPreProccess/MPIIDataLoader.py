@@ -40,7 +40,6 @@ class OnePersonDataset(Dataset):
 
 def create_dataset():
     person_ids = [f'p{index:02}' for index in range(15)]
-
     scale = torchvision.transforms.Lambda(lambda x: x.astype(np.float32) / 255)
     transform = torchvision.transforms.Compose([
         scale,
@@ -52,15 +51,28 @@ def create_dataset():
         OnePersonDataset(person_id, data_dir, transform)
         for person_id in person_ids if person_id != test_person_id
     ])
-    val_ratio =0.9
+    val_ratio = 0.1
     val_num = int(len(train_dataset) * val_ratio)
     train_num = len(train_dataset) - val_num
     lengths = [train_num, val_num]
+    print (lengths)
     return torch.utils.data.dataset.random_split(train_dataset, lengths)
 
+def create_test_dataset():
+    person_ids = [f'p{index:02}' for index in range(15)]
+    test_person_id = person_ids[0]
+    scale = torchvision.transforms.Lambda(lambda x: x.astype(np.float32) / 255)
+    transform = torchvision.transforms.Compose([
+        scale,
+        torch.from_numpy,
+        torchvision.transforms.Lambda(lambda x: x[None, :, :]),
+    ])
+    test_dataset = OnePersonDataset(test_person_id, data_dir, transform)
+    return test_dataset
 
 def create_dataloader():
         train_dataset, val_dataset = create_dataset()
+        test_dataset = create_test_dataset()
         train_loader = DataLoader(
             train_dataset,
             batch_size=64,
@@ -73,4 +85,10 @@ def create_dataloader():
             shuffle=False,
             drop_last=False
         )
-        return train_loader, val_loader
+        test_loader = DataLoader(
+            test_dataset,
+            batch_size=64,
+            shuffle=False,
+            drop_last=False,
+        )
+        return train_loader, val_loader , test_loader

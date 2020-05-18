@@ -93,9 +93,10 @@ def start_camera():
             if is_face:
                 img = head_pose_detect_DL(frame,rect)
                 r_eye, l_eye = eye_detector(frame, face_landmark)
-                cv2.rectangle(img,r_eye[0],r_eye[1],(0,255,0), 1)
-                cv2.rectangle(img, l_eye[0], l_eye[1], (0, 255, 0),1)
-                cv2.imshow("Output", img)
+                r_eye = frame[r_eye[0][1]:r_eye[1][1] ,r_eye[0][0]:r_eye[1][0]]
+                l_eye = frame[l_eye[0][1]:l_eye[1][1], l_eye[0][0]:l_eye[1][0]]
+                e
+                cv2.imshow("Output", r_eye)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         # When everything done, release the capture

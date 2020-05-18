@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-
 def convert_to_unit_vector( angles):
     pitches = angles[:, 0]
     yaws = angles[:, 1]
@@ -31,6 +30,7 @@ def compute_angle_error(predictions,labels):
 
 def validate (epoch, model, optimizer, loss_function, val_loader,writer):
     model.eval()
+    torch.no_grad()
     for step, (images, poses, gazes) in enumerate(val_loader):
 
         ## send to Device
@@ -60,7 +60,6 @@ def train (epoch, model, optimizer, loss_function, train_loader,writer):
     model.train()
     running_loss = 0.0
     for step, (images, poses, gazes) in enumerate(train_loader):
-
         ## send to Device
         images = images.to(device)
         poses = poses.to(device)
@@ -87,16 +86,15 @@ def train (epoch, model, optimizer, loss_function, train_loader,writer):
 
         num = images.size(0)
 
-        if step % 100 == 0:
-            writer.add_scalar('training loss',loss.item()*100, epoch * len(train_loader) + step)
-            writer.add_scalar('training angle loss', angle_error , epoch * len(train_loader) + step)
-            print("Train: now in epoch " + str(epoch) + " and step number " + str(step) +" loss is " + str(loss.item()) + "angle error is:" + str(angle_error.item()) )
+        if step % 25 == 0:
+            writer.add_scalar('training loss',loss.item()*100,(epoch) * len(train_loader) + step)
+            writer.add_scalar('training angle loss', angle_error , (epoch) * len(train_loader) + step)
+            print("Train: now in epoch " + str(epoch) + " and step number " + str(step) +" loss is " + str(loss.item()) + " angle error is:" + str(angle_error.item()) )
 
 
 
 def train_and_validate_aux (num_ephocs):
-    train_loader, val_loader = MPIIDataLoader.create_dataloader()
-
+    train_loader, val_loader , test_loader = MPIIDataLoader.create_dataloader()
 
     model = GazeModel.GazeNet().to(device)
     model.init_weights()
@@ -107,12 +105,29 @@ def train_and_validate_aux (num_ephocs):
                                 nesterov=True)
 
     train_writer = SummaryWriter('runs/train')
-    for epoch in range(1,num_ephocs + 1):
+    for epoch in range(0,num_ephocs):
         train(epoch, model, optimizer ,loss_function, train_loader,train_writer)
+    train_writer.close()
 
     val_writer = SummaryWriter('runs/val')
-    for epoch in range(1, num_ephocs + 1):
+    for epoch in range(0, num_ephocs ):
         validate(epoch, model, optimizer, loss_function, val_loader,val_writer)
+    val_writer.close()
 
+    torch.save(model.state_dict(),"RES/TRAINED_NET")
+
+    for step, (images, poses, gazes) in enumerate(test_loader):
+        ## send to Device
+        images = images.to(device)
+        poses = poses.to(device)
+        gazes = gazes.to(device)
+
+        ## use the net!
+        outputs = model(images, poses)
+
+        ## caclculate loss function
+        loss = loss_function(outputs, gazes)
+        angle_error = compute_angle_error(outputs, gazes).mean()
+        print("Test: now in step number " + str(step) + " loss is " + str(loss.item()) + " angle error is:" + str(angle_error.item()) )
 
 
