@@ -14,6 +14,7 @@ import GazeModel
 import torchvision
 import datetime
 
+## Tomer try to git
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -121,9 +122,9 @@ def get_eye(shape,top,bottom,right,left):
 
 
 def eye_detector(img, shape):
-        right_eye =get_eye(shape,38,40,39,36)
-        left_eye = get_eye(shape,44,46,45,42)
-        return right_eye, left_eye
+    right_eye = get_eye(shape, 38, 40, 39, 36)
+    left_eye = get_eye(shape, 44, 46, 45, 42)
+    return right_eye, left_eye
 
 
 def normalize_eye(frame,eye):
