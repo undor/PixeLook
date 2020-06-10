@@ -11,6 +11,20 @@ detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(os.getcwd() + "/HeadPose/model/shape_predictor_68_face_landmarks.dat")
 error_img = cv2.imread(os.getcwd() + "/error.jpg")
 
+width_precent = 20
+height_precent = 50
+
+
+def print_gaze_line(img,eye_center,gaze_vector,r_vec,t_vec):
+    length = 0.0001
+    gaze_vector = gaze_vector / np.linalg.norm(gaze_vector)
+    points =np.array ([eye_center  + length*gaze_vector])
+    (eye_end_point2D, jacobian) = cv2.projectPoints(points, r_vec, t_vec, camera_matrix_a, dist_coeff_a)
+    p1 = (int(eye_center[0]), int(eye_center[1]))
+    p2 = (int(eye_end_point2D[0][0][0]), int(eye_end_point2D[0][0][1]))
+    cv2.line(img, p1, p2, (255, 255, 0), 2)
+    return img
+
 def get_eye_center(eye):
     x_center = (eye[0][0]+eye[1][0])/2
     y_center = (eye[0][1]+eye[1][1])/2

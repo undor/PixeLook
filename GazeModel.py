@@ -36,10 +36,10 @@ def load_model():
     return model
 
 def use_net(model, frame):
-    image = np.array(frame.get_eye_img).astype(np.float32)/255
+    image = np.array(frame.get_eye_img()).astype(np.float32)/255
     image = torch.from_numpy(image)
     image = image.unsqueeze(0).unsqueeze(0)
-    head_pose = torch.from_numpy(np.array(frame.get_head_pose).astype(np.float32)).unsqueeze(0)
+    head_pose = torch.from_numpy(np.array(frame.get_head_pose()).astype(np.float32)).unsqueeze(0)
     with torch.no_grad():
         image = image.to(device)
         head_pose = head_pose.to(device)

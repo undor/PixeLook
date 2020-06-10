@@ -41,7 +41,7 @@ class FrameData():
         if (np.size(rects) > 0):
             shape = predictor(gray, rects[0])
             shape = face_utils.shape_to_np(shape)
-            self.face_bool = True
+            self.is_face = True
             self.shape = shape
             self.rect = rects[0]
         return self.is_face
