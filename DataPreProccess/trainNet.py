@@ -90,7 +90,7 @@ def train (epoch, model, optimizer, loss_function, train_loader,writer):
         if step % 25 == 0:
             writer.add_scalar('training loss',loss.item()*100,(epoch) * len(train_loader) + step)
             writer.add_scalar('training angle loss', angle_error , (epoch) * len(train_loader) + step)
-            print("Train: now in epoch " + str(epoch) + " and step number " + str(step) +" loss is " + str(loss.item()) + " angle error is:" + str(angle_error.item()) )
+            print("Train: now in epoch " + str(epoch) + " and step number " + str(step) + " loss is " + str(loss.item())+ " angle error is: " + str(angle_error.item()))
 
 
 
