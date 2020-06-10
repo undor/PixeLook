@@ -3,13 +3,13 @@ import DataPreProccess.MPIIDataLoader as MPIIDataLoader
 import DataPreProccess.trainNet as trainNet
 import h5py
 import numpy as np
-
+import Defines
 dataset_path = 'RES/MPIIGaze.h5'
 
 def __main__():
     print("hello world!")
     start_camera()
-    # trainNet.train_and_validate_aux(1)
+    #trainNet.train_and_validate_aux(10)
 
 
 

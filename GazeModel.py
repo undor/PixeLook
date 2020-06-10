@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+from Defines import *
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class GazeNet (nn.Module):
     def __init__(self):
@@ -12,12 +15,12 @@ class GazeNet (nn.Module):
         self.fc2 = nn.Linear(502, 2, bias=True)
 
     def init_weights(self):
-        nn.init.normal_(self.conv1.weight,mean=0, std=0.1)
+        nn.init.normal_(self.conv1.weight, mean=0, std=0.1)
         nn.init.normal_(self.conv2.weight, mean=0,std=0.01)
         nn.init.xavier_normal_(self.fc1.weight)
         nn.init.xavier_normal_(self.fc2.weight)
 
-    def forward(self, eye_img,head_pose):
+    def forward(self, eye_img, head_pose):
         x = F.max_pool2d(self.conv1(eye_img), kernel_size=2, stride=2)
         x = F.max_pool2d(self.conv2(x), kernel_size=2, stride=2)
         x = F.relu(self.fc1(x.view(x.size(0), -1)), inplace=True)
@@ -25,6 +28,24 @@ class GazeNet (nn.Module):
         x = self.fc2(x)
         return x
 
+def load_model():
+    model = GazeNet()
+    model.load_state_dict(torch.load("RES/TRAINED_NET"))
+    model.to(device)
+    model.eval()
+    return model
+
+def use_net(model, frame):
+    image = np.array(frame.get_eye_img).astype(np.float32)/255
+    image = torch.from_numpy(image)
+    image = image.unsqueeze(0).unsqueeze(0)
+    head_pose = torch.from_numpy(np.array(frame.get_head_pose).astype(np.float32)).unsqueeze(0)
+    with torch.no_grad():
+        image = image.to(device)
+        head_pose = head_pose.to(device)
+        predictions = model(image, head_pose)
+        predictions = predictions.cpu().numpy()
+    return predictions
 
 
 

@@ -65,7 +65,6 @@ def train (epoch, model, optimizer, loss_function, train_loader,writer):
         poses = poses.to(device)
         gazes = gazes.to(device)
 
-
         ## init optimizer
         optimizer.zero_grad()
 
@@ -101,7 +100,7 @@ def train_and_validate_aux (num_ephocs):
     model.init_weights()
     loss_function = nn.MSELoss(reduction='mean')
     optimizer = torch.optim.SGD(model.parameters(),
-                                lr=0.01,
+                                lr=0.001,
                                 momentum=0.9,
                                 nesterov=True)
 

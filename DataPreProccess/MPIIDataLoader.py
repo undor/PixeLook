@@ -75,7 +75,7 @@ def create_dataloader():
         test_dataset = create_test_dataset()
         train_loader = DataLoader(
             train_dataset,
-            batch_size=64,
+            batch_size=128,
             shuffle=True,
             drop_last= True
         )
