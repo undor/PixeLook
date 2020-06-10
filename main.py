@@ -9,7 +9,7 @@ dataset_path = 'RES/MPIIGaze.h5'
 def __main__():
     print("hello world!")
     start_camera()
-
+    # trainNet.train_and_validate_aux(1)
 
 
 

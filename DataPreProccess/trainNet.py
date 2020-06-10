@@ -65,6 +65,7 @@ def train (epoch, model, optimizer, loss_function, train_loader,writer):
         poses = poses.to(device)
         gazes = gazes.to(device)
 
+
         ## init optimizer
         optimizer.zero_grad()
 
@@ -114,20 +115,4 @@ def train_and_validate_aux (num_ephocs):
         validate(epoch, model, optimizer, loss_function, val_loader,val_writer)
     val_writer.close()
 
-    torch.save(model.state_dict(),"RES/TRAINED_NET")
-
-    for step, (images, poses, gazes) in enumerate(test_loader):
-        ## send to Device
-        images = images.to(device)
-        poses = poses.to(device)
-        gazes = gazes.to(device)
-
-        ## use the net!
-        outputs = model(images, poses)
-
-        ## caclculate loss function
-        loss = loss_function(outputs, gazes)
-        angle_error = compute_angle_error(outputs, gazes).mean()
-        print("Test: now in step number " + str(step) + " loss is " + str(loss.item()) + " angle error is:" + str(angle_error.item()) )
-
-
+    # torch.save(model.state_dict(),"RES/TRAINED_NET")
