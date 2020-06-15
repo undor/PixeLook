@@ -6,6 +6,7 @@ from Defines import *
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+
 class GazeNet (nn.Module):
     def __init__(self):
         super(GazeNet, self).__init__()
@@ -28,12 +29,14 @@ class GazeNet (nn.Module):
         x = self.fc2(x)
         return x
 
+
 def load_model():
     model = GazeNet()
     model.load_state_dict(torch.load("RES/TRAINED_NET"))
     model.to(device)
     model.eval()
     return model
+
 
 def use_net(model, frame):
     image = np.array(frame.get_eye_img()).astype(np.float32)/255

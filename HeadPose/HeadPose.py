@@ -15,8 +15,8 @@ saved_state_dict = torch.load('./HeadPose/model/shuff_epoch_120.pkl', map_locati
 pos_net.load_state_dict(saved_state_dict, strict=False)
 pos_net.eval()
 transformations = transforms.Compose([transforms.Scale(224),
-    transforms.CenterCrop(224), transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+                                      transforms.CenterCrop(224), transforms.ToTensor(),
+                                      transforms.Normalize(mean={0.485, 0.456, 0.406}, std=[0.229, 0.224, 0.225])])
 
 idx_tensor = [idx for idx in range(66)]
 idx_tensor = torch.FloatTensor(idx_tensor)
@@ -62,6 +62,7 @@ def head_pose_detect_DL(img,det):
     print(yaw_predicted)
     draw_axis(frame, yaw_predicted, pitch_predicted, roll_predicted, tdx = (x_min + x_max) / 2, tdy= (y_min + y_max) / 2, size = bbox_height/2)
     return frame
+
 
 def draw_axis(img, yaw, pitch, roll, tdx=None, tdy=None, size = 100):
 
