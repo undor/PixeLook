@@ -8,7 +8,7 @@ def add_data_on_img(frame, gaze_angles, fps):
     cv2.putText(frame.debug_img , "head angles: " + str(head_angles[0])  +  "  " + str(head_angles[1]), (100,200) , font, 1, (0, 150, 0), 2, cv2.LINE_4)
     cv2.putText(frame.debug_img , "fps  :  " + str(fps), (100, 300), font, 1,(0, 150, 0), 2, cv2.LINE_4)
 
-
+## DORKE
 def set_camera(width,height):
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
