@@ -1,4 +1,4 @@
-### relevaant imports
+# relevant imports
 
 import numpy as np
 import torch

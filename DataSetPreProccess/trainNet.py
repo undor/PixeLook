@@ -1,5 +1,5 @@
 import GazeModel
-import DataPreProccess.MPIIDataLoader as MPIIDataLoader
+import DataSetPreProccess.MPIIDataLoader as MPIIDataLoader
 import torch.nn as nn
 import torch
 import numpy as np
@@ -8,6 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 import matplotlib.pyplot as plt
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 
 def convert_to_unit_vector( angles):
     pitches = angles[:, 0]
@@ -27,6 +28,7 @@ def compute_angle_error(predictions,labels):
     label_x, label_y, label_z = convert_to_unit_vector(labels)
     angles = pred_x * label_x + pred_y * label_y + pred_z * label_z
     return torch.acos(angles) * 180 / np.pi
+
 
 def validate (epoch, model, optimizer, loss_function, val_loader,writer):
     model.eval()
@@ -53,7 +55,6 @@ def validate (epoch, model, optimizer, loss_function, val_loader,writer):
             writer.add_scalar('Val angle loss', angle_error, epoch * len(val_loader) + step)
             print("Validate: now in epoch " + str(epoch) + " and step number " + str(step) + " loss is " + str(
                 loss.item()) + "angle error is:" + str(angle_error.item()))
-
 
 
 def train (epoch, model, optimizer, loss_function, train_loader,writer):
@@ -90,7 +91,6 @@ def train (epoch, model, optimizer, loss_function, train_loader,writer):
             writer.add_scalar('training loss',loss.item()*100,(epoch) * len(train_loader) + step)
             writer.add_scalar('training angle loss', angle_error , (epoch) * len(train_loader) + step)
             print("Train: now in epoch " + str(epoch) + " and step number " + str(step) + " loss is " + str(loss.item())+ " angle error is: " + str(angle_error.item()))
-
 
 
 def train_and_validate_aux (num_ephocs):
