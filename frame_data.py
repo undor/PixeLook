@@ -1,13 +1,11 @@
 from Defines import *
 from helpers.math_helper import *
 from HeadPose.face_landmarks import face_model
+from NewImgPreProcess.NormalizeData import *
 import cv2
 import numpy as np
 
-## unsidtort to camera
-camera_matrix_a = np.array([960., 0., 30,
-                            0., 960., 18.,
-                            0., 0., 1.]).reshape(3, 3)
+
 dist_coeff_a = np.array([0., 0., 0., 0., 0.]).reshape(-1, 1)
 
 norm_matrix = np.array([1600., 0., 112.,
@@ -29,7 +27,7 @@ class FrameData():
         self.is_debug= is_debug
 
     def get_head_pose(self):
-        return self.angles
+        return self.head_pose
 
     def get_eye_img(self):
         return self.r_eye_img
@@ -49,9 +47,6 @@ class FrameData():
     def eyes_detect(self):
         self.r_eye, self.l_eye = eye_detector(self.orig_img, self.shape)
 
-    def pre_proccess_for_net(self):
-        self.r_eye_img = normalize_eye(self.orig_img, self.r_eye)
-        self.l_eye_img = normalize_eye(self.orig_img, self.l_eye)
 
     def head_pose_detect(self):
         image_points = np.array(self.shape, dtype="double")
@@ -77,7 +72,11 @@ class FrameData():
         if(self.is_debug):
             cv2.line(self.debug_img, p1, p2, (255, 0, 0), 2)
 
-        rot = Rotation.from_rotvec(self.rotation_vector)
-        model3d = camera_matrix_a @ self.rotation_vector.T + self.translation_vector
-        self.angles = rot.as_euler('XYZ')[:2] * np.array([1, -1])
+        # rot = Rotation.from_rotvec(self.rotation_vector)
+        # model3d = camera_matrix_a @ self.rotation_vector.T + self.translation_vector
+        # self.angles = rot.as_euler('XYZ')[:2] * np.array([1, -1])
 
+    def pre_proccess_for_net(self):
+        self.r_eye_img = normalize_eye(self.orig_img, self.r_eye)
+        self.l_eye_img = normalize_eye(self.orig_img, self.l_eye)
+        self.head_pose,  self.r_eye_img  = normalize_data(self.r_eye_img,self.rotation_vector,self.translation_vector)
