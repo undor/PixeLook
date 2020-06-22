@@ -7,17 +7,17 @@ camera_matrix_a = np.array([960., 0., 30,
                             0., 0., 1.]).reshape(3, 3)
 
 def normalizeImg(inputImg, right_eye_center, head_rotate):
-    print ("head rotate is " , head_rotate)
+    print("head rotate is ", head_rotate)
     focal_new = 960
     distance_new = 600
-    #distance = np.norm(right_eye_center)
-    distance = np.linalg.norm(right_eye_center, 2) ### check it (?)
+    # distance = np.norm(right_eye_center)
+    distance = np.linalg.norm(right_eye_center, 2) # check it (?)
 
     z_scale = distance_new / distance
     # check if we need this new cam_new matrix or can use the one we are using anyway
     cam_new = camera_matrix_a
     scale_mat = [[1, 0, 0], [0, 1, 0], [0, 0, z_scale]]
-    head_rotate_x = head_rotate[:,0]
+    head_rotate_x = head_rotate[:, 0]
 
     forward = (right_eye_center/distance)
     down = np.cross(forward, head_rotate_x)
