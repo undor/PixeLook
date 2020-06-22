@@ -42,7 +42,7 @@ class FrameData():
         return self.r_eye_img
 
     def flip(self):
-        self.debug_img=cv2.flip( self.orig_img, 1)
+        self.debug_img=cv2.flip( self.debug_img, 1)
 
 
     def face_landmark_detect(self):

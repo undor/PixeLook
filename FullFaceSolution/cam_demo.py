@@ -20,11 +20,11 @@ def start_camera_sol2():
             img_h, img_w, _ = np.shape(frame)
             # Detect Faces
             display = frame.copy()
-
+            cv2.imshow('Gaze Demo', cur_frame.debug_img)
             if cur_frame.face_landmark_detect():
                     cur_frame.eyes_detect()
                     # Crop and normalize face Face
-                    utils.normalize_face(cur_frame)
+                    cur_frame= utils.normalize_face(cur_frame)
                     face=cur_frame.debug_img
                     # Predict gaze
                     with torch.no_grad():
@@ -35,7 +35,7 @@ def start_camera_sol2():
                     display = utils.draw_gaze(display, cur_frame.gaze_origin, gaze, color=(255, 0, 0), thickness=2)
 
 
-            cv2.imshow('Gaze Demo', display)
+
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
