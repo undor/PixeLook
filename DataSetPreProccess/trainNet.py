@@ -1,11 +1,9 @@
-import GazeModel
+from HeadPoseBasedSolution.HeadPoseBasedSolution import GazeModel
 import DataSetPreProccess.MPIIDataLoader as MPIIDataLoader
 import torch.nn as nn
 import torch
 import numpy as np
-import torchvision
 from torch.utils.tensorboard import SummaryWriter
-import matplotlib.pyplot as plt
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -114,4 +112,4 @@ def train_and_validate_aux (num_ephocs):
         validate(epoch, model, optimizer, loss_function, val_loader,val_writer)
     val_writer.close()
 
-    # torch.save(model.state_dict(),"RES/TRAINED_NET")
+    # torch.save(model.state_dict(),"RES/TRAINED_NET_30_EPHOCS")
