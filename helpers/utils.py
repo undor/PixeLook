@@ -54,21 +54,23 @@ def compute_angle_error(preds, labels):
 
 def normalize_face(cur_frame):
     # Adapted from imutils package
+    shape=cur_frame.shape
+    rcenter_x=(shape[38][0]+shape[40][0]+shape[36][0]+shape[39][0])/4
+    rcenter_y=(shape[38][1]+shape[40][1]+shape[36][1]+shape[39][1])/4
 
-    landmarks=cur_frame.shape
+    lcenter_x=(shape[42][0]+shape[44][0]+shape[45][0]+shape[46][0])/4
+    lcenter_y=(shape[42][1]+shape[44][1]+shape[45][1]+shape[46][1])/4
+
+    lcenter=tuple([rcenter_x ,rcenter_y])
+    rcenter=tuple([lcenter_x ,lcenter_y])
+
     left_eye_coord = (0.70, 0.35)
 
-    rcenter=get_eye_center(cur_frame.l_eye)
-    lcenter=get_eye_center(cur_frame.r_eye)
-    print(lcenter)
-    print(rcenter)
     gaze_origin = (int((lcenter[0] + rcenter[0]) / 2), int((lcenter[1] + rcenter[1]) / 2))
-    print(gaze_origin)
     # compute the angle between the eye centroids
     dY = rcenter[1] - lcenter[1]
     dX = rcenter[0] - lcenter[0]
     angle = np.degrees(np.arctan2(dY, dX)) - 180
-    print("dy is ", dY , "dx is: " ,dX ,"angle is: " ,angle)
     # compute the desired right eye x-coordinate based on the
     # desired x-coordinate of the left eye
     right_eye_x = 1.0 - left_eye_coord[0]
@@ -83,16 +85,15 @@ def normalize_face(cur_frame):
     scale = new_dist / dist
     # grab the rotation matrix for rotating and scaling the face
     M = cv2.getRotationMatrix2D(gaze_origin, angle, scale)
-    print(M)
+
     # update the translation component of the matrix
     tX = 112 * 0.5
     tY = 112 * left_eye_coord[1]
     M[0, 2] += (tX - gaze_origin[0])
     M[1, 2] += (tY - gaze_origin[1])
-
+    cur_frame.flip()
     # apply the affine transformation
     cur_frame.debug_img = cv2.warpAffine(cur_frame.debug_img, M, (112, 112),
                           flags=cv2.INTER_CUBIC)
-    cv2.imshow('Gaze Demo', cur_frame.debug_img)
     cur_frame.gaze_origin=gaze_origin
     return cur_frame
