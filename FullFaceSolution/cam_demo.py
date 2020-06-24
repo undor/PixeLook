@@ -7,49 +7,72 @@ import cv2
 from Graphics.screen_game import *
 
 
-
-class calibration_data():
-    left_gaze=(0,0)
-    right_gaze=(0,0)
-    center_gaze=(0,0)
+class Calibration_Data():
+    left_gaze = (0, 0)
+    right_gaze = (0, 0)
+    up_gaze = (0, 0)
+    down_gaze = (0, 0)
+    center_gaze = (0, 0)
     
 
-calibration = calibration_data()
+calibration = Calibration_Data()
 gui = FullScreenApp()
 
 
 def gaze_to_pixel(gaze):
-    right_gaze= calibration.right_gaze
+    right_gaze = calibration.right_gaze
     left_gaze = calibration.left_gaze
-    length = abs(right_gaze[1] - left_gaze[1])
-    ratio = (gaze[1] - left_gaze[1]) / length
-    x_location = ratio.item() * gui.width
-    if(x_location >0 and x_location <gui.width):
-        pixel=(x_location, gui.height / 2)
-        print(pixel)
+    up_gaze = calibration.up_gaze
+    down_gaze = calibration.down_gaze
+    width_length = abs(right_gaze[1] - left_gaze[1])
+    print("Gaze: ", gaze, " and up_gaze: ", up_gaze, "and down_gaze: ", down_gaze)
+    height_length = abs(down_gaze[2] - up_gaze[2])
+    print("width len: ", width_length, "height len: ", height_length)
+    width_ratio = (gaze[1] - left_gaze[1]) / width_length
+    # gaze #1 ?
+    height_ratio = (gaze[2] - up_gaze[1]) / height_length
+    print("width_ratio: ", width_ratio, "height_ratio: ", height_ratio)
+    x_location = width_ratio.item() * gui.width
+    y_location = height_ratio.item() * gui.height
+    print ("x location: ", x_location, "y location: ", y_location)
+    if 0 < x_location < gui.width and gui.height > y_location > 0:
+        pixel = (x_location, y_location)
         return pixel
-    return (0,0)
+    return 0, 0
 
-def play_stage(gui,gaze):
-    stage=my_stages.cur_stage
-    if (stage == WAIT_FOR_LEFT):
-        gui.print_pixel((10,gui.height/2))
-    if (stage == LEFT_CALIBRATION):
-        calibration.left_gaze=gaze
+
+def play_stage(gui, gaze):
+    stage = my_stages.cur_stage
+    if stage == WAIT_FOR_LEFT:
+        gui.print_pixel((10, gui.height/2))
+    if stage == LEFT_CALIBRATION:
+        calibration.left_gaze = gaze
         my_stages.next_step()
-    if (stage == WAIT_FOR_RIGHT):
-        gui.print_pixel((gui.width -10 , gui.height / 2))
-    if (stage == RIGHT_CALIBRATION):
+    if stage == WAIT_FOR_RIGHT:
+        gui.print_pixel((gui.width - 10, gui.height / 2))
+    if stage == RIGHT_CALIBRATION:
         calibration.right_gaze = gaze
         my_stages.next_step()
-    if (stage == WAIT_FOR_CENTER):
-        gui.print_pixel((gui.width/2, gui.height / 2))
-    if (stage == CENTER_CALIBRATION):
-        print("right gaze: " , calibration.right_gaze)
-        print("left gaze: " , calibration.left_gaze)
-        calibration.center_gaze = gaze
+    if stage == WAIT_FOR_UP:
+        gui.print_pixel((gui.width/2, 10))
+    if stage == UP_CALIBRATION:
+        calibration.up_gaze = gaze
         my_stages.next_step()
-    if(stage == FINISH_CALIBRATION):
+    if stage == WAIT_FOR_DOWN:
+        gui.print_pixel((gui.width/2, gui.height - 10))
+    if stage == DOWN_CALIBRATION:
+        calibration.down_gaze = gaze
+        my_stages.next_step()
+    if stage == WAIT_FOR_CENTER:
+        gui.print_pixel((gui.width/2, gui.height / 2))
+    if stage == CENTER_CALIBRATION:
+        calibration.center_gaze = gaze
+        print("right gaze: ", calibration.right_gaze)
+        print("left gaze: ", calibration.left_gaze)
+        print("up gaze: ", calibration.up_gaze)
+        print("down gaze: ", calibration.down_gaze)
+        my_stages.next_step()
+    if stage == FINISH_CALIBRATION:
         gui.print_pixel(gaze_to_pixel(gaze))
 
 
@@ -81,7 +104,7 @@ def calibrate():
             # Draw results
             display = cv2.circle(display, cur_frame.gaze_origin, 3, (0, 255, 0), -1)
             display = utils.draw_gaze(display, cur_frame.gaze_origin, gaze, color=(255, 0, 0), thickness=2)
-            play_stage(gui,gaze)
+            play_stage(gui, gaze)
             gui.update_window()
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
