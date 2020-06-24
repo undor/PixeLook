@@ -1,11 +1,11 @@
-from FullFaceSolution.cam_demo import *
+from FullFaceSolution.FullFaceBasedSolution import *
 
 dataset_path = 'RES/MPIIGaze.h5'
 
 
 def __main__():
     print("hello world!")
-    calibrate()
+    start_camera_sol2()
     # trainNet.train_and_validate_aux(10)
 
 

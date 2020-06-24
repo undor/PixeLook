@@ -1,6 +1,7 @@
 from Defines import *
 import cv2
-
+from Calibration.gui_manager import *
+from Calibration.calibration import *
 
 def start_camera_sol1 ():
         model = GazeModel.load_model()
@@ -22,6 +23,7 @@ def start_camera_sol1 ():
 
                 fps.reg_time()
                 add_data_on_img(cur_frame, gaze_angles, fps.get_fps())
+                global_calib_manager.play_stage(gaze)
                 cv2.imshow("Output", cur_frame.debug_img)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
