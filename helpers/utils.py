@@ -21,7 +21,6 @@ def set_camera(width,height):
 
 
 def draw_gaze(image_in, eye_pos, pitchyaw, length=200, thickness=1, color=(0, 0, 255)):
-    """Draw gaze angle on given image with a given eye positions."""
     image_out = image_in
     if len(image_out.shape) == 2 or image_out.shape[2] == 1:
         image_out = cv2.cvtColor(image_out, cv2.COLOR_GRAY2BGR)
