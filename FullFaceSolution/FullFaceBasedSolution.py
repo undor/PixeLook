@@ -15,7 +15,7 @@ def load_face_model():
     model.eval()
     return model
 
-def start_camera_sol2():
+def start_camera_sol():
     model =load_face_model()
     cap = cv2.VideoCapture(0)
     while True:

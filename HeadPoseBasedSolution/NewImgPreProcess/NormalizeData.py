@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from HeadPoseBasedSolution.HeadPoseBasedSolution import normalizeImg
+from HeadPoseBasedSolution.NewImgPreProcess.NormalizeImg import *
 from HeadPoseBasedSolution.HeadPoseBasedSolution import face_model
 
 
