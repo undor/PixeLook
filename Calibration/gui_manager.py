@@ -7,9 +7,11 @@ def key(event):
     from Calibration.calibration import calibration_manager
     calibration_manager.next_step()
 
+
 class FullScreenApp(object):
     def __init__(self, **kwargs):
         self.master = tk.Tk()
+        # TODO: pad?
         pad = 3
         self._geom = '200x200+0+0'
         self.master.attributes('-fullscreen', True)
@@ -20,11 +22,29 @@ class FullScreenApp(object):
         self.w.focus_set()
         self.w.bind("<Key>",   key)
         self.w.pack(fill="both", expand=True)
-        self.text_box= self.w.create_text((410, 120), text="Starting calibration", font="MSGothic 20 bold", fill="#652828")
+        self.text_box = self.w.create_text((610, 120), text="Starting calibration",
+                                           font="MSGothic 20 bold", fill="#652828")
 
+    def print_stage(self, stage):
+        if stage == 0:
+            my_text = "Current stage number: ", stage, "Please look on the left dot"
+        elif stage == 2:
+            my_text = "Current stage number: ", stage, "Please look on the right dot"
+        elif stage == 4:
+            my_text = "Current stage number: ", stage, "Please look on the upper dot"
+        elif stage == 6:
+            my_text = "Current stage number: ", stage, "Please look on the lower dot"
+        elif stage == 8:
+            my_text = "Current stage number: ", stage, "Please look on the center dot"
+        elif stage == 10:
+            # TODO: enter here option to go to stage 0 again
+            my_text = "Check your calibration points. If you are satisfied, please press <KEY>. else, fuck you meanwhile."
+        elif stage == 11:
+            # my_text = "left calibration point: ", self.left_gaze_for_debug
+            my_text = "Finished Calibrating, start drawing"
+        else:
+            my_text = ""
 
-    def print_stage(self,stage):
-        my_text = "now on stage number: " , stage
         self.w.itemconfig(self.text_box, text=my_text)
 
     def toggle_geom(self,event):
@@ -41,3 +61,22 @@ class FullScreenApp(object):
         self.w.focus_set()
         self.w.create_rectangle(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill="#272AEB")
 
+    def print_calib_points(self, up, down, left, right, center):
+        perimeter = 24
+        radius = 0.5*perimeter
+        self.w.focus_set()
+        self.w.create_oval(up[0],   up[1], up[0]+perimeter, up[1]+perimeter,  fill="#FF0000")
+        self.w.create_text((up[0]+radius, up[1]+radius), text="upper dot",
+                           font="MSGothic 8 bold", fill="#652828")
+        self.w.create_oval(down[0], down[1], down[0] + perimeter, down[1] + perimeter, fill="#FF0000")
+        self.w.create_text((down[0]+radius, down[1]+radius), text="lower dot",
+                           font="MSGothic 8 bold", fill="#652828")
+        self.w.create_oval(left[0], left[1], left[0] + perimeter, left[1] + perimeter, fill="#FF0000")
+        self.w.create_text((left[0]+radius, left[1]+radius), text="left dot",
+                           font="MSGothic 8 bold", fill="#652828")
+        self.w.create_oval(right[0], right[1], right[0] + perimeter, right[1] + perimeter, fill="#FF0000")
+        self.w.create_text((right[0]+radius, right[1]+radius), text="right dot",
+                           font="MSGothic 8 bold", fill="#652828")
+        self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
+        self.w.create_text((center[0]+radius, center[1]+radius), text="center dot",
+                           font="MSGothic 8 bold", fill="#652828")

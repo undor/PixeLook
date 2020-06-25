@@ -8,6 +8,7 @@ import numpy as np
 from PIL import Image
 from torchvision import transforms
 
+
 class GazeNet(nn.Module):
 
     def __init__(self, device):    
@@ -71,6 +72,6 @@ class GazeNet(nn.Module):
 
     def get_gaze(self, img):
         img = Image.fromarray(img)
-        img = self.preprocess(img)[np.newaxis,:,:,:]
-        x = self.forward(img.to(self.device))
-        return x
+        img = self.preprocess(img)[np.newaxis, :, :, :]
+        gaze = self.forward(img.to(self.device))
+        return gaze
