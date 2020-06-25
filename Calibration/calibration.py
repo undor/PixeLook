@@ -1,18 +1,6 @@
 from Calibration.gui_manager import *
+from Defines import *
 import cv2
-
-
-stages ={  'WAIT_FOR_LEFT' : 0 ,
-                'LEFT_CALIBRATION' : 1,
-                'WAIT_FOR_RIGHT' : 2,
-                'RIGHT_CALIBRATION' : 3,
-                'WAIT_FOR_UP' : 4,
-                'UP_CALIBRATION' : 5,
-                'WAIT_FOR_DOWN': 6,
-                'DOWN_CALIBRATION' : 7,
-                'WAIT_FOR_CENTER' : 8,
-                'CENTER_CALIBRATION' : 9,
-                'FINISH_CALIBRATION' : 10 }
 
 
 class calib_data():
@@ -25,8 +13,8 @@ class calib_data():
 class calib_manager():
     def __init__(self, **kwargs):
         self.cur_stage = 0
-        self.gui=FullScreenApp()
-        self.calib_data= calib_data()
+        self.gui = FullScreenApp()
+        self.calib_data = calib_data()
 
     def next_step(self):
         if self.cur_stage != stages['FINISH_CALIBRATION']:
@@ -38,7 +26,7 @@ class calib_manager():
         print("up gaze: ", self.calib_data.up_gaze)
         print("down gaze: ", self.calib_data.down_gaze)
 
-    def gaze_to_pixel(self,gaze):
+    def gaze_to_pixel(self, gaze):
         calib_data = self.calib_data
         width_length = abs(calib_data.right_gaze[1] - calib_data.left_gaze[1])
         height_length = abs(calib_data.down_gaze[0] - calib_data.up_gaze[0])
@@ -55,14 +43,13 @@ class calib_manager():
             return pixel
         return 0, 0
 
-
-    def play_stage(self,gaze):
+    def play_stage(self, gaze):
         stage = self.cur_stage
         self.gui.print_stage(stage)
-        width=self.gui.width
-        height=self.gui.height
+        width = self.gui.width
+        height = self.gui.height
         if stage == stages['WAIT_FOR_LEFT']:
-            self.gui.print_pixel((10,height / 2))
+            self.gui.print_pixel((10, height / 2))
         elif stage == stages['LEFT_CALIBRATION']:
             self.calib_data.left_gaze = gaze
             self.next_step()
@@ -85,12 +72,19 @@ class calib_manager():
             self.gui.print_pixel((width / 2, height / 2))
         elif stage == stages['CENTER_CALIBRATION']:
             self.calib_data.center_gaze = gaze
-            self.print_gazes()
+            self.next_step()
+        elif stage == stages['CHECK_CALIBRATION']:
+            # self.gui.print_pixel(self.gaze_to_pixel(gaze))
+            # self.print_gazes()
+            self.gui.print_calib_points(self.gaze_to_pixel(calibration_manager.calib_data.up_gaze),
+                                        self.gaze_to_pixel(calibration_manager.calib_data.down_gaze),
+                                        self.gaze_to_pixel(calibration_manager.calib_data.left_gaze),
+                                        self.gaze_to_pixel(calibration_manager.calib_data.right_gaze),
+                                        self.gaze_to_pixel(calibration_manager.calib_data.center_gaze))
             self.next_step()
         elif stage == stages['FINISH_CALIBRATION']:
             self.gui.print_pixel(self.gaze_to_pixel(gaze))
         self.gui.update_window()
-
 
 
 calibration_manager = calib_manager()

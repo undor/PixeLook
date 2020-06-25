@@ -2,22 +2,22 @@ import cv2
 import json
 import torch
 import numpy as np
-from  helpers.math_helper import *
+from helpers.math_helper import *
+
 
 def add_data_on_img(frame, gaze_angles, fps):
-    gaze_angles=gaze_angles[0]
+    gaze_angles = gaze_angles[0]
     head_angles = frame.get_head_pose()
     cv2.putText(frame.debug_img , "gaze angles: " + str(gaze_angles[0])  +  "  " + str(gaze_angles[1]), (100,100) , font, 1, (0, 150, 0), 2, cv2.LINE_4)
     cv2.putText(frame.debug_img , "head angles: " + str(head_angles[0])  +  "  " + str(head_angles[1]), (100,200) , font, 1, (0, 150, 0), 2, cv2.LINE_4)
     cv2.putText(frame.debug_img , "fps  :  " + str(fps), (100, 300), font, 1,(0, 150, 0), 2, cv2.LINE_4)
 
 
-def set_camera(width,height):
+def set_camera(width, height):
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     return cap
-
 
 
 def draw_gaze(image_in, eye_pos, pitchyaw, length=200, thickness=1, color=(0, 0, 255)):
@@ -53,15 +53,15 @@ def compute_angle_error(preds, labels):
 
 def normalize_face(cur_frame):
     # Adapted from imutils package
-    shape=cur_frame.shape
-    rcenter_x=(shape[38][0]+shape[40][0]+shape[36][0]+shape[39][0])/4
-    rcenter_y=(shape[38][1]+shape[40][1]+shape[36][1]+shape[39][1])/4
+    shape = cur_frame.shape
+    rcenter_x = (shape[38][0]+shape[40][0]+shape[36][0]+shape[39][0])/4
+    rcenter_y = (shape[38][1]+shape[40][1]+shape[36][1]+shape[39][1])/4
 
-    lcenter_x=(shape[42][0]+shape[44][0]+shape[45][0]+shape[46][0])/4
-    lcenter_y=(shape[42][1]+shape[44][1]+shape[45][1]+shape[46][1])/4
+    lcenter_x = (shape[42][0]+shape[44][0]+shape[45][0]+shape[46][0])/4
+    lcenter_y = (shape[42][1]+shape[44][1]+shape[45][1]+shape[46][1])/4
 
-    lcenter=tuple([rcenter_x ,rcenter_y])
-    rcenter=tuple([lcenter_x ,lcenter_y])
+    lcenter = tuple([rcenter_x, rcenter_y])
+    rcenter = tuple([lcenter_x, lcenter_y])
 
     left_eye_coord = (0.70, 0.35)
 
@@ -92,7 +92,6 @@ def normalize_face(cur_frame):
     M[1, 2] += (tY - gaze_origin[1])
     cur_frame.flip()
     # apply the affine transformation
-    cur_frame.debug_img = cv2.warpAffine(cur_frame.debug_img, M, (112, 112),
-                          flags=cv2.INTER_CUBIC)
+    cur_frame.debug_img = cv2.warpAffine(cur_frame.debug_img, M, (112, 112), flags=cv2.INTER_CUBIC)
     cur_frame.gaze_origin=gaze_origin
     return cur_frame

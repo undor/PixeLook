@@ -1,5 +1,5 @@
 import numpy as np
-
+# TODO: add to defines
 face_model = np.array([
         [-0.07141807, -0.02827123, 0.08114384],
         [-0.07067417, -0.00961522, 0.08035654],

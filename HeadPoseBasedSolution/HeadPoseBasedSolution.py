@@ -7,6 +7,7 @@ from helpers.utils import *
 from helpers.fps import *
 from frame_data import *
 
+
 def start_camera_sol():
         from frame_data import FrameData
         model = GazeModel.load_model()
@@ -19,12 +20,12 @@ def start_camera_sol():
 
                 cur_frame.head_pose_detect()
                 cur_frame.eyes_detect()
-                cur_frame.pre_proccess_for_net()    #TODO - Improvments for pre proccess for net
+                cur_frame.pre_proccess_for_net()    # TODO - Improvments for pre proccess for net
 
                 gaze_angles = GazeModel.use_net(model, cur_frame)
                 gaze_vector = angle_to_vector(gaze_angles)
 
-                #TODO - ADD after proccess  method to get position on screen
+                # TODO - ADD after proccess  method to get position on screen
 
                 fps.reg_time()
                 add_data_on_img(cur_frame, gaze_angles, fps.get_fps())
