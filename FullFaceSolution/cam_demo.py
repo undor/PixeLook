@@ -24,18 +24,21 @@ def gaze_to_pixel(gaze):
     left_gaze = calibration.left_gaze
     up_gaze = calibration.up_gaze
     down_gaze = calibration.down_gaze
+
     width_length = abs(right_gaze[1] - left_gaze[1])
     print("Gaze: ", gaze, " and up_gaze: ", up_gaze, "and down_gaze: ", down_gaze)
-    height_length = abs(down_gaze[2] - up_gaze[2])
+    height_length = abs(down_gaze[0] - up_gaze[0])
     print("width len: ", width_length, "height len: ", height_length)
+
     width_ratio = (gaze[1] - left_gaze[1]) / width_length
-    # gaze #1 ?
-    height_ratio = (gaze[2] - up_gaze[1]) / height_length
+    height_ratio = (gaze[0] - up_gaze[0]) / height_length
     print("width_ratio: ", width_ratio, "height_ratio: ", height_ratio)
+
     x_location = width_ratio.item() * gui.width
     y_location = height_ratio.item() * gui.height
-    print ("x location: ", x_location, "y location: ", y_location)
-    if 0 < x_location < gui.width and gui.height > y_location > 0:
+    print("x location: ", x_location, "y location: ", y_location)
+
+    if 0 < x_location < gui.width and 0 < y_location < gui.height:
         pixel = (x_location, y_location)
         return pixel
     return 0, 0
@@ -48,16 +51,19 @@ def play_stage(gui, gaze):
     if stage == LEFT_CALIBRATION:
         calibration.left_gaze = gaze
         my_stages.next_step()
+
     if stage == WAIT_FOR_RIGHT:
         gui.print_pixel((gui.width - 10, gui.height / 2))
     if stage == RIGHT_CALIBRATION:
         calibration.right_gaze = gaze
         my_stages.next_step()
+
     if stage == WAIT_FOR_UP:
         gui.print_pixel((gui.width/2, 10))
     if stage == UP_CALIBRATION:
         calibration.up_gaze = gaze
         my_stages.next_step()
+
     if stage == WAIT_FOR_DOWN:
         gui.print_pixel((gui.width/2, gui.height - 10))
     if stage == DOWN_CALIBRATION:

@@ -32,8 +32,9 @@ def key(event):
     my_stages.next_step()
 
 
-def show_text(self):
-    print(self.w.itemcget(self.obj_id, 'text'))
+# def show_text(self):
+#     print(self.w.itemcget(self.obj_id, 'text'))
+
 
 class FullScreenApp(object):
     def __init__(self, **kwargs):
@@ -48,9 +49,8 @@ class FullScreenApp(object):
         self.w.focus_set()
         self.w.bind("<Key>",   key)
         self.w.pack(fill="both", expand=True)
-        self.obj_id = self.w.create_text(200, 300, text="press again")
-        self.w.bind("<Key>", show_text(self))
-
+        # self.obj_id = self.w.create_text(200, 300, text="press again")
+        # self.w.bind("<Key>", show_text(self))
 
     def toggle_geom(self,event):
         geom = self.master.winfo_geometry()
