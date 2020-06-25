@@ -1,7 +1,8 @@
-from HeadPoseBasedSolution.HeadPoseBasedSolution import *
 import cv2
 import numpy as np
 from helpers.utils import *
+from HeadPoseBasedSolution.face_landmarks import *
+from HeadPoseBasedSolution.NewImgPreProcess.NormalizeData import *
 
 dist_coeff_a = np.array([0., 0., 0., 0., 0.]).reshape(-1, 1)
 
