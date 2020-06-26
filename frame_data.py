@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+from Defines import *
 from helpers.utils import *
 from HeadPoseBasedSolution.face_landmarks import *
 from HeadPoseBasedSolution.NewImgPreProcess.NormalizeData import *

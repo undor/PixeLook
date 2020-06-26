@@ -27,18 +27,19 @@ class calib_manager():
         print("down gaze: ", self.calib_data.down_gaze)
 
     def gaze_to_pixel(self, gaze):
+
         calib_data = self.calib_data
         width_length = abs(calib_data.right_gaze[1] - calib_data.left_gaze[1])
         height_length = abs(calib_data.down_gaze[0] - calib_data.up_gaze[0])
 
-        width_ratio = (gaze[1] - calib_data.left_gaze[1]) / width_length
-        height_ratio = (gaze[0] - calib_data.down_gaze[0]) / height_length
+        width_ratio = abs(gaze[1] - calib_data.left_gaze[1]) / width_length
+        height_ratio = abs(gaze[0] - calib_data.up_gaze[0]) / height_length
 
         x_location = width_ratio.item() * self.gui.width
         y_location = height_ratio.item() * self.gui.height
 
         print("x location: ", x_location, "y location: ", y_location)
-        if 0 < x_location < self.gui.width and self.gui.height > y_location > 0:
+        if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
             pixel = (x_location, y_location)
             return pixel
         return 0, 0
@@ -75,12 +76,12 @@ class calib_manager():
             self.next_step()
         elif stage == stages['CHECK_CALIBRATION']:
             # self.gui.print_pixel(self.gaze_to_pixel(gaze))
-            # self.print_gazes()
-            self.gui.print_calib_points(self.gaze_to_pixel(calibration_manager.calib_data.up_gaze),
-                                        self.gaze_to_pixel(calibration_manager.calib_data.down_gaze),
-                                        self.gaze_to_pixel(calibration_manager.calib_data.left_gaze),
-                                        self.gaze_to_pixel(calibration_manager.calib_data.right_gaze),
-                                        self.gaze_to_pixel(calibration_manager.calib_data.center_gaze))
+            self.print_gazes()
+            self.gui.print_calib_points(self.gaze_to_pixel(self.calib_data.up_gaze),
+                                        self.gaze_to_pixel(self.calib_data.down_gaze),
+                                        self.gaze_to_pixel(self.calib_data.left_gaze),
+                                        self.gaze_to_pixel(self.calib_data.right_gaze),
+                                        self.gaze_to_pixel(self.calib_data.center_gaze))
             self.next_step()
         elif stage == stages['FINISH_CALIBRATION']:
             self.gui.print_pixel(self.gaze_to_pixel(gaze))
