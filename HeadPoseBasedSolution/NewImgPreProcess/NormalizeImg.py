@@ -6,6 +6,7 @@ camera_matrix_a = np.array([960., 0., 30,
                             0., 960., 18.,
                             0., 0., 1.]).reshape(3, 3)
 
+
 def normalizeImg(inputImg, right_eye_center, head_rotate):
     print("head rotate is ", head_rotate)
     focal_new = 960
@@ -28,14 +29,12 @@ def normalizeImg(inputImg, right_eye_center, head_rotate):
     rot_mat = [right, down, forward]
     # super matrix
     warp_mat = (cam_new@scale_mat)@(rot_mat@np.linalg.inv(camera_matrix_a))
-    img_warped = cv2.warpPerspective(inputImg, warp_mat, (36,60))
+    img_warped = cv2.warpPerspective(inputImg, warp_mat, (36, 60))
 
     # rotation normalization
     cnv_mat = np.array(scale_mat) @ np.array(rot_mat)
     head_rotate_new = cnv_mat@head_rotate
-    print("head_rotate_new ", head_rotate_new)
-    head_rotate_new , jacobian = cv2.Rodrigues(head_rotate_new)
-    print("head_rotate_new after rogridez ", head_rotate_new)
+    head_rotate_new, = cv2.Rodrigues(head_rotate_new)
     head_translation_new = cnv_mat @ right_eye_center
 
     return img_warped, head_rotate_new
