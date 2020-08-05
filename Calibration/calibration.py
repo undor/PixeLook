@@ -43,7 +43,7 @@ class calib_manager():
             pixel = (x_location, y_location)
             return pixel
         return 0, 0
-
+    # TODO: add indicatores for right calibrating. need to know if stuck \ work, what captured etc.
     def play_stage(self, gaze):
         stage = self.cur_stage
         self.gui.print_stage(stage)

@@ -6,8 +6,8 @@ dataset_path = 'RES/MPIIGaze.h5'
 def __main__():
     print("hello world!")
 
-    # FullFaceSolution.start_camera_sol()
-    HeadPoseBasedSolution.start_camera_sol()
+    FullFaceSolution.start_camera_sol()
+    #  HeadPoseBasedSolution.start_camera_sol()
 
 
 if __name__ == "__main__":

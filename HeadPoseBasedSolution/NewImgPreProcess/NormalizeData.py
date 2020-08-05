@@ -12,6 +12,7 @@ def normalize_data(img, headpose_head_rotation, headpose_head_translation):
     # need to add it to defines
     # when sending to Rodrigues, we sent a [x,y,z] vector and got :
     headpose_head_rotation = headpose_head_rotation.T
+    # TODO: Bug for tomer in head rotate
     head_rotate, = cv2.Rodrigues(headpose_head_rotation)
     # most important variable : what the fuck is this facial landmark?
     # [3x3] * [3x68] = [3x68]
