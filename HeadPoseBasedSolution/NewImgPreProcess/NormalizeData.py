@@ -4,9 +4,9 @@ from HeadPoseBasedSolution.NewImgPreProcess.NormalizeImg import *
 from HeadPoseBasedSolution.HeadPoseBasedSolution import face_model
 from Defines import *
 
-
 def normalize_data(img, headpose_head_rotation, headpose_head_translation):
-    # annotation , camera calibrate and face model we have in different files need to get it from there and not from
+    # annotation , camera calibrate and face model we have in different
+    # files need to get it from there and not from
     # input to function
     # get head pose
     # need to add it to defines
@@ -30,7 +30,8 @@ def normalize_data(img, headpose_head_rotation, headpose_head_translation):
     # normalizing only right eye - for left eye replace centers
     img, headpose_rotation = normalizeImg(img, right_eye_center, head_rotate)
 
-    # convert the gaze direction and head pose in the camera coordinate system to the angle in the polar
+    # convert the gaze direction and head pose in the camera
+    # coordinate system to the angle in the polar
     # coordinate system. got to understand what the hell happens here
     M, = cv2.Rodrigues(headpose_rotation)
     zv = M[:, 2]

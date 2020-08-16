@@ -4,8 +4,9 @@ from enum import Enum
 
 
 def key(event):
+    print("in key function")
     from Calibration.calibration import calibration_manager
-    calibration_manager.next_step()
+    calibration_manager.flag = 1
 
 
 class FullScreenApp(object):
@@ -20,10 +21,11 @@ class FullScreenApp(object):
         self.height = self.master.winfo_screenheight()
         self.w = Canvas(self.master)
         self.w.focus_set()
-        self.w.bind("<Key>",   key)
+        self.w.bind("<Key>", key)
         self.w.pack(fill="both", expand=True)
         self.text_box = self.w.create_text((610, 120), text="Starting calibration",
                                            font="MSGothic 20 bold", fill="#652828")
+        self.counter = 0
 
     def print_stage(self, stage):
         if stage == 0:
@@ -38,7 +40,7 @@ class FullScreenApp(object):
             my_text = "Current stage number: ", stage, "Please look on the center dot"
         elif stage == 10:
             # TODO: enter here option to go to stage 0 again
-            my_text = "Check your calibration points. If you are satisfied, please press <KEY>. else, fuck you meanwhile."
+            my_text = "Check your calibration points. If you are satisfied,please press <KEY>. else,fuck you meanwhile."
         elif stage == 11:
             # my_text = "left calibration point: ", self.left_gaze_for_debug
             my_text = "Finished Calibrating, start drawing"
@@ -47,19 +49,23 @@ class FullScreenApp(object):
 
         self.w.itemconfig(self.text_box, text=my_text)
 
-    def toggle_geom(self,event):
+    def toggle_geom(self, event):
         geom = self.master.winfo_geometry()
         print(geom, self._geom)
         self.master.geometry(self._geom)
         self._geom = geom
 
     def update_window(self):
+        if self.counter % 10 == 0:
+            self.w.delete("all")
         self.master.update()
 
     def print_pixel(self, pixel):
         delta = 5
         self.w.focus_set()
         self.w.create_rectangle(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill="#272AEB")
+        self.counter += 1
+        self.update_window()
 
     def print_calib_points(self, up, down, left, right, center):
         perimeter = 24
@@ -80,3 +86,4 @@ class FullScreenApp(object):
         self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
         self.w.create_text((center[0]+radius, center[1]+radius), text="center dot",
                            font="MSGothic 8 bold", fill="#652828")
+

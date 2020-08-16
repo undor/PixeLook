@@ -93,5 +93,7 @@ def normalize_face(cur_frame):
     cur_frame.flip()
     # apply the affine transformation
     cur_frame.debug_img = cv2.warpAffine(cur_frame.debug_img, M, (112, 112), flags=cv2.INTER_CUBIC)
+    # cv2.imshow("mhymym",cur_frame.debug_img)
+    # cv2.waitKey()
     cur_frame.gaze_origin=gaze_origin
     return cur_frame

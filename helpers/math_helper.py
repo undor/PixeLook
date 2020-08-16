@@ -88,7 +88,7 @@ def get_eye(shape,top,bottom,right,left):
 
     eye_height = eye_height + 2*eye_height_add
     eye_width = eye_width + 2*eye_width_add
-    return [(eye_left , eye_top), (eye_left + eye_width, eye_top+ eye_height)]
+    return [(eye_left, eye_top), (eye_left + eye_width, eye_top + eye_height)]
 
 def normalize_eye(frame,eye):
     eye_img = frame[eye[0][1]:eye[1][1], eye[0][0]:eye[1][0]]
