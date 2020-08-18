@@ -22,11 +22,11 @@ class calib_manager:
         if self.cur_stage != stages['FINISH_CALIBRATION']:
             self.cur_stage += 2
 
-    # def print_gazes(self):
-    #     print("right gaze: ", self.calib_data.right_gaze)
-    #     print("left gaze: ", self.calib_data.left_gaze)
-    #     print("up gaze: ", self.calib_data.up_gaze)
-    #     print("down gaze: ", self.calib_data.down_gaze)
+    def print_gazes(self):
+        print("right gaze: ", self.calib_data.right_gaze)
+        print("left gaze: ", self.calib_data.left_gaze)
+        print("up gaze: ", self.calib_data.up_gaze)
+        print("down gaze: ", self.calib_data.down_gaze)
 
     def gaze_to_pixel(self, gaze):
         # TODO: add indicatores for right calibrating. need to know if stuck \ work, what captured etc.
@@ -80,8 +80,9 @@ class calib_manager:
         #self.calib_data.center_gaze = FullFaceSolution.my_env.find_gaze()
         # CHECK CALIBRATION
         # self.gui.print_pixel(self.gaze_to_pixel(gaze))
-        # self.print_gazes()
+        self.print_gazes()
 
+        # TODO: add another function that print calib points and asks if the results are good enough for you
         self.gui.print_calib_points(self.gaze_to_pixel(self.calib_data.up_gaze),
                                     self.gaze_to_pixel(self.calib_data.down_gaze),
                                     self.gaze_to_pixel(self.calib_data.left_gaze),
