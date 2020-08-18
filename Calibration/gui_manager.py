@@ -67,6 +67,7 @@ class FullScreenApp(object):
         self.w.focus_set()
         self.w.create_rectangle(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill="#272AEB")
         self.counter += 1
+        self.update_window()
 
     def print_calib_points(self, up, down, left, right, center):
         perimeter = 24
@@ -75,13 +76,13 @@ class FullScreenApp(object):
         self.w.create_oval(up[0],   up[1], up[0]+perimeter, up[1]+perimeter,  fill="#FF0000")
         self.w.create_text((up[0]+radius, up[1]+radius), text="upper dot",
                            font="MSGothic 8 bold", fill="#652828")
-        self.w.create_oval(down[0], down[1], down[0] + perimeter, down[1] + perimeter, fill="#FF0000")
+        self.w.create_oval(down[0], down[1], down[0] - perimeter, down[1] - perimeter, fill="#FF0000")
         self.w.create_text((down[0]+radius, down[1]+radius), text="lower dot",
                            font="MSGothic 8 bold", fill="#652828")
         self.w.create_oval(left[0], left[1], left[0] + perimeter, left[1] + perimeter, fill="#FF0000")
         self.w.create_text((left[0]+radius, left[1]+radius), text="left dot",
                            font="MSGothic 8 bold", fill="#652828")
-        self.w.create_oval(right[0], right[1], right[0] + perimeter, right[1] + perimeter, fill="#FF0000")
+        self.w.create_oval(right[0], right[1], right[0] - perimeter, right[1] - perimeter, fill="#FF0000")
         self.w.create_text((right[0]+radius, right[1]+radius), text="right dot",
                            font="MSGothic 8 bold", fill="#652828")
         self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
