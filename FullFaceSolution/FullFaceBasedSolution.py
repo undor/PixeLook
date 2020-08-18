@@ -1,16 +1,16 @@
 from helpers import utils
-import numpy as np
 from frame_data import *
 from FullFaceSolution.models import gazenet
-from Defines import *
-import cv2
-from Calibration.gui_manager import *
-from Calibration.calibration import *
+
 
 class enviornment:
     def __init__(self):
+        print("initiate environment")
         self.model = self.load_face_model()
         self.cap = cv2.VideoCapture(0)
+
+    def check(self):
+        print("reaching env")
 
     def load_face_model(self):
         device = torch.device("cpu")
@@ -27,7 +27,7 @@ class enviornment:
         img_h, img_w, _ = np.shape(frame)
         # Detect Faces
         display = frame.copy()
-        for counter_error in range(1, 10):
+        for counter_error in range(1, 100):
             if cur_frame.face_landmark_detect():
                 cur_frame.eyes_detect()
                 cur_frame = utils.normalize_face(cur_frame)
@@ -39,6 +39,7 @@ class enviornment:
                     # Draw results
                     # display = cv2.circle(display, cur_frame.gaze_origin, 3, (0, 255, 0), -1)
                     # display = utils.draw_gaze(display, cur_frame.gaze_origin, gaze, color=(255, 0, 0), thickness=2)
-        return -1
+        sys.exit("didn't detect face for hundred tries")
+
 
 my_env = enviornment()

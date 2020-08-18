@@ -4,10 +4,8 @@ from enum import Enum
 
 
 def key(event):
-    print("in key function")
     from Calibration.calibration import calibration_manager
     calibration_manager.flag = 1
-
 
 class FullScreenApp(object):
     def __init__(self, **kwargs):
@@ -26,6 +24,10 @@ class FullScreenApp(object):
         self.text_box = self.w.create_text((610, 120), text="Starting calibration",
                                            font="MSGothic 20 bold", fill="#652828")
         self.counter = 0
+
+        self.var = tk.IntVar()
+        self.button = tk.Button(self.master, text="Click Me", command=lambda: self.var.set(1))
+        self.button.place(relx=.5, rely=.5, anchor="c")
 
     def print_stage(self, stage):
         if stage == 0:
@@ -46,7 +48,6 @@ class FullScreenApp(object):
             my_text = "Finished Calibrating, start drawing"
         else:
             my_text = ""
-
         self.w.itemconfig(self.text_box, text=my_text)
 
     def toggle_geom(self, event):
@@ -56,8 +57,9 @@ class FullScreenApp(object):
         self._geom = geom
 
     def update_window(self):
-        if self.counter % 10 == 0:
+        if self.counter == 10:
             self.w.delete("all")
+            self.counter = 0
         self.master.update()
 
     def print_pixel(self, pixel):
@@ -65,7 +67,6 @@ class FullScreenApp(object):
         self.w.focus_set()
         self.w.create_rectangle(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill="#272AEB")
         self.counter += 1
-        self.update_window()
 
     def print_calib_points(self, up, down, left, right, center):
         perimeter = 24
@@ -86,4 +87,7 @@ class FullScreenApp(object):
         self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
         self.w.create_text((center[0]+radius, center[1]+radius), text="center dot",
                            font="MSGothic 8 bold", fill="#652828")
+
+    def wait_key(self):
+        self.button.wait_variable(self.var)
 
