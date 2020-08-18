@@ -4,8 +4,8 @@ from enum import Enum
 
 
 def key(event):
-    from Calibration.calibration import calibration_manager
-    calibration_manager.flag = 1
+    print("doing nothing")
+
 
 class FullScreenApp(object):
     def __init__(self, **kwargs):
@@ -14,7 +14,7 @@ class FullScreenApp(object):
         pad = 3
         self._geom = '200x200+0+0'
         self.master.attributes('-fullscreen', True)
-        self.master.bind('<Escape>', self.toggle_geom)
+        # self.master.bind('<Escape>', self.toggle_geom)
         self.width = self.master.winfo_screenwidth()
         self.height = self.master.winfo_screenheight()
         self.w = Canvas(self.master)
@@ -26,38 +26,38 @@ class FullScreenApp(object):
         self.counter = 0
 
         self.var = tk.IntVar()
-        self.button = tk.Button(self.master, text="Click Me", command=lambda: self.var.set(1))
-        self.button.place(relx=.5, rely=.5, anchor="c")
+        self.button = tk.Button(self.master, text="Click to Capture", command=lambda: self.var.set(1))
 
-    def print_stage(self, stage):
+    # def toggle_geom(self, event):
+    #     geom = self.master.winfo_geometry()
+    #     print(geom, self._geom)
+    #     self.master.geometry(self._geom)
+    #     self._geom = geom
+
+    def print_calib_stage(self, stage):
         if stage == 0:
             my_text = "Current stage number: ", stage, "Please look on the left dot"
+            self.button.place(relx=0.035, rely=0.5, anchor="c")
         elif stage == 2:
             my_text = "Current stage number: ", stage, "Please look on the right dot"
+            self.button.place(relx=0.965, rely=0.5, anchor="c")
         elif stage == 4:
             my_text = "Current stage number: ", stage, "Please look on the upper dot"
+            self.button.place(relx=0.5, rely=0.035, anchor="c")
         elif stage == 6:
             my_text = "Current stage number: ", stage, "Please look on the lower dot"
+            self.button.place(relx=0.5, rely=0.965, anchor="c")
         elif stage == 8:
             my_text = "Current stage number: ", stage, "Please look on the center dot"
+            self.button.place(relx=0.5, rely=0.5, anchor="c")
         elif stage == 10:
-            # TODO: enter here option to go to stage 0 again
-            my_text = "Check your calibration points. If you are satisfied,please press <KEY>. else,fuck you meanwhile."
-        elif stage == 11:
-            # my_text = "left calibration point: ", self.left_gaze_for_debug
-            my_text = "Finished Calibrating, start drawing"
+            my_text = "Check your calibration points. If you're satisfied, please press button. else,fuck you"
         else:
-            my_text = ""
+            my_text = " "
         self.w.itemconfig(self.text_box, text=my_text)
 
-    def toggle_geom(self, event):
-        geom = self.master.winfo_geometry()
-        print(geom, self._geom)
-        self.master.geometry(self._geom)
-        self._geom = geom
-
     def update_window(self):
-        if self.counter == 10:
+        if self.counter == 15:
             self.w.delete("all")
             self.counter = 0
         self.master.update()

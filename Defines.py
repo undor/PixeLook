@@ -104,15 +104,10 @@ face_model = np.array([
 
 ### Calibration attributes
 stages = {'WAIT_FOR_LEFT': 0,
-          'LEFT_CALIBRATION': 1,
-          'WAIT_FOR_RIGHT': 2,
-          'RIGHT_CALIBRATION': 3,
-          'WAIT_FOR_UP': 4,
-          'UP_CALIBRATION': 5,
-          'WAIT_FOR_DOWN': 6,
-          'DOWN_CALIBRATION': 7,
-          'WAIT_FOR_CENTER': 8,
-          'CENTER_CALIBRATION': 9,
-          'CHECK_CALIBRATION': 10,
-          'FINISH_CALIBRATION': 11}
+          'WAIT_FOR_RIGHT': 1,
+          'WAIT_FOR_UP': 2,
+          'WAIT_FOR_DOWN': 3,
+          'WAIT_FOR_CENTER': 4,
+          'CHECK_CALIBRATION': 5,
+          'FINISH_CALIBRATION': 6}
 

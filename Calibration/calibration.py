@@ -1,5 +1,4 @@
 import FullFaceSolution.FullFaceBasedSolution as FullFaceSolution
-from Defines import *
 from Calibration.gui_manager import *
 
 
@@ -17,12 +16,8 @@ class gaze_manager:
         self.gui = FullScreenApp()
         self.calib_data = calib_data()
         self.env = FullFaceSolution.my_env
-        self.width_length=0
-        self.height_length=0
-
-    def next_step(self):
-        if self.cur_stage != stages['FINISH_CALIBRATION']:
-            self.cur_stage += 2
+        self.width_length = 0
+        self.height_length = 0
 
     def print_gazes(self):
         print("right gaze: ", self.calib_data.right_gaze)
@@ -31,7 +26,6 @@ class gaze_manager:
         print("down gaze: ", self.calib_data.down_gaze)
 
     def gaze_to_pixel(self, gaze):
-        # TODO: add indicatores for right calibrating. need to know if stuck \ work, what captured etc.
         width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_length
         height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0]) / self.height_length
 
@@ -44,36 +38,34 @@ class gaze_manager:
             return pixel
         return 0, 0
 
-    def stage(self, x_cor, y_cor):
-        self.gui.print_stage(self.cur_stage)
-        # TODO: only change place of button, instead of printing pixel
-        self.gui.print_pixel((x_cor, y_cor))
-        self.gui.wait_key()
-        self.next_step()
-
     def get_cur_pixel(self):
         return self.gaze_to_pixel(self.env.find_gaze())
+
+    def calib_stage(self):
+        self.gui.print_calib_stage(self.cur_stage)
+        self.gui.wait_key()
+        self.cur_stage += 2
 
     def calibrate(self):
         self.gui.update_window()
         # WAIT FOR LEFT
-        self.stage(10, self.gui.height/2)
+        self.calib_stage()
         # LEFT_CALIBRATION
         self.calib_data.left_gaze = self.env.find_gaze()
         # WAIT FOR RIGHT
-        self.stage(self.gui.width - 10, self.gui.height / 2)
+        self.calib_stage()
         # RIGHT CALIBRATION
         self.calib_data.right_gaze = self.env.find_gaze()
         # WAIT FOR UP
-        self.stage(self.gui.width / 2, 10)
+        self.calib_stage()
         # UP CALIBRATION
         self.calib_data.up_gaze = self.env.find_gaze()
         # WAIT FOR DOWN
-        self.stage(self.gui.width / 2, self.gui.height - 10)
+        self.calib_stage()
         # DOWN CALIBRATION
         self.calib_data.down_gaze = self.env.find_gaze()
         # WAIT FOR CENTER
-        self.stage(self.gui.width / 2, self.gui.height / 2)
+        self.calib_stage()
         # CENTER CALIBRATION
         self.calib_data.center_gaze = self.env.find_gaze()
         # CHECK CALIBRATION
@@ -86,14 +78,10 @@ class gaze_manager:
                                     self.gaze_to_pixel(self.calib_data.left_gaze),
                                     self.gaze_to_pixel(self.calib_data.right_gaze),
                                     self.gaze_to_pixel(self.calib_data.center_gaze))
-
-
-
-
-
+        self.calib_stage()
+        self.gui.w.delete("all")
+        self.gui.w.master.update()
         # FINISH CALIBRATION
-
-
-
+        self.gui.button.config(text="start drawing with your eyes")
 
 main_gaze_manager = gaze_manager()

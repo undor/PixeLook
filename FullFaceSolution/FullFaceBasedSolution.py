@@ -5,12 +5,8 @@ from FullFaceSolution.models import gazenet
 
 class enviornment:
     def __init__(self):
-        print("initiate environment")
         self.model = self.load_face_model()
         self.cap = cv2.VideoCapture(0)
-
-    def check(self):
-        print("reaching env")
 
     def load_face_model(self):
         device = torch.device("cpu")
