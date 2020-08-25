@@ -79,24 +79,19 @@ class FullScreenApp(object):
         self.counter += 1
         self.update_window()
 
-    def print_calib_points(self, up, down, left, right, center):
+    def print_calib_points(self, center):
         perimeter = 24
+
+        radius = self.width*0.1
+        self.w.create_oval(self.width/2 - radius , self.height/2 - radius , self.width/2 + radius , self.height/2 + radius, fill="#FFFFFF")
+
         radius = 0.5*perimeter
-        self.w.create_oval(up[0],   up[1], up[0]+perimeter, up[1]+perimeter,  fill="#FF0000")
-        self.w.create_text((up[0]+radius, up[1]+radius), text="upper dot",
-                           font="MSGothic 8 bold", fill="#652828")
-        self.w.create_oval(down[0], down[1], down[0] - perimeter, down[1] - perimeter, fill="#FF0000")
-        self.w.create_text((down[0]+radius, down[1]+radius), text="lower dot",
-                           font="MSGothic 8 bold", fill="#652828")
-        self.w.create_oval(left[0], left[1], left[0] + perimeter, left[1] + perimeter, fill="#FF0000")
-        self.w.create_text((left[0]+radius, left[1]+radius), text="left dot",
-                           font="MSGothic 8 bold", fill="#652828")
-        self.w.create_oval(right[0], right[1], right[0] - perimeter, right[1] - perimeter, fill="#FF0000")
-        self.w.create_text((right[0]+radius, right[1]+radius), text="right dot",
-                           font="MSGothic 8 bold", fill="#652828")
         self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
         self.w.create_text((center[0]+radius, center[1]+radius), text="center dot",
                            font="MSGothic 8 bold", fill="#652828")
+
+
+
 
     def wait_key(self):
         self.button.wait_variable(self.var)

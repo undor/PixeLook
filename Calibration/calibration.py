@@ -1,13 +1,13 @@
 import FullFaceSolution.FullFaceBasedSolution as FullFaceSolution
 from Calibration.gui_manager import *
-
+import numpy as np
 
 class calib_data:
     left_gaze = (0, 0)
     right_gaze = (0, 0)
     up_gaze = (0, 0)
     down_gaze = (0, 0)
-    center_gaze = (0, 0)
+    center_pixel = (0, 0)
 
 
 class gaze_manager:
@@ -46,6 +46,16 @@ class gaze_manager:
         self.gui.wait_key()
         self.cur_stage += 2
 
+    def get_cur_pixel_mean(self):
+        sum = np.array([0.0, 0.0])
+        num=0
+        for i in range(10):
+            cur_pixel= np.array(self.get_cur_pixel())
+            if not(cur_pixel[0] == 0 or cur_pixel[1] ==0):
+                num +=1
+                sum += cur_pixel
+        return np.true_divide(sum,num)
+
     def calibrate_process(self):
         self.gui.update_window()
         # WAIT FOR LEFT
@@ -66,18 +76,16 @@ class gaze_manager:
         self.calib_data.down_gaze = self.env.find_gaze()
         # WAIT FOR CENTER
         self.calib_stage()
-        # CENTER CALIBRATION
-        self.calib_data.center_gaze = self.env.find_gaze()
         # CHECK CALIBRATION
 
         self.width_length = abs(self.calib_data.right_gaze[1] - self.calib_data.left_gaze[1])
         self.height_length = abs(self.calib_data.down_gaze[0] - self.calib_data.up_gaze[0])
 
-        self.gui.print_calib_points(self.gaze_to_pixel(self.calib_data.up_gaze),
-                                    self.gaze_to_pixel(self.calib_data.down_gaze),
-                                    self.gaze_to_pixel(self.calib_data.left_gaze),
-                                    self.gaze_to_pixel(self.calib_data.right_gaze),
-                                    self.gaze_to_pixel(self.calib_data.center_gaze))
+        # CENTER VALIDATION
+        self.calib_data.center_pixel = self.get_cur_pixel_mean()
+
+        self.gui.print_calib_points(self.calib_data.center_pixel)
+
         self.calib_stage()
 
     def reorganize_calibration(self):

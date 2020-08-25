@@ -17,7 +17,8 @@ class enviornment:
         return model
 
     def find_gaze(self):
-        ret, frame = self.cap.read()
+        #ret, frame = self.cap.read()
+        frame = imread( , CV_LOAD_IMAGE_COLOR)
         cur_frame = FrameData(frame[:, :, ::-1])
         cur_frame.flip()
         img_h, img_w, _ = np.shape(frame)
