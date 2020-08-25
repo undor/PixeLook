@@ -11,6 +11,8 @@ import sys
 
 ### Project Defines
 
+np.random.seed(0)
+
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 font = cv2.FONT_HERSHEY_SIMPLEX
 
