@@ -46,7 +46,7 @@ class gaze_manager:
         self.gui.wait_key()
         self.cur_stage += 2
 
-    def calibrate(self):
+    def calibrate_process(self):
         self.gui.update_window()
         # WAIT FOR LEFT
         self.calib_stage()
@@ -79,9 +79,20 @@ class gaze_manager:
                                     self.gaze_to_pixel(self.calib_data.right_gaze),
                                     self.gaze_to_pixel(self.calib_data.center_gaze))
         self.calib_stage()
+
+    def reorganize_calibration(self):
         self.gui.w.delete("all")
+        self.gui.button.place(relx=.5, rely=.5, anchor="c")
+        self.gui.button.config(text="Click to Capture")
+        self.gui.second_button.place_forget()
         self.gui.w.master.update()
-        # FINISH CALIBRATION
+        self.cur_stage = 0
+
+    def calibrate(self):
+        while self.gui.finish is not True:
+            self.calibrate_process()
+            self.reorganize_calibration()
         self.gui.button.config(text="start drawing with your eyes")
+
 
 main_gaze_manager = gaze_manager()

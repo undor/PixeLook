@@ -8,6 +8,7 @@ import h5py
 
 data_dir= "RES/MPIIGaze.h5"
 
+
 class OnePersonDataset(Dataset):
     def __init__(self, person_id_str: str, dataset_path: str,
                  transform: Callable):

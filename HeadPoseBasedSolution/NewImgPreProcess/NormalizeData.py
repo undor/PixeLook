@@ -1,8 +1,6 @@
-import numpy as np
-import cv2
 from HeadPoseBasedSolution.NewImgPreProcess.NormalizeImg import *
-from HeadPoseBasedSolution.HeadPoseBasedSolution import face_model
 from Defines import *
+
 
 def normalize_data(img, headpose_head_rotation, headpose_head_translation):
     # annotation , camera calibrate and face model we have in different
@@ -23,7 +21,7 @@ def normalize_data(img, headpose_head_rotation, headpose_head_translation):
     facial_landmark = facial_landmark + headpose_head_translation.T
     # get eye center in the original camera coordinate system
     right_eye_center = 0.5*(facial_landmark[:, 37]+facial_landmark[:, 40])
-    left_eye_center = 0.5*(facial_landmark[:, 43]+facial_landmark[:, 46])
+    # left_eye_center = 0.5*(facial_landmark[:, 43]+facial_landmark[:, 46])
     # get the gaze target
     # gaze_target = np.transpose([annotation[x] for x in gaze_target_indices])
     # set size of normalized image - put in defines

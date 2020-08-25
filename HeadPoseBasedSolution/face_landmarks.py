@@ -1,4 +1,3 @@
-import numpy as np
 # TODO: DOR, remove this file i've added to defines and I think no one needs this file anymore
 # face_model = np.array([
 #         [-0.07141807, -0.02827123, 0.08114384],

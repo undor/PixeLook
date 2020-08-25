@@ -1,7 +1,7 @@
-import sys
 import numpy as np
 import cv2
-## unsidtort to camera
+
+# undistorted camera
 camera_matrix_a = np.array([960., 0., 30,
                             0., 960., 18.,
                             0., 0., 1.]).reshape(3, 3)
@@ -9,11 +9,10 @@ camera_matrix_a = np.array([960., 0., 30,
 
 def normalizeImg(inputImg, right_eye_center, head_rotate):
     print("head rotate is ", head_rotate)
-    focal_new = 960
+    # focal_new = 960
     distance_new = 600
     # distance = np.norm(right_eye_center)
-    distance = np.linalg.norm(right_eye_center, 2) # check it (?)
-
+    distance = np.linalg.norm(right_eye_center, 2)
     z_scale = distance_new / distance
     # check if we need this new cam_new matrix or can use the one we are using anyway
     cam_new = camera_matrix_a

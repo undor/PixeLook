@@ -1,17 +1,15 @@
 import tkinter as tk
 from tkinter import Canvas
-from enum import Enum
 
 
-def key(event):
-    print("doing nothing")
+# def key(event):
+#     print("doing nothing")
 
 
 class FullScreenApp(object):
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.master = tk.Tk()
-        # TODO: pad?
-        pad = 3
+        # pad = 3
         self._geom = '200x200+0+0'
         self.master.attributes('-fullscreen', True)
         # self.master.bind('<Escape>', self.toggle_geom)
@@ -19,14 +17,17 @@ class FullScreenApp(object):
         self.height = self.master.winfo_screenheight()
         self.w = Canvas(self.master)
         self.w.focus_set()
-        self.w.bind("<Key>", key)
+        # self.w.bind("<Key>", key)
         self.w.pack(fill="both", expand=True)
-        self.text_box = self.w.create_text((610, 120), text="Starting calibration",
-                                           font="MSGothic 20 bold", fill="#652828")
+        # self.text_box = self.w.create_text((610, 120), text="Starting calibration",
+                                           # font="MSGothic 20 bold", fill="#652828")
         self.counter = 0
 
         self.var = tk.IntVar()
         self.button = tk.Button(self.master, text="Click to Capture", command=lambda: self.var.set(1))
+        self.second_button = tk.Button(self.master, text="I'm satisfied with the results", command=lambda: self.setvar())
+
+        self.finish = False
 
     # def toggle_geom(self, event):
     #     geom = self.master.winfo_geometry()
@@ -36,6 +37,8 @@ class FullScreenApp(object):
 
     def print_calib_stage(self, stage):
         if stage == 0:
+            self.text_box = self.w.create_text((610, 120), text="Starting calibration",
+                                               font="MSGothic 20 bold", fill="#652828")
             my_text = "Current stage number: ", stage, "Please look on the left dot"
             self.button.place(relx=0.035, rely=0.5, anchor="c")
         elif stage == 2:
@@ -51,10 +54,17 @@ class FullScreenApp(object):
             my_text = "Current stage number: ", stage, "Please look on the center dot"
             self.button.place(relx=0.5, rely=0.5, anchor="c")
         elif stage == 10:
-            my_text = "Check your calibration points. If you're satisfied, please press button. else,fuck you"
+            my_text = "Check your calibration points"
+            self.button.place(relx=0.25, rely=0.5, anchor="c")
+            self.button.config(text="Click to Recalibrate")
+            self.second_button.place(relx=.75, rely=.5, anchor="c")
         else:
             my_text = " "
         self.w.itemconfig(self.text_box, text=my_text)
+
+    def setvar(self):
+        self.finish = True
+        self.var.set(1)
 
     def update_window(self):
         if self.counter == 15:
@@ -72,7 +82,6 @@ class FullScreenApp(object):
     def print_calib_points(self, up, down, left, right, center):
         perimeter = 24
         radius = 0.5*perimeter
-        self.w.focus_set()
         self.w.create_oval(up[0],   up[1], up[0]+perimeter, up[1]+perimeter,  fill="#FF0000")
         self.w.create_text((up[0]+radius, up[1]+radius), text="upper dot",
                            font="MSGothic 8 bold", fill="#652828")
@@ -91,4 +100,3 @@ class FullScreenApp(object):
 
     def wait_key(self):
         self.button.wait_variable(self.var)
-

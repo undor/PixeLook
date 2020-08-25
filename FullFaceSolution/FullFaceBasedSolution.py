@@ -1,7 +1,7 @@
 from helpers import utils
 from frame_data import *
 from FullFaceSolution.models import gazenet
-
+from Defines import *
 
 class enviornment:
     def __init__(self):

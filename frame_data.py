@@ -1,8 +1,4 @@
-import cv2
-import numpy as np
-from Defines import *
 from helpers.utils import *
-from HeadPoseBasedSolution.face_landmarks import *
 from HeadPoseBasedSolution.NewImgPreProcess.NormalizeData import *
 dist_coeff_a = np.array([0., 0., 0., 0., 0.]).reshape(-1, 1)
 # TODO: might want to check this norm matrix, maybe 1600 is not for our resolution?
@@ -51,7 +47,7 @@ class FrameData:
     def face_landmark_detect(self):
         gray = cv2.cvtColor(self.orig_img, cv2.COLOR_BGR2GRAY)
         rects = detector(gray, 0)
-        if (np.size(rects) > 0):
+        if np.size(rects) > 0:
             shape = predictor(gray, rects[0])
             shape = shape_to_np(shape)
             self.is_face = True

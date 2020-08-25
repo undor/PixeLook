@@ -1,16 +1,14 @@
-import cv2
-import json
-import torch
-import numpy as np
 from helpers.math_helper import *
 
 
 def add_data_on_img(frame, gaze_angles, fps):
     gaze_angles = gaze_angles[0]
     head_angles = frame.get_head_pose()
-    cv2.putText(frame.debug_img , "gaze angles: " + str(gaze_angles[0])  +  "  " + str(gaze_angles[1]), (100,100) , font, 1, (0, 150, 0), 2, cv2.LINE_4)
-    cv2.putText(frame.debug_img , "head angles: " + str(head_angles[0])  +  "  " + str(head_angles[1]), (100,200) , font, 1, (0, 150, 0), 2, cv2.LINE_4)
-    cv2.putText(frame.debug_img , "fps  :  " + str(fps), (100, 300), font, 1,(0, 150, 0), 2, cv2.LINE_4)
+    cv2.putText(frame.debug_img, "gaze angles: " + str(gaze_angles[0]) + "  " + str(gaze_angles[1]),
+                (100, 100), font, 1, (0, 150, 0), 2, cv2.LINE_4)
+    cv2.putText(frame.debug_img, "head angles: " + str(head_angles[0]) + "  " + str(head_angles[1]),
+                (100, 200), font, 1, (0, 150, 0), 2, cv2.LINE_4)
+    cv2.putText(frame.debug_img, "fps  :  " + str(fps), (100, 300), font, 1, (0, 150, 0), 2, cv2.LINE_4)
 
 
 def set_camera(width, height):
