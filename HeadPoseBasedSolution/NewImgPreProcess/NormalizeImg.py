@@ -8,7 +8,7 @@ camera_matrix_a = np.array([960., 0., 30,
 
 
 def normalizeImg(inputImg, right_eye_center, head_rotate):
-    print("head rotate is ", head_rotate)
+    # print("head rotate is ", head_rotate)
     # focal_new = 960
     distance_new = 600
     # distance = np.norm(right_eye_center)
@@ -33,7 +33,7 @@ def normalizeImg(inputImg, right_eye_center, head_rotate):
     # rotation normalization
     cnv_mat = np.array(scale_mat) @ np.array(rot_mat)
     head_rotate_new = cnv_mat@head_rotate
-    head_rotate_new, = cv2.Rodrigues(head_rotate_new)
+    head_rotate_new, _ = cv2.Rodrigues(head_rotate_new)
     head_translation_new = cnv_mat @ right_eye_center
 
     return img_warped, head_rotate_new

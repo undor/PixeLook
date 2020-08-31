@@ -50,8 +50,8 @@ def validate(epoch, model, _, loss_function, val_loader, writer):
         if step % 100 == 0:
             writer.add_scalar('Val loss', loss.item() * 100, epoch * len(val_loader) + step)
             writer.add_scalar('Val angle loss', angle_error, epoch * len(val_loader) + step)
-            print("Validate: now in epoch " + str(epoch) + " and step number " + str(step) + " loss is " + str(
-                loss.item()) + "angle error is:" + str(angle_error.item()))
+            # print("Validate: now in epoch " + str(epoch) + " and step number " + str(step) + " loss is " + str(
+            #    loss.item()) + "angle error is:" + str(angle_error.item()))
 
 
 def train(epoch, model, optimizer, loss_function, train_loader, writer):

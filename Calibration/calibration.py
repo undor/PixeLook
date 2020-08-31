@@ -81,6 +81,9 @@ class gaze_manager:
         self.width_length = abs(self.calib_data.right_gaze[1] - self.calib_data.left_gaze[1])
         self.height_length = abs(self.calib_data.down_gaze[0] - self.calib_data.up_gaze[0])
 
+        print("left is", self.calib_data.left_gaze)
+        print("right is", self.calib_data.right_gaze)
+
         # CENTER VALIDATION
         self.calib_data.center_pixel = self.get_cur_pixel_mean()
 

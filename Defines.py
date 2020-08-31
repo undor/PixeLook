@@ -27,7 +27,8 @@ tvec = np.array([0, 0, 1], dtype=np.float)
 ## General attributes for eyes recognisition
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(os.getcwd() + "/HeadPoseBasedSolution/model/shape_predictor_68_face_landmarks.dat")
-error_img = cv2.imread(os.getcwd() + "/error.jpg")
+# predictor = dlib.shape_predictor(os.getcwd() + "/HeadPoseBasedSolution/model/")
+# error_img = cv2.imread(os.getcwd() + "/error.jpg")
 
 ### General attributes for head pose
 width_precent = 20
