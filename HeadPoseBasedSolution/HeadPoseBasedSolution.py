@@ -1,37 +1,25 @@
-from Defines import *
-import cv2
-from Calibration.gui_manager import *
-from Calibration.calibration import *
 import HeadPoseBasedSolution.GazeModel as GazeModel
-from helpers.utils import *
-from helpers.fps import *
 from frame_data import *
 
 
-def start_camera_sol():
-    model = GazeModel.load_model()
-    cap = set_camera(1280, 720)
-    fps = fpsHelper()
-    while True:
-        ret, img = cap.read()
+class environment_hp:
+    def __init__(self):
+        self.model = GazeModel.load_model()
+        self.cap = cv2.VideoCapture(0)
+
+    def find_gaze(self):
+        ret, img = self.cap.read()
         cur_frame = FrameData(img)
-        if cur_frame.face_landmark_detect():
-            cur_frame.head_pose_detect()
-            # cur_frame.eyes_detect()
-            cur_frame.pre_proccess_for_net()
-            gaze_angles = GazeModel.use_net(model, cur_frame)
+        for counter_error in range(1, 100):
+            if cur_frame.face_landmark_detect():
+                cur_frame.head_pose_detect()
+                cur_frame.pre_proccess_for_net()
+                gaze = GazeModel.use_net(self.model, cur_frame)
+                print("final gaze is ", gaze)
+                print("with shape : ", gaze.shape)
+                return gaze
 
-            gaze_vector = angle_to_vector(gaze_angles)
-            fps.reg_time()
-            add_data_on_img(cur_frame, gaze_angles, fps.get_fps())
-            # calibration_manager.play_stage(gaze_angles[0])
-            cv2.imshow("Output", cur_frame.debug_img)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        # When everything done, release the capture
-        cap.release()
-        cv2.destroyAllWindows()
+        sys.exit("didn't detect face for hundred tries")
 
 
+my_env_hp = environment_hp()

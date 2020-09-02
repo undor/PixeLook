@@ -8,7 +8,6 @@ camera_matrix_a = np.array([960., 0., 30,
 
 
 def normalizeImg(inputImg, right_eye_center, head_rotate):
-    # print("head rotate is ", head_rotate)
     # focal_new = 960
     distance_new = 600
     # distance = np.norm(right_eye_center)

@@ -1,4 +1,5 @@
 import FullFaceSolution.FullFaceBasedSolution as FullFaceSolution
+import HeadPoseBasedSolution.HeadPoseBasedSolution as HeadPoseBasedSolution
 from Calibration.gui_manager import *
 import numpy as np
 
@@ -11,11 +12,14 @@ class calib_data:
 
 
 class gaze_manager:
-    def __init__(self):
+    def __init__(self,type):
         self.cur_stage = 0
         self.gui = FullScreenApp()
         self.calib_data = calib_data()
-        self.env = FullFaceSolution.my_env
+        if type == "FULL":
+            self.env = FullFaceSolution.my_env
+        else:
+            self.env = HeadPoseBasedSolution.my_env_hp
         self.width_length = 0
         self.height_length = 0
 
@@ -106,4 +110,4 @@ class gaze_manager:
         self.gui.button.config(text="start drawing with your eyes")
 
 
-main_gaze_manager = gaze_manager()
+main_gaze_manager = gaze_manager("HP")

@@ -37,15 +37,16 @@ def load_model():
 
 
 def use_net(model, frame):
-    # TODO: check all net input as required
-    image = np.array(frame.net_input[0][0].astype(np.float32)/255)
+    image = np.array(frame.r_eye[0].astype(np.float32)/255)
     image = torch.from_numpy(image)
     image = image.unsqueeze(0).unsqueeze(0)
-    head_pose = torch.from_numpy(np.array(frame.net_input[0][1].astype(np.float32)).unsqueeze(0))
+    head_pose = torch.from_numpy(frame.r_eye[1].astype(np.float32))
 
     with torch.no_grad():
         image = image.to(device)
         head_pose = head_pose.to(device)
+
         predictions = model(image, head_pose)
-        predictions = predictions.cpu().numpy()
+        # predictions = predictions.cpu().numpy()
+        predictions = predictions[0].cpu()
     return predictions
