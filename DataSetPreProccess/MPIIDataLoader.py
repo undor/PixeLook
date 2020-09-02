@@ -56,7 +56,7 @@ def create_dataset():
     val_num = int(len(train_dataset) * val_ratio)
     train_num = len(train_dataset) - val_num
     lengths = [train_num, val_num]
-    print (lengths)
+    # print (lengths)
     return torch.utils.data.dataset.random_split(train_dataset, lengths)
 
 def create_test_dataset():

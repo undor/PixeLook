@@ -1,5 +1,5 @@
 from helpers.math_helper import *
-
+from Defines import *
 
 def add_data_on_img(frame, gaze_angles, fps):
     gaze_angles = gaze_angles[0]

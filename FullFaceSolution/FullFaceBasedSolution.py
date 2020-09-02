@@ -32,7 +32,7 @@ class enviornment:
         # display = frame.copy()
         for counter_error in range(1, 100):
             if cur_frame.face_landmark_detect():
-                cur_frame.eyes_detect()
+                # cur_frame.eyes_detect()
                 cur_frame = utils.normalize_face(cur_frame)
                 # Custom window
                 # cv2.namedWindow('custom window', cv2.WINDOW_KEEPRATIO)
@@ -43,7 +43,6 @@ class enviornment:
                 with torch.no_grad():
                     gaze = self.model.get_gaze(cur_frame.debug_img)
                     gaze = gaze[0].data.cpu()
-                    # print(gaze)
                     return gaze
                     # Draw results
                     # display = cv2.circle(display, cur_frame.gaze_origin, 3, (0, 255, 0), -1)
