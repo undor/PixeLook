@@ -52,11 +52,13 @@ def compute_angle_error(preds, labels):
 def normalize_face(cur_frame):
     # Adapted from imutils package
     shape = cur_frame.shape
-    rcenter_x = (shape[38][0]+shape[40][0]+shape[36][0]+shape[39][0])/4
-    rcenter_y = (shape[38][1]+shape[40][1]+shape[36][1]+shape[39][1])/4
+    # 36, 39, 42, 45, 48, 54
 
-    lcenter_x = (shape[42][0]+shape[44][0]+shape[45][0]+shape[46][0])/4
-    lcenter_y = (shape[42][1]+shape[44][1]+shape[45][1]+shape[46][1])/4
+    rcenter_x = (shape[0][0]+shape[1][0])/2
+    rcenter_y = (shape[0][1]+shape[1][1])/2
+
+    lcenter_x = (shape[2][0]+shape[3][0])/2
+    lcenter_y = (shape[2][1]+shape[3][1])/2
 
     lcenter = tuple([rcenter_x, rcenter_y])
     rcenter = tuple([lcenter_x, lcenter_y])
