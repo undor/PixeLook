@@ -17,7 +17,7 @@ class environment_hp:
                 gaze = GazeModel.use_net(self.model, cur_frame)
                 print("final gaze is ", gaze)
                 print("with shape : ", gaze.shape)
-                return gaze
+                return gaze,cur_frame.translation_vector,cur_frame.rotation_vector
 
         sys.exit("didn't detect face for hundred tries")
 

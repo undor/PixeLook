@@ -1,6 +1,9 @@
 from Defines import *
+import tkinter
 import torch
 import os
+# Import the libraries
+import ctypes
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -17,6 +20,50 @@ error_img = cv2.imread(os.getcwd() + "/error.jpg")
 width_precent = 20
 height_precent = 50
 
+
+# Our convertion from millimeters to inches
+MM_TO_IN = 0.0393700787
+
+
+## TODO - handle the mm to position on screen problem - dpi of tkinter not allways = screen DPI
+
+def get_mm_pixel_ratio(screen_size_inch):
+    from tkinter import Tk
+    root = Tk()
+    width = root.winfo_screenwidth()*2
+    height = root.winfo_screenheight()*2
+    diagonal_pixel = np.sqrt(np.square(width) + np.square(height))
+    print ("diagonal pixel" , diagonal_pixel)
+    diagonal_mm = screen_size_inch / MM_TO_IN
+    pixel_per_mm= diagonal_pixel/diagonal_mm
+    print("pixel_per_mm ", pixel_per_mm)
+    return pixel_per_mm
+
+def get_dpi():
+    # Set process DPI awareness
+    ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    # Create a tkinter window
+    root = tkinter.Tk()
+    # Get a DC from the window's HWND
+    dc = ctypes.windll.user32.GetDC(root.winfo_id())
+    # The the monitor phyical width
+    # (returned in millimeters then converted to inches)
+    mw = ctypes.windll.gdi32.GetDeviceCaps(dc, 4) * MM_TO_IN
+    # The the monitor phyical height
+    mh = ctypes.windll.gdi32.GetDeviceCaps(dc, 6) * MM_TO_IN
+    # Get the monitor horizontal resolution
+    dw = ctypes.windll.gdi32.GetDeviceCaps(dc, 8)
+    # Get the monitor vertical resolution
+    dh = ctypes.windll.gdi32.GetDeviceCaps(dc, 10)
+    # Destroy the window
+    root.destroy()
+
+    # Horizontal and vertical DPIs calculated
+    hdpi, vdpi = dw / mw, dh / mh
+    # Diagonal DPI calculated using Pythagoras
+    ddpi = (dw ** 2 + dh ** 2) ** 0.5 / (mw ** 2 + mh ** 2) ** 0.5
+    # Print the DPIs
+    print(round(hdpi, 1), round(vdpi, 1), round(ddpi, 1))
 
 def draw_axis(img, yaw, pitch, roll, tdx=None, tdy=None, size=100):
     pitch = pitch * np.pi / 180
@@ -69,12 +116,23 @@ def get_eye_center(eye):
 
 
 def angle_to_vector(angles):
-    pitch, yaw = angles[0]
+    pitch = angles[1]
+    yaw = angles[0]
     return -np.array([
+        np.cos(pitch) * np.cos(yaw),
         np.cos(pitch) * np.sin(yaw),
-        np.sin(pitch),
-        np.cos(pitch) * np.cos(yaw)
+        np.sin(pitch)
     ])
+
+def convert_to_unit_vector(angles):
+    x = -torch.cos(angles[0]) * torch.sin(angles[1])
+    y = -torch.sin(angles[0])
+    z = -torch.cos(angles[1]) * torch.cos(angles[1])
+    norm = torch.sqrt(x**2 + y**2 + z**2)
+    x /= norm
+    y /= norm
+    z /= norm
+    return np.array([x, y, z])
 
 
 def _normalize_vector(vector: np.ndarray) -> np.ndarray:

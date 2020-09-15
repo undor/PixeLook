@@ -59,6 +59,8 @@ class FrameData:
                                                                                 dist_coeffs, self.rotation_vector,
                                                                                 self.translation_vector, True)
 
+        print("hr is ", self.rotation_vector)
+        print("ht is ", self.translation_vector)
 
         # Project a 3D point (0, 0, 1000.0) onto the image plane.
         # (nose_end_point2D, jacobian) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), self.rotation_vector,
