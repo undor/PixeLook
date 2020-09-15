@@ -67,7 +67,7 @@ class FullScreenApp(object):
         self.var.set(1)
 
     def update_window(self):
-        if self.counter == 15:
+        if self.counter == 50:
             self.w.delete("all")
             self.counter = 0
         self.master.update()
@@ -89,9 +89,6 @@ class FullScreenApp(object):
         self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
         self.w.create_text((center[0]+radius, center[1]+radius), text="center dot",
                            font="MSGothic 8 bold", fill="#652828")
-
-
-
 
     def wait_key(self):
         self.button.wait_variable(self.var)

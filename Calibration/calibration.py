@@ -3,6 +3,7 @@ import HeadPoseBasedSolution.HeadPoseBasedSolution as HeadPoseBasedSolution
 from Calibration.gui_manager import *
 import numpy as np
 
+
 class calib_data:
     left_gaze = (0, 0)
     right_gaze = (0, 0)
@@ -12,14 +13,17 @@ class calib_data:
 
 
 class gaze_manager:
-    def __init__(self,type):
+    def __init__(self, type):
         self.cur_stage = 0
         self.gui = FullScreenApp()
         self.calib_data = calib_data()
-        if type == "FULL":
+        if type == "FullFace":
             self.env = FullFaceSolution.my_env
-        else:
+        elif type == "HeadPose":
             self.env = HeadPoseBasedSolution.my_env_hp
+        else:
+            print("Method isn't known. USE: FullFace / HeadPose")
+            exit(-1)
         self.width_length = 0
         self.height_length = 0
 
@@ -51,14 +55,14 @@ class gaze_manager:
         self.cur_stage += 2
 
     def get_cur_pixel_mean(self):
-        sum = np.array([0.0, 0.0])
-        num=0
-        for i in range(10):
-            cur_pixel= np.array(self.get_cur_pixel())
-            if not(cur_pixel[0] == 0 or cur_pixel[1] ==0):
-                num +=1
-                sum += cur_pixel
-        return np.true_divide(sum,num)
+        cur_sum = np.array([0.0, 0.0])
+        num = 0
+        for i in range(5):
+            cur_pixel = np.array(self.get_cur_pixel())
+            if not(cur_pixel[0] == 0 or cur_pixel[1] == 0):
+                num += 1
+                cur_sum += cur_pixel
+        return np.true_divide(cur_sum, num)
 
     def calibrate_process(self):
         self.gui.update_window()
@@ -110,4 +114,4 @@ class gaze_manager:
         self.gui.button.config(text="start drawing with your eyes")
 
 
-main_gaze_manager = gaze_manager("HP")
+main_gaze_manager = gaze_manager("FullFace")
