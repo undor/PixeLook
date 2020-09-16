@@ -1,5 +1,5 @@
 from HeadPoseBasedSolution.HeadPoseBasedSolution import GazeModel
-import DataSetPreProccess.MPIIDataLoader as MPIIDataLoader
+import DataSetPreProcess.MPIIDataLoader as MPIIDataLoader
 import torch.nn as nn
 import torch
 import numpy as np

@@ -30,7 +30,7 @@ class GazeNet(nn.Module):
 
 def load_model():
     model = GazeNet()
-    model.load_state_dict(torch.load("RES/TRAINED_NET_30_EPOCH"))
+    model.load_state_dict(torch.load("DataSetPreProcess/RES/TRAINED_NET_30_EPOCH"))
     model.to(device)
     model.eval()
     return model

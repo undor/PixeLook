@@ -8,5 +8,7 @@ Dor Arad & Tomer Keren
 * Torch
 * tkinter
 * Dlib 
+* ctypes
+* scipy
 
 ## Used DB ##

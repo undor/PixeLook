@@ -20,13 +20,13 @@ class FullScreenApp(object):
         # self.w.bind("<Key>", key)
         self.w.pack(fill="both", expand=True)
         # self.text_box = self.w.create_text((610, 120), text="Starting calibration",
-                                           # font="MSGothic 20 bold", fill="#652828")
+        # font="MSGothic 20 bold", fill="#652828")
         self.counter = 0
 
         self.var = tk.IntVar()
         self.button = tk.Button(self.master, text="Click to Capture", command=lambda: self.var.set(1))
-        self.second_button = tk.Button(self.master, text="I'm satisfied with the results", command=lambda: self.setvar())
-
+        self.second_button = tk.Button(self.master, text="I'm satisfied with the result", command=lambda: self.setvar())
+        self.text_box = 0
         self.finish = False
 
     # def toggle_geom(self, event):
@@ -83,7 +83,8 @@ class FullScreenApp(object):
         perimeter = 24
 
         radius = self.width*0.1
-        self.w.create_oval(self.width/2 - radius , self.height/2 - radius , self.width/2 + radius , self.height/2 + radius, fill="#FFFFFF")
+        self.w.create_oval(self.width/2 - radius, self.height/2 - radius, self.width/2 + radius, self.height/2 + radius,
+                           fill="#FFFFFF")
 
         radius = 0.5*perimeter
         self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")

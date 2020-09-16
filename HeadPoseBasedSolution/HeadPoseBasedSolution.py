@@ -13,13 +13,13 @@ class environment_hp:
         for counter_error in range(1, 100):
             if cur_frame.face_landmark_detect():
                 cur_frame.head_pose_detect()
-                cur_frame.pre_proccess_for_net()
+                cur_frame.pre_process_for_net()
                 gaze = GazeModel.use_net(self.model, cur_frame)
-                print("final gaze is ", gaze)
-                print("with shape : ", gaze.shape)
-                return gaze,cur_frame.translation_vector,cur_frame.rotation_vector
+                # print("final gaze is ", gaze)
+                # print("with shape : ", gaze.shape)
+                return gaze, cur_frame.translation_vector, cur_frame.rotation_vector
 
-        sys.exit("didn't detect face for hundred tries")
+        sys.exit("Find Gaze was unable to detect your face!")
 
 
 my_env_hp = environment_hp()
