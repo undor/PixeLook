@@ -1,41 +1,62 @@
-from HeadPoseBasedSolution.NewImgPreProcess.NormalizeImg import *
 from Defines import *
 
 
-def normalize_data(img, headpose_head_rotation, headpose_head_translation):
-    # annotation , camera calibrate and face model we have in different
-    # files need to get it from there and not from
-    # input to function
-    # get head pose
-    # need to add it to defines
-    # when sending to Rodrigues, we sent a [x,y,z] vector and got :
-    headpose_head_rotation = headpose_head_rotation.T
-    # TODO: Bug for tomer in head rotate
-    head_rotate, = cv2.Rodrigues(headpose_head_rotation)
-    # most important variable : what the fuck is this facial landmark?
-    # [3x3] * [3x68] = [3x68]
+def normalizeData(img, face, hr, ht, cam):
+    # normalized camera parameters
+    focal_norm = 960  # focal length of normalized camera
+    distance_norm = 600  # normalized distance between eye and camera
+    roiSize = (60, 36)  # size of cropped eye image
 
-    facial_landmark = head_rotate @ face_model.T
-    headpose_head_translation = np.array(headpose_head_translation)
-    headpose_head_translation = np.expand_dims(headpose_head_translation, axis=0)
-    facial_landmark = facial_landmark + headpose_head_translation.T
-    # get eye center in the original camera coordinate system
-    right_eye_center = 0.5*(facial_landmark[:, 37]+facial_landmark[:, 40])
-    # left_eye_center = 0.5*(facial_landmark[:, 43]+facial_landmark[:, 46])
-    # get the gaze target
-    # gaze_target = np.transpose([annotation[x] for x in gaze_target_indices])
-    # set size of normalized image - put in defines
-    # normalizing only right eye - for left eye replace centers
-    img, headpose_rotation = normalizeImg(img, right_eye_center, head_rotate)
+    img_u = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # convert the gaze direction and head pose in the camera
-    # coordinate system to the angle in the polar
-    # coordinate system. got to understand what the hell happens here
-    M, = cv2.Rodrigues(headpose_rotation)
-    zv = M[:, 2]
-    # vertical angle
-    head_pose_theta = np.arcsin(zv[1])
-    # horizontal angle
-    head_pose_phi = np.arctan2(zv[0], zv[2])
-    head_pose = np.array([head_pose_theta, head_pose_phi])
-    return head_pose, img
+    # compute estimated 3D positions of the landmarks
+
+    ht = ht.reshape((3, 1))
+    hR = cv2.Rodrigues(hr)[0]  # rotation matrix
+    Fc = np.dot(hR, face) + ht  # 3D positions of facial landmarks
+    re = 0.5 * (Fc[:, 0] + Fc[:, 1]).reshape((3, 1))  # center of left eye
+    le = 0.5 * (Fc[:, 2] + Fc[:, 3]).reshape((3, 1))  # center of right eye
+
+    # normalize each eye
+    data = []
+    for et in [re, le]:
+        # ---------- normalize image ----------
+        distance = np.linalg.norm(et)  # actual distance between eye and original camera
+
+        z_scale = distance_norm / distance
+        cam_norm = np.array([
+            [focal_norm, 0, roiSize[0] / 2],
+            [0, focal_norm, roiSize[1] / 2],
+            [0, 0, 1.0],
+        ])
+        S = np.array([  # scaling matrix
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [0.0, 0.0, z_scale],
+        ])
+
+        hRx = hR[:, 0]
+        forward = (et / distance).reshape(3)
+        down = np.cross(forward, hRx)
+        down /= np.linalg.norm(down)
+        right = np.cross(down, forward)
+        right /= np.linalg.norm(right)
+        R = np.c_[right, down, forward].T  # rotation matrix R
+        W = np.dot(np.dot(cam_norm, S), np.dot(R, np.linalg.inv(cam)))  # transformation matrix
+
+        img_warped = cv2.warpPerspective(img_u, W, roiSize)  # image normalization
+        img_warped = cv2.equalizeHist(img_warped)
+
+        # ---------- normalize rotation ----------
+        hR_norm = np.dot(R, hR)  # rotation matrix in normalized space
+        hr_norm = cv2.Rodrigues(hR_norm)[0]  # convert rotation matrix to rotation vectors
+
+        img_warped = cv2.flip(img_warped, -1)
+
+        hr_theta = np.arcsin(-1 * hr_norm[1])
+        hr_phi = np.arctan2(-1 * hr_norm[0], -1 * hr_norm[2])
+
+        hr_res = np.array([hr_theta, hr_phi]).T
+        data.append([img_warped, hr_res])
+
+    return data

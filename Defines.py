@@ -1,5 +1,4 @@
 # relevant imports
-
 import numpy as np
 import cv2
 import dlib
@@ -8,6 +7,8 @@ import torch
 import os
 import dlib
 import sys
+import scipy.io as sio
+
 
 ### Project Defines
 
@@ -24,10 +25,12 @@ MOUTH_INDICES: np.ndarray = np.array([48, 54])
 rvec = np.zeros(3, dtype=np.float)
 tvec = np.array([0, 0, 1], dtype=np.float)
 
+
 ## General attributes for eyes recognisition
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(os.getcwd() + "/HeadPoseBasedSolution/model/shape_predictor_68_face_landmarks.dat")
-error_img = cv2.imread(os.getcwd() + "/error.jpg")
+# predictor = dlib.shape_predictor(os.getcwd() + "/HeadPoseBasedSolution/model/")
+# error_img = cv2.imread(os.getcwd() + "/error.jpg")
 
 ### General attributes for head pose
 width_precent = 20
@@ -104,6 +107,17 @@ face_model = np.array([
         [-0.00771924, 0.03711846, 0.01940396],
     ],
                                      dtype=np.float)
+
+# mini_face_model = np.array([
+#         [-0.045,   -0.032415,  0.03976718],
+#         [-0.01919724, -0.03101962, 0.03359268],
+#         [0.01919724, -0.03101962, 0.03359268],
+#         [0.045,  -0.032415, 0.03976718],
+#         [-0.01796181, 0.02843251, 0.02335485],
+#         [0.0183606,  0.0423393, 0.02523355],
+#  ],
+#                                      dtype=np.float)
+mini_face_model = sio.loadmat('HeadPoseBasedSolution/faceModelGeneric.mat')['model']
 
 ### Calibration attributes
 stages = {'WAIT_FOR_LEFT': 0,
