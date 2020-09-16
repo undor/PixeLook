@@ -1,7 +1,7 @@
 import utils
-from frame_data import *
-from FullFaceSolution.models import gazenet
 from Defines import *
+from FullFaceSolution.models import gazenet
+from frame_data import *
 
 
 class environment_ff:
@@ -19,7 +19,7 @@ class environment_ff:
         img_h, img_w, _ = np.shape(frame)
         # Detect Faces
         # display = frame.copy()
-        for counter_error in range(1, 150):
+        for counter_error in range(1, 100):
             if cur_frame.face_landmark_detect():
                 cur_frame.head_pose_detect()
                 # cur_frame.eyes_detect()
@@ -33,7 +33,7 @@ class environment_ff:
                 with torch.no_grad():
                     gaze = self.model.get_gaze(cur_frame.debug_img)
                     gaze = gaze[0].data.cpu()
-                    return gaze
+                    return gaze, cur_frame.translation_vector, cur_frame.rotation_vector
                     # Draw results
                     # display = cv2.circle(display, cur_frame.gaze_origin, 3, (0, 255, 0), -1)
                     # display = utils.draw_gaze(display, cur_frame.gaze_origin, gaze, color=(255, 0, 0), thickness=2)

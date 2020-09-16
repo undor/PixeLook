@@ -1,6 +1,7 @@
-from Defines import *
-import tkinter
 import ctypes
+import tkinter
+
+from Defines import *
 
 
 def shape_to_np(shape, dtype="float32"):
@@ -59,9 +60,9 @@ def get_dpi():
 
 
 def convert_to_unit_vector(angles):
-    x = -torch.cos(angles[:, 0]) * torch.sin(angles[:, 1])
-    y = -torch.sin(angles[:, 0])
-    z = -torch.cos(angles[:, 1]) * torch.cos(angles[:, 1])
+    x = -torch.cos(angles[0]) * torch.sin(angles[1])
+    y = -torch.sin(angles[0])
+    z = -torch.cos(angles[1]) * torch.cos(angles[1])
     norm = torch.sqrt(x ** 2 + y ** 2 + z ** 2)
     x /= norm
     y /= norm
