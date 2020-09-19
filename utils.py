@@ -23,6 +23,7 @@ def get_mm_pixel_ratio(screen_size_inch):
     root = Tk()
     width = root.winfo_screenwidth() * 2
     height = root.winfo_screenheight() * 2
+    print("screen width is: ", width, "and height is: ", height)
     diagonal_pixel = np.sqrt(np.square(width) + np.square(height))
     print("diagonal pixel: ", diagonal_pixel)
     diagonal_mm = screen_size_inch / MM_TO_IN
@@ -59,14 +60,18 @@ def get_dpi():
 
 
 def convert_to_unit_vector(angles):
-    x = -torch.cos(angles[:, 0]) * torch.sin(angles[:, 1])
-    y = -torch.sin(angles[:, 0])
-    z = -torch.cos(angles[:, 1]) * torch.cos(angles[:, 1])
-    norm = torch.sqrt(x ** 2 + y ** 2 + z ** 2)
-    x /= norm
-    y /= norm
-    z /= norm
-    return x, y, z
+    v = np.zeros(3)
+    v[0] = -torch.cos(angles[0]) * torch.sin(angles[1])
+    v[1] = -torch.sin(angles[0])
+    v[2] = -torch.cos(angles[1]) * torch.cos(angles[1])
+
+    norm = np.sqrt(v[0]**2 + v[1]**2 + v[2]**2)
+
+    v[0] /= norm
+    v[1] /= norm
+    v[2] /= norm
+
+    return v
 
 
 def normalize_face(cur_frame):
@@ -117,6 +122,7 @@ def normalize_face(cur_frame):
     # cv2.waitKey()
     cur_frame.gaze_origin = gaze_origin
     return cur_frame
+
 
 #
 # def eye_detector(img, shape):
@@ -171,7 +177,6 @@ def normalize_face(cur_frame):
 #     p2 = (int(eye_end_point2D[0][0][0]), int(eye_end_point2D[0][0][1]))
 #     cv2.line(img, p1, p2, (255, 255, 0), 2)
 #     return img
-
 
 
 # def angle_to_vector(angles):

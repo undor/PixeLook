@@ -67,7 +67,7 @@ class FullScreenApp(object):
         self.var.set(1)
 
     def update_window(self):
-        if self.counter == 50:
+        if self.counter == 150:
             self.w.delete("all")
             self.counter = 0
         self.master.update()

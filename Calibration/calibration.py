@@ -50,14 +50,14 @@ class gaze_manager:
 
     def get_cur_pixel(self):
         gaze, ht, hr = self.env.find_gaze()
-        return self.gaze_to_pixel_math(gaze, ht, hr)
-        # return self.gaze_to_pixel(gaze)
+        self.gaze_to_pixel_math(gaze, ht, hr)
+        return self.gaze_to_pixel(gaze)
 
     def get_cur_pixel_mean(self):
         cur_sum = np.array([0.0, 0.0])
         num = 0
         # change range in order to change number of pixels to mean from
-        for i in range(3):
+        for i in range(2):
             cur_pixel = np.array(self.get_cur_pixel())
             if not(cur_pixel[0] == 0 or cur_pixel[1] == 0):
                 num += 1
@@ -120,18 +120,19 @@ class gaze_manager:
     #     print("left gaze: ", self.calib_data.left_gaze)
     #     print("up gaze: ", self.calib_data.up_gaze)
     #     print("down gaze: ", self.calib_data.down_gaze)
-    # def gaze_to_pixel(self, gaze):
-    #     width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_length
-    #     height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0]) / self.height_length
-    #
-    #     x_location = width_ratio.item() * self.gui.width
-    #     y_location = height_ratio.item() * self.gui.height
-    #
-    #     if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
-    #         pixel = (x_location, y_location)
-    #         return pixel
-    #     return 0, 0
+
+    def gaze_to_pixel(self, gaze):
+         width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_length
+         height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0]) / self.height_length
+
+         x_location = width_ratio.item() * self.gui.width
+         y_location = height_ratio.item() * self.gui.height
+
+         if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
+             pixel = (x_location, y_location)
+             return pixel
+         return 0, 0
 
 
-main_gaze_manager = gaze_manager("HeadPose")
-# main_gaze_manager = gaze_manager("FullFace")
+# main_gaze_manager = gaze_manager("HeadPose")
+main_gaze_manager = gaze_manager("FullFace")
