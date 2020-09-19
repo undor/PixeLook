@@ -24,16 +24,28 @@ class gaze_manager:
     def set_screen_sizes(self, screen_size_inch):
         self.pixel_per_mm = get_mm_pixel_ratio(screen_size_inch)
 
+    def gaze_to_pixel(self, gaze):
+        width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_length
+        height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0]) / self.height_length
+
+        x_location = width_ratio.item() * self.gui.width
+        y_location = height_ratio.item() * self.gui.height
+
+        if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
+            pixel = (x_location, y_location)
+            return pixel
+        return 0, 0
+
     def gaze_to_pixel_math(self, gaze, ht, hr):
         # p + t*v = (x, y, 0)
         v = convert_to_unit_vector(gaze)
         # t = -p(z)/v(z)
-        t = - ht[2]/v[2]
+        t = - ht[2]/v[2].numpy()
         # x = p(x)+t*v(x)
-        x = ht[0] + t*v[0]
+        x = ht[0] + t*v[0].numpy()
         x = x[0]
         # y = p(y)+t*v(y)
-        y = ht[1] + t*v[1]
+        y = ht[1] + t*v[1].numpy()
         y = y[0]
 
         x_location = x*self.pixel_per_mm + self.gui.width
@@ -57,7 +69,7 @@ class gaze_manager:
         cur_sum = np.array([0.0, 0.0])
         num = 0
         # change range in order to change number of pixels to mean from
-        for i in range(2):
+        for i in range(3):
             cur_pixel = np.array(self.get_cur_pixel())
             if not(cur_pixel[0] == 0 or cur_pixel[1] == 0):
                 num += 1
@@ -121,18 +133,8 @@ class gaze_manager:
     #     print("up gaze: ", self.calib_data.up_gaze)
     #     print("down gaze: ", self.calib_data.down_gaze)
 
-    def gaze_to_pixel(self, gaze):
-         width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_length
-         height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0]) / self.height_length
-
-         x_location = width_ratio.item() * self.gui.width
-         y_location = height_ratio.item() * self.gui.height
-
-         if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
-             pixel = (x_location, y_location)
-             return pixel
-         return 0, 0
 
 
-# main_gaze_manager = gaze_manager("HeadPose")
+
+#main_gaze_manager = gaze_manager("HeadPose")
 main_gaze_manager = gaze_manager("FullFace")
