@@ -5,16 +5,19 @@ from tkinter import Canvas
 class Configuration:
     def __init__(self):
         self.master = tk.Tk()
-        self.box = Canvas(self.master, width=350, height=200)
+        self.box = Canvas(self.master, width=400, height=200)
         self.box.pack()
         self.box.focus_set()
         self.var = tk.IntVar()
         self.model_method = "Null"
         self.convert_method = "Null"
-        self.button_a = tk.Button(self.master, text="Full Face Solution", command=lambda: self.ff())
-        self.button_b = tk.Button(self.master, text="Head Pose Solution", command=lambda: self.hp())
+        self.screen_size = 13.3
+        self.button_a = tk.Button(self.master, font="MSGothic 10")
+        self.button_b = tk.Button(self.master, font="MSGothic 10")
         self.button_a.place(relx=0.25, rely=0.5, anchor="c")
         self.button_b.place(relx=0.75, rely=0.5, anchor="c")
+        self.text = self.box.create_text((200, 20), font="MSGothic 12", fill="red")
+        self.e1 = 0
 
     def wait_key(self):
         self.button_a.wait_variable(self.var)
@@ -35,17 +38,37 @@ class Configuration:
         self.convert_method = "Linear"
         self.var.set(1)
 
-    def config_convert(self):
-        self.wait_key()
-        return self.model_method, self.convert_method
+    def set_size(self):
+        if self.e1.get() != "":
+            self.screen_size = float(self.e1.get())
+        self.var.set(1)
+
+    def config_screen_size(self):
+        self.e1 = tk.Entry(self.master)
+        self.box.create_window((200, 150), window=self.e1)
+        self.button_a.config(text='Insert your screen size in inch', command=lambda: self.set_size())
+        self.box.create_window((200, 50), window=self.button_a)
 
     def config_model(self):
+
+        self.box.itemconfig(self.text, text="Choose your model method")
+        self.button_a.config(text="Full Face Solution", command=lambda: self.ff())
+        self.button_b.config(text="Head Pose Solution", command=lambda: self.hp())
         self.wait_key()
+
+        self.box.itemconfig(self.text, text="Choose your pixel converting method")
         self.button_a.config(text="Linear Convert", command=lambda: self.linear())
         self.button_b.config(text="Trigonometric Convert", command=lambda: self.trigonometric())
-        self.config_convert()
+        self.wait_key()
 
+        self.button_b.destroy()
+        self.box.delete("all")
+        self.config_screen_size()
+        self.wait_key()
 
+        self.button_a.destroy()
+        self.box.delete("all")
+        self.box.destroy()
+        self.master.destroy()
 
-
-
+        return self.model_method, self.convert_method, self.screen_size

@@ -24,13 +24,13 @@ def get_mm_pixel_ratio(screen_size_inch):
     root = Tk()
     width = root.winfo_screenwidth()
     height = root.winfo_screenheight()
-    print("width",width)
-    print("height", height)
+    # print("width",width)
+    # print("height", height)
     diagonal_pixel = np.sqrt(np.square(width) + np.square(height))
-    print("diagonal pixel: ", diagonal_pixel)
+    # print("diagonal pixel: ", diagonal_pixel)
     diagonal_mm = screen_size_inch / MM_TO_IN
     pixel_per_mm = diagonal_pixel/diagonal_mm
-    print("pixel_per_mm ", pixel_per_mm)
+    # print("pixel_per_mm ", pixel_per_mm)
     return pixel_per_mm
 
 

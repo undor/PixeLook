@@ -7,32 +7,20 @@ from utils import *
 
 class gaze_manager:
 
-    # def __init__(self, model_method, convert_method):
-    def __init__(self, model_method,pixel_method):
+    def __init__(self, model_method, convert_method, screen_size):
         self.cur_stage = 0
         self.gui = FullScreenApp()
         self.calib_data = calib_data()
         if model_method == "FullFace":
-        self.pixel_method = pixel_method
-        self.calib_ratio_width = 1
-        self.calib_ratio_height =1
-        if model_method == "FullFace":
+            self.pixel_method = convert_method
+            self.calib_ratio_width = 1
+            self.calib_ratio_height = 1
             self.env = FullFaceSolution.my_env_ff
         elif model_method == "HeadPose":
             self.env = HeadPoseBasedSolution.my_env_hp
-        else:
-            print("Method isn't known. USE: FullFace / HeadPose")
-            exit(-1)
         self.width_length = 0
         self.height_length = 0
-        self.pixel_per_mm = 0
-
-
-    def set_screen_sizes(self,screen_size):
         self.pixel_per_mm = get_mm_pixel_ratio(screen_size)
-        return
-
-
 
 
     def gaze_to_pixel(self, gaze):
@@ -47,7 +35,7 @@ class gaze_manager:
             return pixel
         return 0, 0
 
-    def gaze_to_mm(self,gaze,ht):
+    def gaze_to_mm(self, gaze, ht):
         # p + t*v = (x, y, 0)
         v = convert_to_unit_vector(gaze)
         # t = -p(z)/v(z)
@@ -61,17 +49,13 @@ class gaze_manager:
         return x, y
 
     def gaze_to_pixel_math(self, gaze, ht):
-        x, y = self.gaze_to_mm(gaze,ht)
+        x, y = self.gaze_to_mm(gaze, ht)
 
         x = x*self.calib_ratio_width
         y = y*self.calib_ratio_height
 
         x_location = (x*self.pixel_per_mm + self.gui.width/2)
         y_location = -y*self.pixel_per_mm
-
-        print("vector is", v)
-        print("x is", x, "mm and  y is", y, "mm")
-        print("x loc is", x_location, " and  y loc", y_location, "mm")
 
         if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
             pixel = (x_location, y_location)
@@ -84,7 +68,6 @@ class gaze_manager:
             return self.gaze_to_pixel(gaze)
         else:
             return self.gaze_to_pixel_math(gaze, ht)
-
 
     def get_cur_pixel_mean(self):
         cur_sum = np.array([0.0, 0.0])
@@ -125,7 +108,7 @@ class gaze_manager:
         # CHECK CALIBRATION
         self.width_length = abs(self.calib_data.right_gaze[1] - self.calib_data.left_gaze[1])
         self.height_length = abs(self.calib_data.down_gaze[0] - self.calib_data.up_gaze[0])
-        if (self.pixel_method == "Linear"):
+        if self.pixel_method == "Linear":
             self.width_length = abs(self.calib_data.right_gaze[0][1] - self.calib_data.left_gaze[0][1])
             self.height_length = abs(self.calib_data.down_gaze[0][0] - self.calib_data.up_gaze[0][0])
         else:
@@ -139,12 +122,10 @@ class gaze_manager:
             self.calib_ratio_width = self.gui.width / (self.width_length * self.pixel_per_mm)
             self.calib_ratio_height = self.gui.height / (self.height_length * self.pixel_per_mm)
 
-
         # CENTER VALIDATION
 
         self.calib_data.center_pixel = self.get_cur_pixel_mean()
         self.gui.print_calib_points(self.calib_data.center_pixel)
-
 
         self.step_calib_stage()
 
