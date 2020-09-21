@@ -26,20 +26,10 @@ class gaze_manager:
         self.height_length = 0
         self.pixel_per_mm = 0
 
-    def call_result(self,num):
-        self.screen_size=float(num.get())
-        self.pixel_per_mm = get_mm_pixel_ratio(self.screen_size)
-        self.ss_tk.destroy()
-        return
 
-    def set_screen_sizes(self):
-        self.ss_tk = tk.Tk()
-        self.ss_tk.geometry('400x200+100+200')
-        number1 = tk.StringVar()
-        entry1 = tk.Entry(self.ss_tk,textvariable=number1)
-        call_result = partial(self.call_result,number1)
-        button1 = tk.Button(text='Enter Screen size',command=call_result)
-        self.ss_tk.mainloop()
+    def set_screen_sizes(self,screen_size):
+        self.pixel_per_mm = get_mm_pixel_ratio(screen_size)
+        return
 
 
 
