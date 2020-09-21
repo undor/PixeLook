@@ -22,8 +22,10 @@ def shape_to_np(shape, dtype="float32"):
 def get_mm_pixel_ratio(screen_size_inch):
     from tkinter import Tk
     root = Tk()
-    width = root.winfo_screenwidth() * 2
-    height = root.winfo_screenheight() * 2
+    width = root.winfo_screenwidth()
+    height = root.winfo_screenheight()
+    print("width",width)
+    print("height", height)
     diagonal_pixel = np.sqrt(np.square(width) + np.square(height))
     print("diagonal pixel: ", diagonal_pixel)
     diagonal_mm = screen_size_inch / MM_TO_IN
