@@ -2,22 +2,15 @@ import tkinter as tk
 from tkinter import Canvas
 
 
-# def key(event):
-#     print("doing nothing")
-
-
 class FullScreenApp(object):
     def __init__(self):
         self.master = tk.Tk()
-        # pad = 3
         self._geom = '200x200+0+0'
         self.master.attributes('-fullscreen', True)
-        # self.master.bind('<Escape>', self.toggle_geom)
         self.width = self.master.winfo_screenwidth()
         self.height = self.master.winfo_screenheight()
         self.w = Canvas(self.master)
         self.w.focus_set()
-        # self.w.bind("<Key>", key)
         self.w.pack(fill="both", expand=True)
         # self.text_box = self.w.create_text((610, 120), text="Starting calibration",
         # font="MSGothic 20 bold", fill="#652828")

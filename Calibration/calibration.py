@@ -1,18 +1,19 @@
 import FullFaceSolution.FullFaceBasedSolution as FullFaceSolution
 import HeadPoseBasedSolution.HeadPoseBasedSolution as HeadPoseBasedSolution
 from Calibration.gui_manager import *
+from Calibration.Choose_Methods import *
 from utils import *
 
 
 class gaze_manager:
 
-    def __init__(self, method):
+    def __init__(self, model_method, convert_method):
         self.cur_stage = 0
         self.gui = FullScreenApp()
         self.calib_data = calib_data()
-        if method == "FullFace":
+        if model_method == "FullFace":
             self.env = FullFaceSolution.my_env_ff
-        elif method == "HeadPose":
+        elif model_method == "HeadPose":
             self.env = HeadPoseBasedSolution.my_env_hp
         else:
             print("Method isn't known. USE: FullFace / HeadPose")
@@ -50,10 +51,6 @@ class gaze_manager:
 
         x_location = x*self.pixel_per_mm + self.gui.width
         y_location = -y*self.pixel_per_mm
-
-        print("vector is", v)
-        print("x is", x, "mm and  y is", y, "mm")
-        print("x loc is", x_location, " and  y loc", y_location, "mm")
 
         if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
             pixel = (x_location, y_location)
@@ -104,8 +101,6 @@ class gaze_manager:
         # CHECK CALIBRATION
         self.width_length = abs(self.calib_data.right_gaze[1] - self.calib_data.left_gaze[1])
         self.height_length = abs(self.calib_data.down_gaze[0] - self.calib_data.up_gaze[0])
-        # print("left is", self.calib_data.left_gaze)
-        # print("right is", self.calib_data.right_gaze)
 
         # CENTER VALIDATION
         self.calib_data.center_pixel = self.get_cur_pixel_mean()
@@ -134,7 +129,5 @@ class gaze_manager:
     #     print("down gaze: ", self.calib_data.down_gaze)
 
 
-
-
-#main_gaze_manager = gaze_manager("HeadPose")
-main_gaze_manager = gaze_manager("FullFace")
+# main_gaze_manager = gaze_manager("HeadPose")
+# main_gaze_manager = gaze_manager("FullFace")
