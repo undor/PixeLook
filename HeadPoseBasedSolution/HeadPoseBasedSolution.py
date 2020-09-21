@@ -7,8 +7,11 @@ class environment_hp:
         self.model = GazeModel.load_model()
         self.cap = cv2.VideoCapture(0)
 
-    def find_gaze(self):
-        ret, img = self.cap.read()
+    def find_gaze(self,input_img = None):
+        if input_img == None:
+            ret, frame = self.cap.read()
+        else:
+            frame = input_img
         cur_frame = FrameData(img)
         for counter_error in range(1, 100):
             if cur_frame.face_landmark_detect():
@@ -16,9 +19,7 @@ class environment_hp:
                 cur_frame.pre_process_for_net()
                 gaze = GazeModel.use_net(self.model, cur_frame)
 
-                # print("final gaze is ", gaze)
-                # print("with shape : ", gaze.shape)
-                return gaze, cur_frame.translation_vector, cur_frame.rotation_vector
+                return gaze, cur_frame.translation_vector
 
         sys.exit("Find Gaze was unable to detect your face!")
 
