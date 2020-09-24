@@ -1,7 +1,6 @@
 import FullFaceSolution.FullFaceBasedSolution as FullFaceSolution
 import HeadPoseBasedSolution.HeadPoseBasedSolution as HeadPoseBasedSolution
 from Calibration.gui_manager import *
-from Calibration.Choose_Methods import *
 from utils import *
 
 
@@ -21,7 +20,6 @@ class gaze_manager:
         self.width_length = 0
         self.height_length = 0
         self.pixel_per_mm = get_mm_pixel_ratio(screen_size)
-
 
     def gaze_to_pixel(self, gaze):
         width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_length
@@ -73,12 +71,12 @@ class gaze_manager:
         cur_sum = np.array([0.0, 0.0])
         num = 0
         # change range in order to change number of pixels to mean from
-        for i in range(2):
+        for i in range(1):
             cur_pixel = np.array(self.get_cur_pixel())
             if not(cur_pixel[0] == 0 or cur_pixel[1] == 0):
                 num += 1
                 cur_sum += cur_pixel
-        return np.true_divide(cur_sum, num)
+        return np.round(np.true_divide(cur_sum, num))
 
     def step_calib_stage(self):
         self.gui.print_calib_stage(self.cur_stage)
@@ -112,13 +110,13 @@ class gaze_manager:
             self.width_length = abs(self.calib_data.right_gaze[0][1] - self.calib_data.left_gaze[0][1])
             self.height_length = abs(self.calib_data.down_gaze[0][0] - self.calib_data.up_gaze[0][0])
         else:
-            rigth_gaze_mm_x = self.gaze_to_mm(self.calib_data.right_gaze[0],self.calib_data.right_gaze[1])[0]
+            right_gaze_mm_x = self.gaze_to_mm(self.calib_data.right_gaze[0], self.calib_data.right_gaze[1])[0]
             left_gaze_mm_x = self.gaze_to_mm(self.calib_data.left_gaze[0], self.calib_data.left_gaze[1])[0]
             up_gaze_mm_y = self.gaze_to_mm(self.calib_data.up_gaze[0], self.calib_data.up_gaze[1])[1]
             down_gaze_mm_y = self.gaze_to_mm(self.calib_data.down_gaze[0], self.calib_data.down_gaze[1])[1]
 
-            self.width_length = abs(rigth_gaze_mm_x - left_gaze_mm_x)
-            self.height_length = abs (up_gaze_mm_y-down_gaze_mm_y)
+            self.width_length = abs(right_gaze_mm_x - left_gaze_mm_x)
+            self.height_length = abs(up_gaze_mm_y-down_gaze_mm_y)
             self.calib_ratio_width = self.gui.width / (self.width_length * self.pixel_per_mm)
             self.calib_ratio_height = self.gui.height / (self.height_length * self.pixel_per_mm)
 
@@ -141,7 +139,7 @@ class gaze_manager:
         while self.gui.finish is not True:
             self.calibrate_process()
             self.re_calibration()
-        self.gui.button.config(text="start drawing with your eyes")
+        self.gui.button.config(text="Click to Capture")
 
     # def print_gazes(self):
     #     print("right gaze: ", self.calib_data.right_gaze)

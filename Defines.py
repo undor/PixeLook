@@ -1,11 +1,13 @@
 # relevant imports
+
 import numpy as np
 import cv2
 import torch
 import os
 import dlib
 import scipy.io as sio
-import sys
+import random
+from datetime import datetime
 
 # Project Defines
 
@@ -14,6 +16,14 @@ np.random.seed(0)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 font = cv2.FONT_HERSHEY_SIMPLEX
 
+
+class DateTime:
+    year = 0
+    month = 0
+    day = 0
+    hour = 0
+    minutes = 0
+    second = 0
 
 class calib_data:
     left_gaze = (0, 0)
@@ -31,17 +41,17 @@ MOUTH_INDICES: np.ndarray = np.array([48, 54])
 rvec = np.zeros(3, dtype=np.float)
 tvec = np.array([0, 0, 1], dtype=np.float)
 
-# General attributes for eyes recognisition
+# General attributes for eyes recognition
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(os.getcwd() + "/HeadPoseBasedSolution/model/shape_predictor_68_face_landmarks.dat")
 # predictor = dlib.shape_predictor(os.getcwd() + "/HeadPoseBasedSolution/model/")
 # error_img = cv2.imread(os.getcwd() + "/error.jpg")
 
 # General attributes for head pose
-width_precent = 20
-height_precent = 50
+width_percent = 20
+height_percent = 50
 
-# Our convertion from millimeters to inches
+# Our convert from millimeters to inches
 MM_TO_IN = 0.0393700787
 
 face_model = np.array([
@@ -135,3 +145,6 @@ stages = {'WAIT_FOR_LEFT': 0,
           'WAIT_FOR_CENTER': 4,
           'CHECK_CALIBRATION': 5,
           'FINISH_CALIBRATION': 6}
+
+
+

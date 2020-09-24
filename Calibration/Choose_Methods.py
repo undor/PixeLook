@@ -39,8 +39,9 @@ class Configuration:
         self.var.set(1)
 
     def set_size(self):
-        if self.e1.get() != "":
-            self.screen_size = float(self.e1.get())
+        size = self.e1.get()
+        if size != "":
+            self.screen_size = float(size)
         self.var.set(1)
 
     def config_screen_size(self):

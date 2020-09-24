@@ -7,12 +7,12 @@ class environment_hp:
         self.model = GazeModel.load_model()
         self.cap = cv2.VideoCapture(0)
 
-    def find_gaze(self,input_img = None):
-        if input_img == None:
-            ret, frame = self.cap.read()
+    def find_gaze(self, input_img=None):
+        if input_img is None:
+            ___, frame = self.cap.read()
         else:
             frame = input_img
-        cur_frame = FrameData(img)
+        cur_frame = FrameData(frame)
         for counter_error in range(1, 100):
             if cur_frame.face_landmark_detect():
                 cur_frame.head_pose_detect()

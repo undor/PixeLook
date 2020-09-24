@@ -4,6 +4,17 @@ import tkinter
 from Defines import *
 
 
+def new_log_session(model_method, convert_method, screen_size):
+    log_file = open('Test_Log', "a")
+    time = datetime.now()
+    time = "\n" + "starting new session at: " + time.strftime("%Y-%m-%d %H:%M:%S") + "\n"
+    details = "Chosen methods are: " + model_method + ", " + convert_method + " and screen size is: " \
+              + str(screen_size) + " inches" + "\n"
+    log_file.write(time)
+    log_file.write(details)
+    log_file.close()
+
+
 def shape_to_np(shape, dtype="float32"):
     # initialize the list of (x, y)-coordinates
     relevant_locations = [36, 39, 42, 45, 48, 54]
@@ -176,7 +187,6 @@ def normalize_face(cur_frame):
 #     return img
 
 
-
 # def angle_to_vector(angles):
 #     pitch = angles[1]
 #     yaw = angles[0]
@@ -204,8 +214,6 @@ def normalize_face(cur_frame):
 #     return eye_img
 
 
-
-#
 # def add_data_on_img(frame, gaze_angles, fps):
 #     gaze_angles = gaze_angles[0]
 #     head_angles = frame.get_head_pose()

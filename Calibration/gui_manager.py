@@ -65,20 +65,24 @@ class FullScreenApp(object):
             self.counter = 0
         self.master.update()
 
+    def print_capture_button(self, pixel):
+        print("putting button in: ", pixel[0], pixel[1])
+        self.button.place(x=pixel[0], y=pixel[1], anchor="c")
+        self.button.config(text="Click to Capture")
+
     def print_pixel(self, pixel):
         delta = 5
         self.w.focus_set()
-        self.w.create_rectangle(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill="#272AEB")
+        self.w.create_oval(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill="#FF0000")
         self.counter += 1
         self.update_window()
+        return pixel
 
     def print_calib_points(self, center):
         perimeter = 24
-
         radius = self.width*0.1
         self.w.create_oval(self.width/2 - radius, self.height/2 - radius, self.width/2 + radius, self.height/2 + radius,
                            fill="#FFFFFF")
-
         radius = 0.5*perimeter
         self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
         self.w.create_text((center[0]+radius, center[1]+radius), text="center dot",

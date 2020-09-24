@@ -1,7 +1,7 @@
 import utils
-from Defines import *
 from FullFaceSolution.models import gazenet
 from frame_data import *
+import sys
 
 
 class environment_ff:
@@ -9,8 +9,8 @@ class environment_ff:
         self.model = load_face_model()
         self.cap = cv2.VideoCapture(0)
 
-    def find_gaze(self,input_img = None):
-        if input_img == None:
+    def find_gaze(self, input_img=None):
+        if input_img is None:
             ret, frame = self.cap.read()
         else:
             frame = input_img
