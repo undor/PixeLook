@@ -1,7 +1,7 @@
-from utils import *
+from TestInfo.TestUtils import *
 
 
-class Test_Manager:
+class Test_Manager():
     def __init__(self, gaze_manager):
         self.tag = np.zeros(2)
         self.pixel = np.zeros(2)
@@ -31,7 +31,7 @@ class Test_Manager:
         log_file = open('Test_Log', "a")
         tag = "tag: " + str(self.tag)
         target = "target: " + str(self.pixel)
-        error = " error: " + str(self.error_mm) + "\n"
+        error = "error: " + str(self.error_mm) + "\n"
         log_file.write(tag.ljust(20) + target.ljust(20) + error)
         log_file.close()
 

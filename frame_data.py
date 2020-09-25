@@ -1,5 +1,5 @@
+import utils
 from HeadPoseBasedSolution.NewImgPreProcess.NormalizeData import *
-from utils import shape_to_np
 
 
 class FrameData:
@@ -12,7 +12,6 @@ class FrameData:
         self.translation_vector = np.zeros(3)
         self.is_debug = is_debug
         self.gaze_origin = 0
-        self.camera_matrix = np.array([960., 0., 640., 0., 960., 360., 0., 0., 1.]).reshape(3, 3)
         self.net_input = 0
 
     def flip(self):
@@ -22,7 +21,7 @@ class FrameData:
         gray = cv2.cvtColor(self.orig_img, cv2.COLOR_BGR2GRAY)
         rects = detector(gray, 0)
         if np.size(rects) > 0:
-            self.shape = shape_to_np(predictor(gray, rects[0]))
+            self.shape = utils.shape_to_np(predictor(gray, rects[0]))
             self.is_face = True
         return self.is_face
 
@@ -30,13 +29,14 @@ class FrameData:
         landmarks = self.shape
         mini_face_model_adj = mini_face_model.T.reshape(mini_face_model.shape[1], 1, 3)
         # check for distortion
-        dist_coeffs = np.zeros((5, 1))  # Assuming no lens distortion
+        dist_coeffs = utils.global_camera_coeffs
+        camera_matrix = utils.global_camera_matrix
         # TODO: check how to enable flags=cv2.SOLVEPNP_EPNP
         (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
-                                                                                self.camera_matrix,
+                                                                                camera_matrix,
                                                                                 dist_coeffs,  True)
         (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
-                                                                                self.camera_matrix,
+                                                                                camera_matrix,
                                                                                 dist_coeffs, self.rotation_vector,
                                                                                 self.translation_vector, True)
         # print("hr is ", self.rotation_vector)

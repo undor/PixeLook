@@ -8,22 +8,29 @@ class gaze_manager:
 
     def __init__(self, model_method, convert_method, screen_size):
         self.cur_stage = 0
-        self.gui = FullScreenApp()
+        if screen_size > 0 :
+            self.gui = FullScreenApp()
+            self.width_px = self.gui.width
+            self.height_px = self.gui.height
+        else:
+            self.width_px = 0
+            self.height_px = 0
         self.calib_data = calib_data()
+        self.pixel_method = convert_method
+        self.calib_ratio_width = 1
+        self.calib_ratio_height = 1
         if model_method == "FullFace":
-            self.pixel_method = convert_method
-            self.calib_ratio_width = 1
-            self.calib_ratio_height = 1
             self.env = FullFaceSolution.my_env_ff
         elif model_method == "HeadPose":
             self.env = HeadPoseBasedSolution.my_env_hp
-        self.width_length = 0
-        self.height_length = 0
         self.pixel_per_mm = get_mm_pixel_ratio(screen_size)
 
+
+
+
     def gaze_to_pixel(self, gaze):
-        width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_length
-        height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0]) / self.height_length
+        width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_gaze_scale
+        height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0]) / self.height_gaze_scale
 
         x_location = width_ratio.item() * self.gui.width
         y_location = height_ratio.item() * self.gui.height
@@ -52,10 +59,10 @@ class gaze_manager:
         x = x*self.calib_ratio_width
         y = y*self.calib_ratio_height
 
-        x_location = (x*self.pixel_per_mm + self.gui.width/2)
+        x_location = (x*self.pixel_per_mm + self.width_px/2)
         y_location = -y*self.pixel_per_mm
 
-        if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
+        if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
             pixel = (x_location, y_location)
             return pixel
         return 0, 0
@@ -104,24 +111,22 @@ class gaze_manager:
         # WAIT FOR CENTER
         self.step_calib_stage()
         # CHECK CALIBRATION
-        self.width_length = abs(self.calib_data.right_gaze[1] - self.calib_data.left_gaze[1])
-        self.height_length = abs(self.calib_data.down_gaze[0] - self.calib_data.up_gaze[0])
         if self.pixel_method == "Linear":
-            self.width_length = abs(self.calib_data.right_gaze[0][1] - self.calib_data.left_gaze[0][1])
-            self.height_length = abs(self.calib_data.down_gaze[0][0] - self.calib_data.up_gaze[0][0])
+            self.width_gaze_scale = abs(self.calib_data.right_gaze[0][1] - self.calib_data.left_gaze[0][1])
+            self.height_gaze_scale = abs(self.calib_data.down_gaze[0][0] - self.calib_data.up_gaze[0][0])
         else:
             right_gaze_mm_x = self.gaze_to_mm(self.calib_data.right_gaze[0], self.calib_data.right_gaze[1])[0]
             left_gaze_mm_x = self.gaze_to_mm(self.calib_data.left_gaze[0], self.calib_data.left_gaze[1])[0]
             up_gaze_mm_y = self.gaze_to_mm(self.calib_data.up_gaze[0], self.calib_data.up_gaze[1])[1]
             down_gaze_mm_y = self.gaze_to_mm(self.calib_data.down_gaze[0], self.calib_data.down_gaze[1])[1]
 
-            self.width_length = abs(right_gaze_mm_x - left_gaze_mm_x)
-            self.height_length = abs(up_gaze_mm_y-down_gaze_mm_y)
+            width_length = abs(right_gaze_mm_x - left_gaze_mm_x)
+            height_length = abs(up_gaze_mm_y-down_gaze_mm_y)
             self.calib_ratio_width = self.gui.width / (self.width_length * self.pixel_per_mm)
             self.calib_ratio_height = self.gui.height / (self.height_length * self.pixel_per_mm)
 
-        # CENTER VALIDATION
 
+        # CENTER VALIDATION
         self.calib_data.center_pixel = self.get_cur_pixel_mean()
         self.gui.print_calib_points(self.calib_data.center_pixel)
 
@@ -140,13 +145,3 @@ class gaze_manager:
             self.calibrate_process()
             self.re_calibration()
         self.gui.button.config(text="Click to Capture")
-
-    # def print_gazes(self):
-    #     print("right gaze: ", self.calib_data.right_gaze)
-    #     print("left gaze: ", self.calib_data.left_gaze)
-    #     print("up gaze: ", self.calib_data.up_gaze)
-    #     print("down gaze: ", self.calib_data.down_gaze)
-
-
-# main_gaze_manager = gaze_manager("HeadPose")
-# main_gaze_manager = gaze_manager("FullFace")

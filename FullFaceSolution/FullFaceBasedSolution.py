@@ -1,13 +1,13 @@
-import utils
 from FullFaceSolution.models import gazenet
 from frame_data import *
-import sys
 
 
 class environment_ff:
     def __init__(self):
         self.model = load_face_model()
         self.cap = cv2.VideoCapture(0)
+        utils.global_camera_matrix = np.array([960., 0., 640., 0., 960., 360., 0., 0., 1.]).reshape(3, 3)
+        utils.global_camera_coeffs = np.zeros((5, 1))
 
     def find_gaze(self, input_img=None):
         if input_img is None:
@@ -30,7 +30,8 @@ class environment_ff:
                     # Draw results
                     # display = cv2.circle(display, cur_frame.gaze_origin, 3, (0, 255, 0), -1)
                     # display = utils.draw_gaze(display, cur_frame.gaze_origin, gaze, color=(255, 0, 0), thickness=2)
-        sys.exit("Find Gaze was not able to find your face!")
+        print("Find Gaze was unable to detect your face!")
+        return -1, [[0][0][0]]
 
 
 def load_face_model():
@@ -40,8 +41,6 @@ def load_face_model():
     state_dict = torch.load('FullFaceSolution/models/weights/gazenet.pth', map_location=device)
     model.load_state_dict(state_dict)
     model.eval()
-    # for param in model.parameters():
-    #     print(param.data)
     return model
 
 

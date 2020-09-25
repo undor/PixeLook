@@ -3,17 +3,8 @@ import tkinter
 
 from Defines import *
 
-
-def new_log_session(model_method, convert_method, screen_size):
-    log_file = open('Test_Log', "a")
-    time = datetime.now()
-    time = "\n" + "starting new session at: " + time.strftime("%Y-%m-%d %H:%M:%S") + "\n"
-    details = "Chosen methods are: " + model_method + ", " + convert_method + " and screen size is: " \
-              + str(screen_size) + " inches" + "\n"
-    log_file.write(time)
-    log_file.write(details)
-    log_file.close()
-
+global global_camera_matrix
+global global_camera_coeffs
 
 def shape_to_np(shape, dtype="float32"):
     # initialize the list of (x, y)-coordinates
@@ -28,6 +19,10 @@ def shape_to_np(shape, dtype="float32"):
     # return the list of (x, y)-coordinates
     return coords
 
+
+def from_wh_mm_to_diag_inch(x,y):
+    res= (np.sqrt(x ** 2 + y ** 2) * MM_TO_IN)
+    return  round(res[0][0],1)
 
 # TODO - handle the mm to position on screen problem - dpi of tkinter not allways = screen DPI
 def get_mm_pixel_ratio(screen_size_inch):
