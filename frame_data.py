@@ -17,7 +17,9 @@ class FrameData:
     def flip(self):
         self.debug_img = cv2.flip(self.debug_img, 1)
 
-    def face_landmark_detect(self):
+    def face_landmark_detect(self, head_loc=None):
+        if head_loc is not None:
+            return True
         gray = cv2.cvtColor(self.orig_img, cv2.COLOR_BGR2GRAY)
         rects = detector(gray, 0)
         if np.size(rects) > 0:
@@ -25,8 +27,11 @@ class FrameData:
             self.is_face = True
         return self.is_face
 
-    def head_pose_detect(self):
-        landmarks = self.shape
+    def head_pose_detect(self, head_loc=None):
+        if head_loc is None:
+            landmarks = self.shape
+        else:
+            landmarks = head_loc
         mini_face_model_adj = mini_face_model.T.reshape(mini_face_model.shape[1], 1, 3)
         # check for distortion
         dist_coeffs = utils.global_camera_coeffs

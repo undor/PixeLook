@@ -12,11 +12,15 @@ def new_log_session(model_method, convert_method, screen_size,DB):
     log_file.close()
 
 def new_csv_session(name):
+    if name is None:
+        time = datetime.now()
+        name = time.strftime("%Y-%m-%d %H-%M-%S")
     csv_file = open(name+".csv", "a")
-    csv_file.write("screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm\n")
+    csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm\n")
     return csv_file
 
-def log_sample_csv(smp, csv_file):
+def log_sample_csv(smp,person, csv_file):
+    csv_file.write(str(person) + ",")
     csv_file.write(str(smp.screen_size)+",")
     csv_file.write(str(smp.err_mm) + ",")
     csv_file.write(str(smp.err_mm_x) + ",")
@@ -34,7 +38,7 @@ class Sample:
         self.err_mm_x = 0
         self.err_mm_y = 0
         self.dist_screen = 0
-        self.screen_size =0
+        self.screen_size = 0
         return
 
     def set_from_ff_db(self,d):
@@ -45,7 +49,19 @@ class Sample:
         self.true_gaze = np.array(true_gaze_target) - np.array(self.true_ht_vec)
         return
 
-    def compute_error(self,pixel_per_mm):
+    def set_from_hp_db(self,d):
+        self.img_path = d[0]
+        self.head_points = (int(d[1]), int(d[2]),int(d[3]), int(d[4]), int(d[5]), int(d[6]))
+        return
+
+    def set_from_session(self,true_pixel,res_pixel,screen_size,dist_screen):
+        self.true_pixel = true_pixel
+        self.res_pixel = res_pixel
+        self.screen_size = screen_size
+        self.dist_screen = dist_screen
+        return
+
+    def compute_error(self, pixel_per_mm):
         x = abs(self.true_pixel[0] - self.res_pixel[0])
         y = abs(self.true_pixel[1] - self.res_pixel[1])
         d = np.sqrt(x**2+y**2)

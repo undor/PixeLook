@@ -12,13 +12,15 @@ class environment_ff:
     def find_gaze(self, input_img=None):
         if input_img is None:
             ret, frame = self.cap.read()
+            reruns=100
         else:
             frame = input_img
+            reruns =2
         cur_frame = FrameData(frame[:, :, ::-1])
         cur_frame.flip()
         img_h, img_w, _ = np.shape(frame)
         # Detect Faces
-        for counter_error in range(1, 100):
+        for counter_error in range(1, reruns):
             if cur_frame.face_landmark_detect():
                 cur_frame.head_pose_detect()
                 cur_frame = utils.normalize_face(cur_frame)
@@ -31,7 +33,7 @@ class environment_ff:
                     # display = cv2.circle(display, cur_frame.gaze_origin, 3, (0, 255, 0), -1)
                     # display = utils.draw_gaze(display, cur_frame.gaze_origin, gaze, color=(255, 0, 0), thickness=2)
         print("Find Gaze was unable to detect your face!")
-        return -1, [[0][0][0]]
+        return -1, np.array([0,0,0])
 
 
 def load_face_model():

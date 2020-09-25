@@ -24,9 +24,8 @@ class gaze_manager:
         elif model_method == "HeadPose":
             self.env = HeadPoseBasedSolution.my_env_hp
         self.pixel_per_mm = get_mm_pixel_ratio(screen_size)
-
-
-
+        self.screen_size =screen_size
+        self.last_distance=0
 
     def gaze_to_pixel(self, gaze):
         width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_gaze_scale
@@ -69,6 +68,7 @@ class gaze_manager:
 
     def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
+        self.last_distance = ht[2]
         if self.pixel_method == "Linear":
             return self.gaze_to_pixel(gaze)
         else:

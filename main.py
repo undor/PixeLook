@@ -1,5 +1,4 @@
 from Calibration.Choose_Methods import Configuration
-from Calibration.calibration import *
 from TestInfo.TestDB import *
 from TestInfo.TestIDE import *
 
@@ -7,7 +6,7 @@ dataset_path = 'DataSetPreProcess/RES/MPIIGaze.h5'
 
 def __main__():
     my_test_db = TestDB("../DataBases/MPIIFaceGaze","../DataBases/MPIIGaze")
-    my_test_db.scan_db_ff()
+    my_test_db.scan_db_hp()
     return
 
 def __main__2():
@@ -19,8 +18,7 @@ def __main__2():
     # screen_size = 14
     main_gaze_manager = gaze_manager(model_method, convert_method, screen_size)
     main_gaze_manager.calibrate()
-    new_log_session(model_method, convert_method, screen_size,"DorTomer")
-    main_test_manager = Test_Manager(main_gaze_manager)
+    main_test_manager = Test_Manager(main_gaze_manager,"TOMER")
     for i in range(10):
         main_test_manager.collect()
         # main_gaze_manager.gui.print_pixel(main_gaze_manager.get_cur_pixel_mean())
