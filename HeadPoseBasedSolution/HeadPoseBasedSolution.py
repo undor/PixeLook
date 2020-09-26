@@ -11,11 +11,13 @@ class environment_hp:
 
     def find_gaze(self, input_img=None, head_loc=None):
         if input_img is None:
-            ___, frame = self.cap.read()
+            ret, frame = self.cap.read()
+            reruns=100
         else:
             frame = input_img
+            reruns =2
         cur_frame = FrameData(frame)
-        for counter_error in range(1, 100):
+        for counter_error in range(1, reruns):
             if cur_frame.face_landmark_detect(head_loc):
                 cur_frame.head_pose_detect(head_loc)
                 cur_frame.pre_process_for_net()
