@@ -68,7 +68,7 @@ class gaze_manager:
 
     def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
-        self.last_distance = ht[2]
+        self.last_distance = ht[2][0]
         if self.pixel_method == "Linear":
             return self.gaze_to_pixel(gaze)
         else:
@@ -122,8 +122,8 @@ class gaze_manager:
 
             width_length = abs(right_gaze_mm_x - left_gaze_mm_x)
             height_length = abs(up_gaze_mm_y-down_gaze_mm_y)
-            self.calib_ratio_width = self.gui.width / (self.width_length * self.pixel_per_mm)
-            self.calib_ratio_height = self.gui.height / (self.height_length * self.pixel_per_mm)
+            self.calib_ratio_width = self.gui.width / (width_length * self.pixel_per_mm)
+            self.calib_ratio_height = self.gui.height / (height_length * self.pixel_per_mm)
 
 
         # CENTER VALIDATION

@@ -9,7 +9,7 @@ class Test_Manager():
         self.gaze_manager = gaze_manager
         self.width = gaze_manager.width_px
         self.height = gaze_manager.height_px
-        self.test_csv = new_csv_session(None)
+        self.test_csv = new_csv_session("OurDB")
         self.person_name = person_name
 
     def draw_target(self):
@@ -28,7 +28,7 @@ class Test_Manager():
         self.draw_target()
         self.capture()
         cur_smp.set_from_session(self.tag, self.pixel, self.gaze_manager.screen_size,self.gaze_manager.last_distance)
-        cur_smp.compute_error()
+        cur_smp.compute_error(self.gaze_manager.pixel_per_mm)
         log_sample_csv(cur_smp,self.person_name,self.test_csv)
         print("logged ",self.person_name," real_pixel:", self.tag, "result_pixel:",self.pixel)
 

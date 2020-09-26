@@ -12,9 +12,6 @@ def new_log_session(model_method, convert_method, screen_size,DB):
     log_file.close()
 
 def new_csv_session(name):
-    if name is None:
-        time = datetime.now()
-        name = time.strftime("%Y-%m-%d %H-%M-%S")
     csv_file = open(name+".csv", "a")
     csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm\n")
     return csv_file
@@ -51,7 +48,7 @@ class Sample:
 
     def set_from_hp_db(self,d):
         self.img_path = d[0]
-        self.head_points = (int(d[1]), int(d[2]),int(d[3]), int(d[4]), int(d[5]), int(d[6]))
+        self.head_points = np.array([[float(d[1]), float(d[2])],[float(d[3]), float(d[4])],[ float(d[5]), float(d[6])],[float(d[7]), float(d[8])],[float(d[9]), float(d[10])],[float(d[11]), float(d[12])]])
         return
 
     def set_from_session(self,true_pixel,res_pixel,screen_size,dist_screen):
@@ -65,8 +62,14 @@ class Sample:
         x = abs(self.true_pixel[0] - self.res_pixel[0])
         y = abs(self.true_pixel[1] - self.res_pixel[1])
         d = np.sqrt(x**2+y**2)
-        self.err_mm = int(np.true_divide(d, pixel_per_mm)[0][0])
-        self.err_mm_x = int(np.true_divide(x, pixel_per_mm)[0][0])
-        self.err_mm_y = int(np.true_divide(y, pixel_per_mm)[0][0])
+        self.err_mm = int(np.true_divide(d, pixel_per_mm))
+        self.err_mm_x = int(np.true_divide(x, pixel_per_mm))
+        self.err_mm_y = int(np.true_divide(y, pixel_per_mm))
+
+        if np.size(self.err_mm) != 1:
+            self.err_mm = self.err_mm[0][0]
+            self.err_mm_x = self.err_mm_x[0][0]
+            self.err_mm_y = self.err_mm_y[0][0]
+
 
 

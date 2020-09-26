@@ -30,6 +30,7 @@ class FrameData:
     def head_pose_detect(self, head_loc=None):
         if head_loc is None:
             landmarks = self.shape
+            print (landmarks)
         else:
             landmarks = head_loc
         mini_face_model_adj = mini_face_model.T.reshape(mini_face_model.shape[1], 1, 3)
@@ -44,23 +45,11 @@ class FrameData:
                                                                                 camera_matrix,
                                                                                 dist_coeffs, self.rotation_vector,
                                                                                 self.translation_vector, True)
-        # print("hr is ", self.rotation_vector)
-        # print("ht is ", self.translation_vector)
-        # Project a 3D point (0, 0, 1000.0) onto the image plane.
-        # (nose_end_point2D, jacobian) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), self.rotation_vector,
-        #                                                  self.translation_vector, camera_matrix, dist_coeffs)
-        #
-        # p1 = (int(image_points[NOSE_INDEX][0]), int(image_points[NOSE_INDEX][1]))
-        # p2 = (int(nose_end_point2D[0][0][0]), int(nose_end_point2D[0][0][1]))
-        # if self.is_debug:
-        #     cv2.line(self.debug_img, p1, p2, (255, 0, 0), 2)
-        # rot = Rotation.from_rotvec(self.rotation_vector)
-        # model3d = camera_matrix_a @ self.rotation_vector.T + self.translation_vector
-        # self.angles = rot.as_euler('XYZ')[:2] * np.array([1, -1])
+
 
     def pre_process_for_net(self):
         net_input = normalizeData(self.orig_img, mini_face_model, self.rotation_vector, self.translation_vector,
-                                  self.camera_matrix)
+                                  utils.global_camera_matrix)
         # show results of right eye image
         self.r_eye = net_input[0]
         self.l_eye = net_input[1]
