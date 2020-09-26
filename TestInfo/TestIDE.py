@@ -1,8 +1,8 @@
 from TestInfo.TestUtils import *
 
 
-class Test_Manager():
-    def __init__(self, gaze_manager,person_name):
+class Test_Manager:
+    def __init__(self, gaze_manager, person_name):
         self.tag = np.zeros(2)
         self.pixel = np.zeros(2)
         self.error_mm = 0
@@ -27,10 +27,10 @@ class Test_Manager():
         cur_smp = Sample()
         self.draw_target()
         self.capture()
-        cur_smp.set_from_session(self.tag, self.pixel, self.gaze_manager.screen_size,self.gaze_manager.last_distance)
+        cur_smp.set_from_session(self.tag, self.pixel, self.gaze_manager.screen_size, self.gaze_manager.last_distance)
         cur_smp.compute_error()
-        log_sample_csv(cur_smp,self.person_name,self.test_csv)
-        print("logged ",self.person_name," real_pixel:", self.tag, "result_pixel:",self.pixel)
+        log_sample_csv(cur_smp, self.person_name, self.test_csv)
+        print("logged ", self.person_name, " real_pixel:", self.tag, "result_pixel:", self.pixel)
 
     def finish_test(self):
         self.test_csv.close()

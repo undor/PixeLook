@@ -6,6 +6,7 @@ from Defines import *
 global global_camera_matrix
 global global_camera_coeffs
 
+
 def shape_to_np(shape, dtype="float32"):
     # initialize the list of (x, y)-coordinates
     relevant_locations = [36, 39, 42, 45, 48, 54]
@@ -21,8 +22,9 @@ def shape_to_np(shape, dtype="float32"):
 
 
 def from_wh_mm_to_diag_inch(x,y):
-    res= (np.sqrt(x ** 2 + y ** 2) * MM_TO_IN)
-    return  round(res[0][0],1)
+    res = (np.sqrt(x ** 2 + y ** 2) * MM_TO_IN)
+    return round(res[0][0],1)
+
 
 # TODO - handle the mm to position on screen problem - dpi of tkinter not allways = screen DPI
 def get_mm_pixel_ratio(screen_size_inch):

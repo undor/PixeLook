@@ -1,7 +1,7 @@
 from utils import *
 
 
-def new_log_session(model_method, convert_method, screen_size,DB):
+def new_log_session(model_method, convert_method, screen_size, DB):
     log_file = open('Test_Log', "a")
     time = datetime.now()
     time = "\n" + "starting new session at: " + time.strftime("%Y-%m-%d %H:%M:%S") + "\n"
@@ -11,15 +11,17 @@ def new_log_session(model_method, convert_method, screen_size,DB):
     log_file.write(details)
     log_file.close()
 
+
 def new_csv_session(name):
     if name is None:
         time = datetime.now()
         name = time.strftime("%Y-%m-%d %H-%M-%S")
     csv_file = open(name+".csv", "a")
-    csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm\n")
+    csv_file.write("person, screen_size, err_mm, err_mm_x, err_mm_y, dist_screen_mm\n")
     return csv_file
 
-def log_sample_csv(smp,person, csv_file):
+
+def log_sample_csv(smp, person, csv_file):
     csv_file.write(str(person) + ",")
     csv_file.write(str(smp.screen_size)+",")
     csv_file.write(str(smp.err_mm) + ",")
@@ -27,6 +29,7 @@ def log_sample_csv(smp,person, csv_file):
     csv_file.write(str(smp.err_mm_y) + ",")
     csv_file.write(str(smp.dist_screen) + "\n")
     return
+
 
 class Sample:
     def __init__(self):
@@ -41,20 +44,20 @@ class Sample:
         self.screen_size = 0
         return
 
-    def set_from_ff_db(self,d):
+    def set_from_ff_db(self, d):
         self.img_path = d[0]
         self.true_pixel = (int(d[1]), int(d[2]))
-        self.true_ht_vec = (-float(d[21]),float(d[22]),-float(d[23]))
-        true_gaze_target = (float(d[24]),float(d[25]),float(d[26]))
+        self.true_ht_vec = (-float(d[21]), float(d[22]), -float(d[23]))
+        true_gaze_target = (float(d[24]), float(d[25]), float(d[26]))
         self.true_gaze = np.array(true_gaze_target) - np.array(self.true_ht_vec)
         return
 
-    def set_from_hp_db(self,d):
+    def set_from_hp_db(self, d):
         self.img_path = d[0]
-        self.head_points = (int(d[1]), int(d[2]),int(d[3]), int(d[4]), int(d[5]), int(d[6]))
+        self.head_points = (int(d[1]), int(d[2]), int(d[3]), int(d[4]), int(d[5]), int(d[6]))
         return
 
-    def set_from_session(self,true_pixel,res_pixel,screen_size,dist_screen):
+    def set_from_session(self, true_pixel, res_pixel, screen_size, dist_screen):
         self.true_pixel = true_pixel
         self.res_pixel = res_pixel
         self.screen_size = screen_size
@@ -68,5 +71,3 @@ class Sample:
         self.err_mm = int(np.true_divide(d, pixel_per_mm)[0][0])
         self.err_mm_x = int(np.true_divide(x, pixel_per_mm)[0][0])
         self.err_mm_y = int(np.true_divide(y, pixel_per_mm)[0][0])
-
-

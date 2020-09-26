@@ -8,7 +8,7 @@ class gaze_manager:
 
     def __init__(self, model_method, convert_method, screen_size):
         self.cur_stage = 0
-        if screen_size > 0 :
+        if screen_size > 0:
             self.gui = FullScreenApp()
             self.width_px = self.gui.width
             self.height_px = self.gui.height
@@ -24,8 +24,8 @@ class gaze_manager:
         elif model_method == "HeadPose":
             self.env = HeadPoseBasedSolution.my_env_hp
         self.pixel_per_mm = get_mm_pixel_ratio(screen_size)
-        self.screen_size =screen_size
-        self.last_distance=0
+        self.screen_size = screen_size
+        self.last_distance = 0
 
     def gaze_to_pixel(self, gaze):
         width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_gaze_scale
