@@ -30,7 +30,6 @@ class FrameData:
     def head_pose_detect(self, head_loc=None):
         if head_loc is None:
             landmarks = self.shape
-            print (landmarks)
         else:
             landmarks = head_loc
         mini_face_model_adj = mini_face_model.T.reshape(mini_face_model.shape[1], 1, 3)
@@ -45,7 +44,6 @@ class FrameData:
                                                                                 camera_matrix,
                                                                                 dist_coeffs, self.rotation_vector,
                                                                                 self.translation_vector, True)
-
 
     def pre_process_for_net(self):
         net_input = normalizeData(self.orig_img, mini_face_model, self.rotation_vector, self.translation_vector,

@@ -6,16 +6,18 @@ class environment_ff:
     def __init__(self):
         self.model = load_face_model()
         self.cap = cv2.VideoCapture(0)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         utils.global_camera_matrix = np.array([960., 0., 640., 0., 960., 360., 0., 0., 1.]).reshape(3, 3)
         utils.global_camera_coeffs = np.zeros((5, 1))
 
     def find_gaze(self, input_img=None):
         if input_img is None:
             ret, frame = self.cap.read()
-            reruns=100
+            reruns = 100
         else:
             frame = input_img
-            reruns =2
+            reruns = 2
         cur_frame = FrameData(frame[:, :, ::-1])
         cur_frame.flip()
         img_h, img_w, _ = np.shape(frame)

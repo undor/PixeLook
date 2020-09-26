@@ -11,11 +11,11 @@ def __main__():
 
 def __main__():
     configuration_manager = Configuration()
-    model_method, convert_method, screen_size = configuration_manager.config_model()
-
-    main_gaze_manager = gaze_manager(model_method, convert_method, screen_size)
+    model_method, convert_method, screen_size, user_name = configuration_manager.config_model()
+    print(model_method, convert_method, screen_size, user_name)
+    main_gaze_manager = gaze_manager(model_method, convert_method, screen_size, user_name)
     main_gaze_manager.calibrate()
-    main_test_manager = Test_Manager(main_gaze_manager,"TOMER")
+    main_test_manager = Test_Manager(main_gaze_manager)
     for i in range(10):
         main_test_manager.collect()
         # main_gaze_manager.gui.print_pixel(main_gaze_manager.get_cur_pixel_mean())

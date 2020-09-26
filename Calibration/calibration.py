@@ -6,7 +6,7 @@ from utils import *
 
 class gaze_manager:
 
-    def __init__(self, model_method, convert_method, screen_size):
+    def __init__(self, model_method, convert_method, screen_size, name):
         self.cur_stage = 0
         if screen_size > 0:
             self.gui = FullScreenApp()
@@ -19,22 +19,28 @@ class gaze_manager:
         self.pixel_method = convert_method
         self.calib_ratio_width = 1
         self.calib_ratio_height = 1
-        if model_method == "FullFace":
+        self.model_method = model_method
+        if self.model_method == "FullFace":
             self.env = FullFaceSolution.my_env_ff
-        elif model_method == "HeadPose":
+        elif self.model_method == "HeadPose":
             self.env = HeadPoseBasedSolution.my_env_hp
         self.pixel_per_mm = get_mm_pixel_ratio(screen_size)
         self.screen_size = screen_size
+        self.user_name = name
         self.last_distance = 0
 
     def gaze_to_pixel(self, gaze):
-        width_ratio = abs(gaze[1] - self.calib_data.left_gaze[1]) / self.width_gaze_scale
-        height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0]) / self.height_gaze_scale
-
-        x_location = width_ratio.item() * self.gui.width
-        y_location = height_ratio.item() * self.gui.height
-
-        if 0 <= x_location <= self.gui.width and self.gui.height >= y_location >= 0:
+        print("gaze is: ", gaze)
+        gaze = gaze.numpy()
+        print("gays: ", gaze, gaze[0], gaze[1])
+        width_ratio = abs(gaze[1] - self.calib_data.left_gaze[0][1]) / self.width_gaze_scale
+        height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0][0]) / self.height_gaze_scale
+        print("width and height ratio: ", width_ratio, height_ratio)
+        print("screen width and height: ", self.width_px, self.height_px)
+        x_location = width_ratio * self.width_px
+        y_location = height_ratio * self.height_px
+        print("x,y locations: ", x_location, y_location)
+        if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
             pixel = (x_location, y_location)
             return pixel
         return 0, 0
@@ -54,13 +60,11 @@ class gaze_manager:
 
     def gaze_to_pixel_math(self, gaze, ht):
         x, y = self.gaze_to_mm(gaze, ht)
-
         x = x*self.calib_ratio_width
         y = y*self.calib_ratio_height
 
         x_location = (x*self.pixel_per_mm + self.width_px/2)
         y_location = -y*self.pixel_per_mm
-
         if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
             pixel = (x_location, y_location)
             return pixel
@@ -68,6 +72,7 @@ class gaze_manager:
 
     def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
+        # TODO: check for error value here
         self.last_distance = ht[2][0]
         if self.pixel_method == "Linear":
             return self.gaze_to_pixel(gaze)

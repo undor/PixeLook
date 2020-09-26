@@ -1,29 +1,34 @@
 from utils import *
 
+#
+# def new_log_session(model_method, convert_method, screen_size, DB):
+#     log_file = open('Test_Log', "a")
+#     time = datetime.now()
+#     time = "\n" + "starting new session at: " + time.strftime("%Y-%m-%d %H:%M:%S") + "\n"
+#     details = "Chosen methods are:" + model_method + "," + convert_method + ",screen size(inches):" \
+#               + str(screen_size) + ",DB is:" + DB + "\n"
+#     log_file.write(time)
+#     log_file.write(details)
+#     log_file.close()
 
-def new_log_session(model_method, convert_method, screen_size,DB):
-    log_file = open('Test_Log', "a")
-    time = datetime.now()
-    time = "\n" + "starting new session at: " + time.strftime("%Y-%m-%d %H:%M:%S") + "\n"
-    details = "Chosen methods are:" + model_method + "," + convert_method + ",screen size(inches):" \
-              + str(screen_size) + ",DB is:" + DB + "\n"
-    log_file.write(time)
-    log_file.write(details)
-    log_file.close()
 
 def new_csv_session(name):
     csv_file = open(name+".csv", "a")
-    csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm\n")
+    csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method\n")
     return csv_file
 
-def log_sample_csv(smp,person, csv_file):
-    csv_file.write(str(person) + ",")
+
+def log_sample_csv(smp, csv_file):
+    csv_file.write(str(smp.person_name) + ",")
     csv_file.write(str(smp.screen_size)+",")
     csv_file.write(str(smp.err_mm) + ",")
     csv_file.write(str(smp.err_mm_x) + ",")
     csv_file.write(str(smp.err_mm_y) + ",")
-    csv_file.write(str(smp.dist_screen) + "\n")
+    csv_file.write(str(smp.dist_screen) + ",")
+    csv_file.write(str(smp.convert_method) + ",")
+    csv_file.write(str(smp.model_method) + " \n")
     return
+
 
 class Sample:
     def __init__(self):
@@ -36,6 +41,9 @@ class Sample:
         self.err_mm_y = 0
         self.dist_screen = 0
         self.screen_size = 0
+        self.person_name = "Default name"
+        self.convert_method = "None"
+        self.model_method = "None"
         return
 
     def set_from_ff_db(self,d):
@@ -51,11 +59,14 @@ class Sample:
         self.head_points = np.array([[float(d[1]), float(d[2])],[float(d[3]), float(d[4])],[ float(d[5]), float(d[6])],[float(d[7]), float(d[8])],[float(d[9]), float(d[10])],[float(d[11]), float(d[12])]])
         return
 
-    def set_from_session(self,true_pixel,res_pixel,screen_size,dist_screen):
+    def set_from_session(self, true_pixel, res_pixel, screen_size, dist_screen, name, convert_method, model_method):
         self.true_pixel = true_pixel
         self.res_pixel = res_pixel
         self.screen_size = screen_size
-        self.dist_screen = dist_screen
+        self.dist_screen = abs(round(dist_screen))
+        self.person_name = name
+        self.convert_method = convert_method
+        self.model_method = model_method
         return
 
     def compute_error(self, pixel_per_mm):
@@ -70,6 +81,3 @@ class Sample:
             self.err_mm = self.err_mm[0][0]
             self.err_mm_x = self.err_mm_x[0][0]
             self.err_mm_y = self.err_mm_y[0][0]
-
-
-
