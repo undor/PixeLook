@@ -1,0 +1,44 @@
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+dor,13.3,95,24,92,468.0,Trigonometric,FullFace 
+dor,13.3,73,13,72,468.0,Trigonometric,FullFace 
+dor,13.3,286,281,51,470.0,Trigonometric,FullFace 
+dor,13.3,32,11,29,469.0,Trigonometric,FullFace 
+dor,13.3,36,1,36,468.0,Trigonometric,FullFace 
+dor,13.3,72,17,70,470.0,Trigonometric,FullFace 
+dor,13.3,41,14,38,464.0,Trigonometric,FullFace 
+dor,13.3,143,0,143,462.0,Trigonometric,FullFace 
+dor,13.3,48,15,45,458.0,Trigonometric,FullFace 
+dor,13.3,52,9,51,462.0,Trigonometric,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+dor,13.3,11,10,4,453.0,Linear,FullFace
+dor,13.3,319,276,158,446.0,Linear,FullFace 
+dor,13.3,50,49,13,445.0,Linear,FullFace 
+dor,13.3,2,1,1,440.0,Linear,FullFace 
+dor,13.3,26,4,26,444.0,Linear,FullFace 
+dor,13.3,183,59,173,442.0,Linear,FullFace 
+dor,13.3,38,25,28,436.0,Linear,FullFace 
+dor,13.3,262,196,173,438.0,Linear,FullFace 
+dor,13.3,9,9,0,441.0,Linear,FullFace
+dor,13.3,11,10,4,453.0,Linear,FullFace
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+dor,13.3,11,10,3,426.0,Linear,HeadPose
+dor,13.3,24,20,14,421.0,Linear,HeadPose 
+dor,13.3,40,36,16,421.0,Linear,HeadPose 
+dor,13.3,37,34,15,427.0,Linear,HeadPose 
+dor,13.3,25,9,23,424.0,Linear,HeadPose 
+dor,13.3,22,21,5,425.0,Linear,HeadPose 
+dor,13.3,16,16,4,422.0,Linear,HeadPose 
+dor,13.3,194,78,177,420.0,Linear,HeadPose 
+dor,13.3,22,21,6,421.0,Linear,HeadPose
+dor,13.3,11,10,3,426.0,Linear,HeadPose
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+dor,13.3,58,18,55,402.0,Linear,HeadPose
+dor,13.3,36,35,9,405.0,Linear,HeadPose
+dor,13.3,39,39,2,414.0,Linear,HeadPose
+dor,13.3,56,49,26,407.0,Linear,HeadPose
+dor,13.3,25,17,19,410.0,Linear,HeadPose
+dor,13.3,225,224,19,412.0,Linear,HeadPose
+dor,13.3,280,280,6,415.0,Linear,HeadPose
+dor,13.3,99,96,27,413.0,Linear,HeadPose
+dor,13.3,56,55,13,413.0,Linear,HeadPose
+dor,13.3,69,55,41,415.0,Linear,HeadPose
