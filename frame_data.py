@@ -13,6 +13,8 @@ class FrameData:
         self.is_debug = is_debug
         self.gaze_origin = 0
         self.net_input = 0
+        self.r_eye = 0
+        self.l_eye = 0
 
     def flip(self):
         self.debug_img = cv2.flip(self.debug_img, 1)

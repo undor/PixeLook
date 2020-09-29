@@ -21,9 +21,9 @@ def shape_to_np(shape, dtype="float32"):
     return coords
 
 
-def from_wh_mm_to_diag_inch(x,y):
+def from_wh_mm_to_diag_inch(x, y):
     res = (np.sqrt(x ** 2 + y ** 2) * MM_TO_IN)
-    return round(res[0][0],1)
+    return round(res[0][0], 1)
 
 
 # TODO - handle the mm to position on screen problem - dpi of tkinter not allways = screen DPI

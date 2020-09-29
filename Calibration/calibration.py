@@ -19,6 +19,8 @@ class gaze_manager:
         self.pixel_method = convert_method
         self.calib_ratio_width = 1
         self.calib_ratio_height = 1
+        self.width_gaze_scale = 0
+        self.height_gaze_scale = 0
         self.model_method = model_method
         if self.model_method == "FullFace":
             self.env = FullFaceSolution.my_env_ff
@@ -30,20 +32,15 @@ class gaze_manager:
         self.last_distance = 0
 
     def gaze_to_pixel(self, gaze):
-        print("gaze is: ", gaze)
         gaze = gaze.numpy()
-        print("gays: ", gaze, gaze[0], gaze[1])
         width_ratio = abs(gaze[1] - self.calib_data.left_gaze[0][1]) / self.width_gaze_scale
         height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0][0]) / self.height_gaze_scale
-        print("width and height ratio: ", width_ratio, height_ratio)
-        print("screen width and height: ", self.width_px, self.height_px)
         x_location = width_ratio * self.width_px
         y_location = height_ratio * self.height_px
-        print("x,y locations: ", x_location, y_location)
         if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
             pixel = (x_location, y_location)
             return pixel
-        return 0, 0
+        return error_in_pixel
 
     def gaze_to_mm(self, gaze, ht):
         # p + t*v = (x, y, 0)
@@ -60,21 +57,25 @@ class gaze_manager:
 
     def gaze_to_pixel_math(self, gaze, ht):
         x, y = self.gaze_to_mm(gaze, ht)
-        x = x*self.calib_ratio_width
-        y = y*self.calib_ratio_height
+        x = x * self.calib_ratio_width
+        y = y * self.calib_ratio_height
 
-        x_location = (x*self.pixel_per_mm + self.width_px/2)
-        y_location = -y*self.pixel_per_mm
+        x_location = (x * self.pixel_per_mm + self.width_px / 2)
+        y_location = -y * self.pixel_per_mm
+
         if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
             pixel = (x_location, y_location)
             return pixel
-        return 0, 0
+        return error_in_pixel
 
     def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
-        # TODO: check for error value here
+        if ht == np.zeros(3):
+            # error in find gaze - didn't detect face
+            return error_in_detect
         self.last_distance = ht[2][0]
         if self.pixel_method == "Linear":
+            # if zeros - error in gaze to pixel - detected pixel outside of screen
             return self.gaze_to_pixel(gaze)
         else:
             return self.gaze_to_pixel_math(gaze, ht)
@@ -82,12 +83,23 @@ class gaze_manager:
     def get_cur_pixel_mean(self):
         cur_sum = np.array([0.0, 0.0])
         num = 0
-        # change range in order to change number of pixels to mean from
-        for i in range(1):
+        error = 0
+        num_to_mean = 2
+        # change num_to_mean in order to change number of pixels to mean from
+        # change tries_to_error in order to change how many times until error
+        tries_to_error = 2 * num_to_mean
+        while num < num_to_mean and error < tries_to_error:
             cur_pixel = np.array(self.get_cur_pixel())
-            if not(cur_pixel[0] == 0 or cur_pixel[1] == 0):
+            # out of bounds or didn't detect face
+            if (cur_pixel[0] == error_in_detect[0] or cur_pixel[1] == error_in_detect[1] or
+                    cur_pixel[0] == error_in_pixel or cur_pixel[1] == error_in_pixel[1]):
+                error += 1
+            # good pixel
+            else:
                 num += 1
                 cur_sum += cur_pixel
+        if error >= tries_to_error:
+            return error_in_pixel
         return np.round(np.true_divide(cur_sum, num))
 
     def step_calib_stage(self):
@@ -126,10 +138,9 @@ class gaze_manager:
             down_gaze_mm_y = self.gaze_to_mm(self.calib_data.down_gaze[0], self.calib_data.down_gaze[1])[1]
 
             width_length = abs(right_gaze_mm_x - left_gaze_mm_x)
-            height_length = abs(up_gaze_mm_y-down_gaze_mm_y)
+            height_length = abs(up_gaze_mm_y - down_gaze_mm_y)
             self.calib_ratio_width = self.gui.width / (width_length * self.pixel_per_mm)
             self.calib_ratio_height = self.gui.height / (height_length * self.pixel_per_mm)
-
 
         # CENTER VALIDATION
         self.calib_data.center_pixel = self.get_cur_pixel_mean()

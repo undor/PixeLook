@@ -7,7 +7,6 @@ import os
 import dlib
 import scipy.io as sio
 import random
-from datetime import datetime
 
 # Project Defines
 
@@ -25,6 +24,7 @@ class DateTime:
     minutes = 0
     second = 0
 
+
 class calib_data:
     left_gaze = (0, 0)
     right_gaze = (0, 0)
@@ -33,6 +33,8 @@ class calib_data:
     center_pixel = (0, 0)
 
 
+error_in_detect = np.array([-1, -1])
+error_in_pixel = np.zeros(2)
 NOSE_INDEX: int = 30
 REYE_INDICES: np.ndarray = np.array([36, 39])
 LEYE_INDICES: np.ndarray = np.array([42, 45])
@@ -145,6 +147,3 @@ stages = {'WAIT_FOR_LEFT': 0,
           'WAIT_FOR_CENTER': 4,
           'CHECK_CALIBRATION': 5,
           'FINISH_CALIBRATION': 6}
-
-
-

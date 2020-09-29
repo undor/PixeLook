@@ -34,6 +34,9 @@ class Sample:
     def __init__(self):
         self.img_path = ""
         self.true_pixel = np.zeros(2)
+        self.true_ht_vec = np.zeros(3)
+        self.true_gaze = np.zeros(2)
+        self.head_points = np.array([[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]).dtype(float)
         self.res_pixel = np.zeros(2)
         self.screen_size = 0
         self.err_mm = 0
@@ -46,17 +49,19 @@ class Sample:
         self.model_method = "None"
         return
 
-    def set_from_ff_db(self,d):
+    def set_from_ff_db(self, d):
         self.img_path = d[0]
         self.true_pixel = (int(d[1]), int(d[2]))
-        self.true_ht_vec = (-float(d[21]),float(d[22]),-float(d[23]))
-        true_gaze_target = (float(d[24]),float(d[25]),float(d[26]))
+        self.true_ht_vec = (-float(d[21]), float(d[22]), -float(d[23]))
+        true_gaze_target = (float(d[24]), float(d[25]), float(d[26]))
         self.true_gaze = np.array(true_gaze_target) - np.array(self.true_ht_vec)
         return
 
-    def set_from_hp_db(self,d):
+    def set_from_hp_db(self, d):
         self.img_path = d[0]
-        self.head_points = np.array([[float(d[1]), float(d[2])],[float(d[3]), float(d[4])],[ float(d[5]), float(d[6])],[float(d[7]), float(d[8])],[float(d[9]), float(d[10])],[float(d[11]), float(d[12])]])
+        self.head_points = np.array([[float(d[1]), float(d[2])], [float(d[3]), float(d[4])],
+                                     [float(d[5]), float(d[6])], [float(d[7]), float(d[8])],
+                                     [float(d[9]), float(d[10])], [float(d[11]), float(d[12])]])
         return
 
     def set_from_session(self, true_pixel, res_pixel, screen_size, dist_screen, name, convert_method, model_method):
@@ -76,7 +81,7 @@ class Sample:
         self.err_mm = int(np.true_divide(d, pixel_per_mm))
         self.err_mm_x = int(np.true_divide(x, pixel_per_mm))
         self.err_mm_y = int(np.true_divide(y, pixel_per_mm))
-
+        # TODO: ask Dor why this size won't be 1 ? what's this weird test?
         if np.size(self.err_mm) != 1:
             self.err_mm = self.err_mm[0][0]
             self.err_mm_x = self.err_mm_x[0][0]

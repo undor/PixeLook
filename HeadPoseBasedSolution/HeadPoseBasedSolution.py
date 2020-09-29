@@ -26,10 +26,8 @@ class environment_hp:
                 gaze = GazeModel.use_net(self.model, cur_frame)
 
                 return gaze, cur_frame.translation_vector
-
         print("Find Gaze was unable to detect your face!")
-        # TODO: return some other error-value to recognize later in testIDE
-        return -1, np.zeros(3)
+        return 0, cur_frame.translation_vector
 
 
 my_env_hp = environment_hp()
