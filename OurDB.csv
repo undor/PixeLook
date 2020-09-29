@@ -42,3 +42,22 @@ dor,13.3,280,280,6,415.0,Linear,HeadPose
 dor,13.3,99,96,27,413.0,Linear,HeadPose
 dor,13.3,56,55,13,413.0,Linear,HeadPose
 dor,13.3,69,55,41,415.0,Linear,HeadPose
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+Default Name,14.0,72,6,71,514,Trigonometric,FullFace 
+Default Name,14.0,60,1,60,498,Trigonometric,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+Default Name,14.0,33,33,2,520,Trigonometric,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+Default Name,14.0,3,1,3,533,Trigonometric,FullFace 
+Default Name,14.0,44,13,41,524,Trigonometric,FullFace 
+Default Name,14.0,26,26,2,527,Trigonometric,FullFace 
+Default Name,14.0,8,1,8,526,Trigonometric,FullFace 
+Default Name,14.0,46,25,38,530,Trigonometric,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
+Default Name,14.0,33,8,32,506,Trigonometric,FullFace 
+Default Name,14.0,10,9,3,524,Trigonometric,FullFace 
+Default Name,14.0,60,7,59,521,Trigonometric,FullFace 
+Default Name,14.0,31,19,25,515,Trigonometric,FullFace 
+Default Name,14.0,31,15,27,525,Trigonometric,FullFace 
+Default Name,14.0,42,40,12,531,Trigonometric,FullFace 

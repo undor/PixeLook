@@ -30,13 +30,18 @@ def log_sample_csv(smp, csv_file):
     return
 
 
+def log_error(csv_file, error_type):
+    s = "a " + error_type + " error has been occurred \n"
+    csv_file.write(s)
+
+
 class Sample:
     def __init__(self):
         self.img_path = ""
         self.true_pixel = np.zeros(2)
         self.true_ht_vec = np.zeros(3)
         self.true_gaze = np.zeros(2)
-        self.head_points = np.array([[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]).dtype(float)
+        self.head_points = np.array([[0., 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.]])
         self.res_pixel = np.zeros(2)
         self.screen_size = 0
         self.err_mm = 0

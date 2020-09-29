@@ -70,7 +70,7 @@ class gaze_manager:
 
     def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
-        if ht == np.zeros(3):
+        if ht[0] == 0 or ht[1] == 0 or ht[2] == 0 :
             # error in find gaze - didn't detect face
             return error_in_detect
         self.last_distance = ht[2][0]
@@ -92,7 +92,7 @@ class gaze_manager:
             cur_pixel = np.array(self.get_cur_pixel())
             # out of bounds or didn't detect face
             if (cur_pixel[0] == error_in_detect[0] or cur_pixel[1] == error_in_detect[1] or
-                    cur_pixel[0] == error_in_pixel or cur_pixel[1] == error_in_pixel[1]):
+                    cur_pixel[0] == error_in_pixel[0] or cur_pixel[1] == error_in_pixel[1]):
                 error += 1
             # good pixel
             else:
