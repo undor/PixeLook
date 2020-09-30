@@ -4,7 +4,7 @@ from TestInfo.TestUtils import *
 class Test_Manager:
     def __init__(self, gaze_manager):
 
-        self.tag = np.zeros(2)
+        self.real = np.zeros(2)
         self.pixel = np.zeros(2)
         self.error_mm = 0
 
@@ -12,7 +12,6 @@ class Test_Manager:
         self.width = gaze_manager.width_px
         self.height = gaze_manager.height_px
         self.person_name = gaze_manager.user_name
-        self.pixel_method = gaze_manager.pixel_method
         self.model_method = gaze_manager.model_method
 
         self.iteration = 0
@@ -39,18 +38,18 @@ class Test_Manager:
         self.iteration -= 1
 
     def draw_target(self):
-        self.tag = [random.randint(0, self.width), random.randint(0, self.height)]
-        self.gaze_manager.gui.print_pixel(self.tag)
+        self.real = [random.randint(0, self.width), random.randint(0, self.height)]
+        self.gaze_manager.gui.print_pixel(self.real)
         # wanted the button to move with the tag, but it's not working atm
         # self.gaze_manager.gui.print_capture_button(self.tag)
 
     def capture(self):
         self.gaze_manager.gui.wait_key()
-        self.pixel = self.gaze_manager.get_cur_pixel_mean()
-        return self.pixel
+        self.pixel_linear ,self.pixel_trig = self.gaze_manager.get_cur_pixel(both=True)
+        return self.pixel_linear ,self.pixel_trig
 
     def collect(self):
-        for self.iteration in range(15):
+        for self.iteration in range(30):
             cur_smp = Sample()
             self.draw_target()
             is_valid_pixel = self.capture()
@@ -60,9 +59,12 @@ class Test_Manager:
                 self.not_valid_detect()
             # all valid
             else:
-                cur_smp.set_from_session(self.tag, self.pixel, self.gaze_manager.screen_size,
+                cur_smp.set_from_session(self.real, self.pixel_linear, self.gaze_manager.screen_size,
                                          self.gaze_manager.last_distance, self.person_name,
-                                         self.pixel_method, self.model_method)
+                                         "Linear", self.model_method)
+                cur_smp.set_from_session(self.real, self.pixel_trig, self.gaze_manager.screen_size,
+                                         self.gaze_manager.last_distance, self.person_name,
+                                         "Trigonometric", self.model_method)
                 cur_smp.compute_error(self.gaze_manager.pixel_per_mm)
                 log_sample_csv(cur_smp, self.test_csv)
         self.finish_test()

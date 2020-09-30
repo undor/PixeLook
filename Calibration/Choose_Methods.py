@@ -31,14 +31,6 @@ class Configuration:
         self.model_method = "HeadPose"
         self.var.set(1)
 
-    def trigonometric(self):
-        self.convert_method = "Trigonometric"
-        self.var.set(1)
-
-    def linear(self):
-        self.convert_method = "Linear"
-        self.var.set(1)
-
     def set_size(self):
         size = self.e1.get()
         if size != "":
@@ -68,11 +60,6 @@ class Configuration:
         self.button_b.config(text="Head Pose Solution", command=lambda: self.hp())
         self.wait_key()
 
-        self.box.itemconfig(self.text, text="Choose your pixel converting method")
-        self.button_a.config(text="Linear Convert", command=lambda: self.linear())
-        self.button_b.config(text="Trigonometric Convert", command=lambda: self.trigonometric())
-        self.wait_key()
-
         self.button_b.destroy()
         self.button_a.place(relx=0.5, rely=0.25, anchor="c")
         self.box.delete("all")
@@ -88,4 +75,4 @@ class Configuration:
         self.box.destroy()
         self.master.destroy()
 
-        return self.model_method, self.convert_method, self.screen_size, self.name
+        return self.model_method, self.screen_size, self.name

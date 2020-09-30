@@ -6,7 +6,7 @@ from utils import *
 
 class gaze_manager:
 
-    def __init__(self, model_method, convert_method, screen_size, name):
+    def __init__(self, model_method, screen_size, name):
         self.cur_stage = 0
         if screen_size > 0:
             self.gui = FullScreenApp()
@@ -16,7 +16,6 @@ class gaze_manager:
             self.width_px = 0
             self.height_px = 0
         self.calib_data = calib_data()
-        self.pixel_method = convert_method
         self.calib_ratio_width = 1
         self.calib_ratio_height = 1
         self.width_gaze_scale = 0
@@ -68,17 +67,14 @@ class gaze_manager:
             return pixel
         return error_in_pixel
 
-    def get_cur_pixel(self):
+    def get_cur_pixel(self, both =None):
         gaze, ht = self.env.find_gaze()
         if ht[0] == 0 or ht[1] == 0 or ht[2] == 0 :
             # error in find gaze - didn't detect face
             return error_in_detect
         self.last_distance = ht[2][0]
-        if self.pixel_method == "Linear":
-            # if zeros - error in gaze to pixel - detected pixel outside of screen
-            return self.gaze_to_pixel(gaze)
-        else:
-            return self.gaze_to_pixel_math(gaze, ht)
+        if both:
+            return self.gaze_to_pixel(gaze), self.gaze_to_pixel_math(gaze, ht)
 
     def get_cur_pixel_mean(self):
         cur_sum = np.array([0.0, 0.0])
@@ -128,19 +124,20 @@ class gaze_manager:
         # WAIT FOR CENTER
         self.step_calib_stage()
         # CHECK CALIBRATION
-        if self.pixel_method == "Linear":
-            self.width_gaze_scale = abs(self.calib_data.right_gaze[0][1] - self.calib_data.left_gaze[0][1])
-            self.height_gaze_scale = abs(self.calib_data.down_gaze[0][0] - self.calib_data.up_gaze[0][0])
-        else:
-            right_gaze_mm_x = self.gaze_to_mm(self.calib_data.right_gaze[0], self.calib_data.right_gaze[1])[0]
-            left_gaze_mm_x = self.gaze_to_mm(self.calib_data.left_gaze[0], self.calib_data.left_gaze[1])[0]
-            up_gaze_mm_y = self.gaze_to_mm(self.calib_data.up_gaze[0], self.calib_data.up_gaze[1])[1]
-            down_gaze_mm_y = self.gaze_to_mm(self.calib_data.down_gaze[0], self.calib_data.down_gaze[1])[1]
+        self.width_gaze_scale = abs(self.calib_data.right_gaze[0][1] - self.calib_data.left_gaze[0][1])
+        self.height_gaze_scale = abs(self.calib_data.down_gaze[0][0] - self.calib_data.up_gaze[0][0])
 
-            width_length = abs(right_gaze_mm_x - left_gaze_mm_x)
-            height_length = abs(up_gaze_mm_y - down_gaze_mm_y)
-            self.calib_ratio_width = self.gui.width / (width_length * self.pixel_per_mm)
-            self.calib_ratio_height = self.gui.height / (height_length * self.pixel_per_mm)
+
+        # else:
+        #     right_gaze_mm_x = self.gaze_to_mm(self.calib_data.right_gaze[0], self.calib_data.right_gaze[1])[0]
+        #     left_gaze_mm_x = self.gaze_to_mm(self.calib_data.left_gaze[0], self.calib_data.left_gaze[1])[0]
+        #     up_gaze_mm_y = self.gaze_to_mm(self.calib_data.up_gaze[0], self.calib_data.up_gaze[1])[1]
+        #     down_gaze_mm_y = self.gaze_to_mm(self.calib_data.down_gaze[0], self.calib_data.down_gaze[1])[1]
+        #
+        #     width_length = abs(right_gaze_mm_x - left_gaze_mm_x)
+        #     height_length = abs(up_gaze_mm_y - down_gaze_mm_y)
+        #     self.calib_ratio_width = self.gui.width / (width_length * self.pixel_per_mm)
+        #     self.calib_ratio_height = self.gui.height / (height_length * self.pixel_per_mm)
 
         # CENTER VALIDATION
         self.calib_data.center_pixel = self.get_cur_pixel_mean()
