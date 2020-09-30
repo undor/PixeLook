@@ -29,20 +29,19 @@ class FixNetCalibration:
         self.model.init_bias()
         self.optimizer = SGD(self.model.parameters(), lr=0.000001)
 
-
-    def train_model(self,epoches,real,res):
+    def train_model(self, epoches, real, res):
         self.model.train()
-        print("real data is",real)
+        print("real data is", real)
         print("res data is", res)
         data_size = int(np.size(res)/2)
-        print("data size",data_size)
+        print("data size", data_size)
         # create our training loop
         for epoch in range(epoches):
             real_tensor = Variable(Tensor(real))
             res_tensor = Variable(Tensor(res))
 
             pred = self.model(res_tensor)
-            print("prediction: ",pred.data)
+            print("prediction: ", pred.data)
             loss = self.loss_f(pred, real_tensor)
 
             self.optimizer.zero_grad()
@@ -50,9 +49,9 @@ class FixNetCalibration:
             self.optimizer.step()
             print("Epoch: {} Loss: {}".format(epoch, loss.data))
 
-    def use_net(self, input):
+    def use_net(self, pixel):
         self.model.eval()
-        prediction = self.model(Variable(Tensor(input)))
+        prediction = self.model(Variable(Tensor(pixel)))
         print('a & b:', self.model.fc1.weight)
         print('c:', self.model.fc1.bias)
         return prediction

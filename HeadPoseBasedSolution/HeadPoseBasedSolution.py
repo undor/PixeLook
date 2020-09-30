@@ -12,14 +12,15 @@ class environment_hp:
         utils.global_camera_coeffs = np.zeros((5, 1))
 
     def find_gaze(self, input_img=None, head_loc=None):
-        if input_img is None:
-            ret, frame = self.cap.read()
-            reruns = 100
-        else:
-            frame = input_img
-            reruns = 2
-        cur_frame = FrameData(frame)
+        reruns = 100
         for counter_error in range(1, reruns):
+
+            if input_img is None:
+                ret, frame = self.cap.read()
+            else:
+                frame = input_img
+            cur_frame = FrameData(frame)
+
             if cur_frame.face_landmark_detect(head_loc):
                 cur_frame.head_pose_detect(head_loc)
                 cur_frame.pre_process_for_net()

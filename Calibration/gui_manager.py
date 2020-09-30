@@ -28,6 +28,16 @@ class FullScreenApp(object):
     #     self.master.geometry(self._geom)
     #     self._geom = geom
 
+    def print_training_stage(self, stage):
+        if stage == 0:
+            self.button.place(relx=0.25, rely=0.25, anchor="c")
+        if stage == 1:
+            self.button.place(relx=0.75, rely=0.25, anchor="c")
+        if stage == 2:
+            self.button.place(relx=0.25, rely=0.75, anchor="c")
+        if stage == 3:
+            self.button.place(relx=0.75, rely=0.75, anchor="c")
+
     def print_calib_stage(self, stage):
         if stage == 0:
             self.text_box = self.w.create_text((610, 120), text="Starting calibration",

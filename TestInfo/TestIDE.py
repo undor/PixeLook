@@ -5,7 +5,8 @@ class Test_Manager:
     def __init__(self, gaze_manager):
 
         self.real = np.zeros(2)
-        self.pixel = np.zeros(2)
+        self.pixel_linear = np.zeros(2)
+        self.pixel_trig = np.zeros(2)
         self.error_mm = 0
 
         self.gaze_manager = gaze_manager
@@ -18,7 +19,7 @@ class Test_Manager:
         self.test_csv = new_csv_session("OurDB")
 
     def self_check(self):
-        self.gaze_manager.gui.print_pixel(self.gaze_manager.get_cur_pixel_mean())
+        self.gaze_manager.gui.print_pixel(self.gaze_manager.get_cur_pixel())
         # un-comment if you want to wait for mouse-clicks to capture
         # self.gaze_manager.gui.wait_key()
 
@@ -45,8 +46,8 @@ class Test_Manager:
 
     def capture(self):
         self.gaze_manager.gui.wait_key()
-        self.pixel_linear ,self.pixel_trig = self.gaze_manager.get_cur_pixel(both=True)
-        return self.pixel_linear ,self.pixel_trig
+        self.pixel_linear, self.pixel_trig = self.gaze_manager.get_cur_pixel()
+        return self.pixel_linear, self.pixel_trig
 
     def collect(self):
         for self.iteration in range(30):
@@ -59,9 +60,13 @@ class Test_Manager:
                 self.not_valid_detect()
             # all valid
             else:
+                trig_fixed = self.gaze_manager.fix_sys.use_net(self.pixel_trig)
+                print("real pixel is: ", self.real, " and captured is: ", self.pixel_trig, "and captured after net is: ", trig_fixed)
                 cur_smp.set_from_session(self.real, self.pixel_linear, self.gaze_manager.screen_size,
                                          self.gaze_manager.last_distance, self.person_name,
                                          "Linear", self.model_method)
+                cur_smp.compute_error(self.gaze_manager.pixel_per_mm)
+                log_sample_csv(cur_smp, self.test_csv)
                 cur_smp.set_from_session(self.real, self.pixel_trig, self.gaze_manager.screen_size,
                                          self.gaze_manager.last_distance, self.person_name,
                                          "Trigonometric", self.model_method)

@@ -1,5 +1,6 @@
 import FullFaceSolution.FullFaceBasedSolution as FullFaceSolution
 import HeadPoseBasedSolution.HeadPoseBasedSolution as HeadPoseBasedSolution
+from Calibration.LinearFix import *
 from Calibration.gui_manager import *
 from utils import *
 
@@ -29,6 +30,8 @@ class gaze_manager:
         self.screen_size = screen_size
         self.user_name = name
         self.last_distance = 0
+        self.train_set_real = []
+        self.train_set = []
 
     def gaze_to_pixel(self, gaze):
         gaze = gaze.numpy()
@@ -36,10 +39,12 @@ class gaze_manager:
         height_ratio = abs(gaze[0] - self.calib_data.up_gaze[0][0]) / self.height_gaze_scale
         x_location = width_ratio * self.width_px
         y_location = height_ratio * self.height_px
-        if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
-            pixel = (x_location, y_location)
-            return pixel
-        return error_in_pixel
+        pixel = (x_location, y_location)
+        return pixel
+        # if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
+        #     pixel = (x_location, y_location)
+        #     return pixel
+        # return error_in_pixel
 
     def gaze_to_mm(self, gaze, ht):
         # p + t*v = (x, y, 0)
@@ -61,20 +66,21 @@ class gaze_manager:
 
         x_location = (x * self.pixel_per_mm + self.width_px / 2)
         y_location = -y * self.pixel_per_mm
+        pixel = (x_location, y_location)
+        return pixel
 
-        if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
-            pixel = (x_location, y_location)
-            return pixel
-        return error_in_pixel
+        # if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
+        #     pixel = (x_location, y_location)
+        #     return pixel
+        # return error_in_pixel
 
-    def get_cur_pixel(self, both =None):
+    def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
         if ht[0] == 0 or ht[1] == 0 or ht[2] == 0 :
             # error in find gaze - didn't detect face
             return error_in_detect
         self.last_distance = ht[2][0]
-        if both:
-            return self.gaze_to_pixel(gaze), self.gaze_to_pixel_math(gaze, ht)
+        return self.gaze_to_pixel(gaze), self.gaze_to_pixel_math(gaze, ht)
 
     def get_cur_pixel_mean(self):
         cur_sum = np.array([0.0, 0.0])
@@ -97,6 +103,10 @@ class gaze_manager:
         if error >= tries_to_error:
             return error_in_pixel
         return np.round(np.true_divide(cur_sum, num))
+
+    def learn_fix(self):
+        self.fix_sys = FixNetCalibration()
+        self.fix_sys.train_model(50, self.train_set_real, self.train_set)
 
     def step_calib_stage(self):
         self.gui.print_calib_stage(self.cur_stage)
@@ -127,7 +137,6 @@ class gaze_manager:
         self.width_gaze_scale = abs(self.calib_data.right_gaze[0][1] - self.calib_data.left_gaze[0][1])
         self.height_gaze_scale = abs(self.calib_data.down_gaze[0][0] - self.calib_data.up_gaze[0][0])
 
-
         # else:
         #     right_gaze_mm_x = self.gaze_to_mm(self.calib_data.right_gaze[0], self.calib_data.right_gaze[1])[0]
         #     left_gaze_mm_x = self.gaze_to_mm(self.calib_data.left_gaze[0], self.calib_data.left_gaze[1])[0]
@@ -140,10 +149,34 @@ class gaze_manager:
         #     self.calib_ratio_height = self.gui.height / (height_length * self.pixel_per_mm)
 
         # CENTER VALIDATION
-        self.calib_data.center_pixel = self.get_cur_pixel_mean()
+        self.calib_data.center_pixel = self.get_cur_pixel()[1]
         self.gui.print_calib_points(self.calib_data.center_pixel)
 
         self.step_calib_stage()
+
+    def collect_for_net(self):
+        self.cur_stage = 0
+        self.gui.print_training_stage(self.cur_stage)
+        self.gui.wait_key()
+        self.cur_stage += 1
+        self.train_set.append(self.get_cur_pixel()[1])
+        self.train_set_real.append([(0.25) * self.gui.width, 0.25 * self.gui.height])
+        self.gui.print_training_stage(self.cur_stage)
+        self.gui.wait_key()
+        self.cur_stage += 1
+        self.train_set.append(self.get_cur_pixel()[1])
+        self.train_set_real.append([0.75 * self.gui.width, 0.25 * self.gui.height])
+        self.gui.print_training_stage(self.cur_stage)
+        self.gui.wait_key()
+        self.cur_stage += 1
+        self.train_set.append(self.get_cur_pixel()[1])
+        self.train_set_real.append([0.25 * self.gui.width, 0.75 * self.gui.height])
+        self.gui.print_training_stage(self.cur_stage)
+        self.gui.wait_key()
+        self.cur_stage += 1
+        self.train_set.append(self.get_cur_pixel()[1])
+        self.train_set_real.append([0.75 * self.gui.width, 0.75 * self.gui.height])
+        self.learn_fix()
 
     def re_calibration(self):
         self.gui.w.delete("all")
@@ -156,5 +189,6 @@ class gaze_manager:
     def calibrate(self):
         while self.gui.finish is not True:
             self.calibrate_process()
+            self.collect_for_net()
             self.re_calibration()
         self.gui.button.config(text="Click to Capture")

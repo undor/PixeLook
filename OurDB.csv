@@ -61,3 +61,4 @@ Default Name,14.0,60,7,59,521,Trigonometric,FullFace
 Default Name,14.0,31,19,25,515,Trigonometric,FullFace 
 Default Name,14.0,31,15,27,525,Trigonometric,FullFace 
 Default Name,14.0,42,40,12,531,Trigonometric,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method
