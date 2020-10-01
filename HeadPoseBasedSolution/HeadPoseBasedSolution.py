@@ -25,7 +25,6 @@ class environment_hp:
                 cur_frame.head_pose_detect(head_loc)
                 cur_frame.pre_process_for_net()
                 gaze = GazeModel.use_net(self.model, cur_frame)
-
                 return gaze, cur_frame.translation_vector
         print("Find Gaze was unable to detect your face!")
         return 0, cur_frame.translation_vector

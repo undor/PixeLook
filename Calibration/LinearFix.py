@@ -41,17 +41,20 @@ class FixNetCalibration:
             res_tensor = Variable(Tensor(res))
 
             pred = self.model(res_tensor)
-            print("prediction: ", pred.data)
             loss = self.loss_f(pred, real_tensor)
 
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            print("Epoch: {} Loss: {}".format(epoch, loss.data))
+            if epoch % 10 == 0:
+                print("Epoch: {} Loss: {}".format(epoch, loss.data))
+
+        print('a & b:', self.model.fc1.weight)
+        print('c:', self.model.fc1.bias)
 
     def use_net(self, pixel):
         self.model.eval()
         prediction = self.model(Variable(Tensor(pixel)))
-        print('a & b:', self.model.fc1.weight)
-        print('c:', self.model.fc1.bias)
+        prediction = prediction.detach().numpy()
+
         return prediction

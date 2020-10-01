@@ -48,7 +48,7 @@ class TestDB:
                 cur_gaze, cur_ht = self.gaze_manager.env.find_gaze(cur_img)
                 if cur_ht[2] == 0:
                     continue
-                sample.res_pixel = self.gaze_manager.gaze_to_pixel_math(cur_gaze, cur_ht)
+                sample.res_pixel = self.gaze_manager.gaze_to_pixel_trig(cur_gaze, cur_ht)
                 sample.dist_screen = abs(int(cur_ht[2]))
                 sample.compute_error(self.gaze_manager.pixel_per_mm)
                 log_sample_csv(sample, people, csv_file_ff)
@@ -86,7 +86,7 @@ class TestDB:
                 cur_gaze, cur_ht = self.gaze_manager.env.find_gaze(cur_img, sample.head_points)
                 if cur_ht[2] == 0:
                     continue
-                sample.res_pixel = self.gaze_manager.gaze_to_pixel_math(cur_gaze, cur_ht)
+                sample.res_pixel = self.gaze_manager.gaze_to_pixel_trig(cur_gaze, cur_ht)
                 sample.dist_screen = abs(int(cur_ht[2]))
                 sample.compute_error(self.gaze_manager.pixel_per_mm)
                 log_sample_csv(sample, people, csv_file_hp)

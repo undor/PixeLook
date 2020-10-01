@@ -54,14 +54,11 @@ class Test_Manager:
             cur_smp = Sample()
             self.draw_target()
             is_valid_pixel = self.capture()
-            if is_valid_pixel is error_in_pixel:
-                self.not_valid_pixel()
-            elif is_valid_pixel is error_in_detect:
-                self.not_valid_detect()
-            # all valid
-            else:
+            if is_valid_pixel[1] is not error_in_detect:
                 trig_fixed = self.gaze_manager.fix_sys.use_net(self.pixel_trig)
                 print("real pixel is: ", self.real, " and captured is: ", self.pixel_trig, "and captured after net is: ", trig_fixed)
+                self.gaze_manager.gui.print_pixel(self.pixel_trig, "green")
+                self.gaze_manager.gui.print_pixel(trig_fixed, "blue")
                 cur_smp.set_from_session(self.real, self.pixel_linear, self.gaze_manager.screen_size,
                                          self.gaze_manager.last_distance, self.person_name,
                                          "Linear", self.model_method)
@@ -72,6 +69,11 @@ class Test_Manager:
                                          "Trigonometric", self.model_method)
                 cur_smp.compute_error(self.gaze_manager.pixel_per_mm)
                 log_sample_csv(cur_smp, self.test_csv)
+                self.gaze_manager.gui.wait_key()
+                self.gaze_manager.gui.w.delete("all")
+            # not valid
+            else:
+                self.not_valid_detect()
         self.finish_test()
 
     def finish_test(self):
