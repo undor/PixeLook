@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import Canvas
+
 from Defines import *
+
 
 class FullScreenApp(object):
     def __init__(self):
@@ -17,7 +19,7 @@ class FullScreenApp(object):
         self.counter = 0
 
         self.var = tk.IntVar()
-        self.button = tk.Button(self.master, text="Click to Capture", command=lambda: self.var.set(1))
+        self.button = tk.Button(self.master, text="@", command=lambda: self.var.set(1))
         self.second_button = tk.Button(self.master, text="I'm satisfied with the result", command=lambda: self.setvar())
         self.text_box = 0
         self.finish = False
@@ -70,7 +72,7 @@ class FullScreenApp(object):
     def print_capture_button(self, pixel):
         print("putting button in: ", pixel[0], pixel[1])
         self.button.place(x=pixel[0], y=pixel[1], anchor="c")
-        self.button.config(text="Click to Capture")
+        self.button.config(text="@")
 
     def print_pixel(self, pixel, colour=None):
         delta = 5

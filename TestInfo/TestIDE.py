@@ -28,14 +28,14 @@ class Test_Manager:
         log_error(self.test_csv, "pixel")
         self.gaze_manager.gui.button.config(text="pixel was out of bounds! Click to continue")
         self.gaze_manager.gui.wait_key()
-        self.gaze_manager.gui.button.config(text="Click to Capture")
+        self.gaze_manager.gui.button.config(text=text_for_capture)
         self.iteration -= 1
 
     def not_valid_detect(self):
         log_error(self.test_csv, "detect")
         self.gaze_manager.gui.button.config(text="Re-center your face to the camera! Click only when ready")
         self.gaze_manager.gui.wait_key()
-        self.gaze_manager.gui.button.config(text="Click to Capture")
+        self.gaze_manager.gui.button.config(text=text_for_capture)
         self.iteration -= 1
 
     def draw_target(self):

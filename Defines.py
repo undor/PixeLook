@@ -1,12 +1,12 @@
 # relevant imports
 
-import numpy as np
 import cv2
-import torch
-import os
 import dlib
-import scipy.io as sio
+import numpy as np
+import os
 import random
+import scipy.io as sio
+import torch
 
 # Project Defines
 
@@ -15,8 +15,9 @@ np.random.seed(0)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 font = cv2.FONT_HERSHEY_SIMPLEX
 
-epochs: int = 50
+epochs: int = 60
 
+max_distance_for_net_mm: int = 45
 #
 # class DateTime:
 #     year = 0
@@ -171,3 +172,4 @@ stages = {'CALIB_LEFT': 0,
           'FINISH_CALIBRATION': 10}
 stage_dot_locations = [(0.035, 0.5), (0.25, 0.25), (0.5, 0.035), (0.75, 0.25), (0.965, 0.5), (0.75, 0.75), (0.5, 0.965),
                        (0.25, 0.75), (0.5, 0.5), (0., 0.)]
+text_for_capture = "#"

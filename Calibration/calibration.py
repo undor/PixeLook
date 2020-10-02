@@ -136,6 +136,14 @@ class gaze_manager:
         print("got this pixel to print: ", self.calib_data[CALIB_CENTER])
         self.gui.print_calib_points(self.calib_data[CALIB_CENTER])
 
+    def is_ok_for_net(self,point_a,point_b):
+        threshold_px = max_distance_for_net_mm * self.pixel_per_mm
+        if abs(point_a[0] -point_b[0]) > threshold_px or abs(point_a[1]-point_b[1]) > threshold_px:
+            print("too far for net")
+            return False
+        else:
+            return True
+
     def step_calib_stage(self):
         print("stage is: ", self.cur_stage)
         if self.cur_stage == 9:
@@ -148,10 +156,14 @@ class gaze_manager:
             return
         # TODO: if re-calibrate, still train? or init the train set and real?
 
-        self.train_set.append(self.gaze_to_pixel_trig(self.calib_data[self.cur_stage][0],
-                                                      self.calib_data[self.cur_stage][1]))
-        self.train_set_real.append([stage_dot_locations[self.cur_stage][0] * self.gui.width,
-                                    stage_dot_locations[self.cur_stage][1] * self.gui.height])
+        cur_res_pixel = self.gaze_to_pixel_trig(self.calib_data[self.cur_stage][0],
+                                                          self.calib_data[self.cur_stage][1])
+        cur_real_pixel = [stage_dot_locations[self.cur_stage][0] * self.gui.width,
+                                        stage_dot_locations[self.cur_stage][1] * self.gui.height]
+
+        if self.is_ok_for_net(cur_res_pixel, cur_real_pixel):
+            self.train_set.append(cur_res_pixel)
+            self.train_set_real.append(cur_real_pixel)
         self.cur_stage += 1
 
     def calibrate_process(self):
@@ -164,7 +176,7 @@ class gaze_manager:
     def re_calibration(self):
         self.gui.w.delete("all")
         self.gui.button.place(relx=.5, rely=.5, anchor="c")
-        self.gui.button.config(text="Click to Capture")
+        self.gui.button.config(text=text_for_capture)
         self.gui.second_button.place_forget()
         self.gui.w.master.update()
         self.cur_stage = 0
@@ -173,4 +185,4 @@ class gaze_manager:
         while self.gui.finish is not True:
             self.calibrate_process()
             self.re_calibration()
-        self.gui.button.config(text="Click to Capture")
+        self.gui.button.config(text=text_for_capture)
