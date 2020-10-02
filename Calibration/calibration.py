@@ -33,18 +33,42 @@ class gaze_manager:
         self.last_distance = 0
         self.cur_stage = 0
         # train init
-        self.fix_sys = FixNetCalibration()
-        self.train_set_real = []
-        self.train_set = []
+        self.trig_fix_sys = FixNetCalibration()
+        self.linear_fix_sys = FixNetCalibration()
+        self.train_set_linear_real = []
+        self.train_set_linear = []
+        self.train_set_trig_real = []
+        self.train_set_trig = []
+
 
     def gaze_to_pixel_linear(self, gaze):
+
         gaze = gaze.numpy()
         width_ratio = abs(gaze[1] - self.calib_data[CALIB_LEFT][0][1]) / self.width_gaze_scale
         height_ratio = abs(gaze[0] - self.calib_data[CALIB_UP][0][0]) / self.height_gaze_scale
+
         x_location = width_ratio * self.width_px
         y_location = height_ratio * self.height_px
+
         pixel = (x_location, y_location)
         return pixel
+        # if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
+        #     pixel = (x_location, y_location)
+        #     return pixel
+        # return error_in_pixel
+
+
+    def gaze_to_pixel_trig(self, gaze, ht):
+        x, y = self.gaze_to_mm(gaze, ht)
+        x = x * self.width_calib_ratio
+        y = y * self.height_calib_ratio
+
+        x_location = (x * self.pixel_per_mm + self.width_px / 2)
+        y_location = -y * self.pixel_per_mm
+
+        pixel = (x_location, y_location)
+        return pixel
+
         # if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
         #     pixel = (x_location, y_location)
         #     return pixel
@@ -62,21 +86,6 @@ class gaze_manager:
         y = ht[1] + t * v[1].numpy()
         y = y[0]
         return x, y
-
-    def gaze_to_pixel_trig(self, gaze, ht):
-        x, y = self.gaze_to_mm(gaze, ht)
-        x = x * self.width_calib_ratio
-        y = y * self.height_calib_ratio
-
-        x_location = (x * self.pixel_per_mm + self.width_px / 2)
-        y_location = -y * self.pixel_per_mm
-        pixel = (x_location, y_location)
-        return pixel
-
-        # if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
-        #     pixel = (x_location, y_location)
-        #     return pixel
-        # return error_in_pixel
 
     def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
@@ -108,7 +117,6 @@ class gaze_manager:
     #         return error_in_pixel
     #     return np.round(np.true_divide(cur_sum, num))
 
-
     def compute_scale(self):
         self.width_gaze_scale = abs(self.calib_data[CALIB_RIGHT][0][1] - self.calib_data[CALIB_LEFT][0][1])
         self.height_gaze_scale = abs(self.calib_data[CALIB_DOWN][0][0] - self.calib_data[CALIB_UP][0][0])
@@ -124,54 +132,62 @@ class gaze_manager:
     #     self.width_calib_ratio = self.gui.width / (width_length * self.pixel_per_mm)
     #     self.height_calib_ratio = self.gui.height / (height_length * self.pixel_per_mm)
 
-    def train_fix_model(self):
-        self.fix_sys.train_model(epochs, self.train_set_real, self.train_set)
-
     def print_center_pixel(self):
-        # linear
-        # self.calib_data[CALIB_CENTER] = self.get_cur_pixel()[0]
         # trig
-        print("inside print center pixel")
-        self.calib_data[CALIB_CENTER] = self.get_cur_pixel()[1]
-        print("got this pixel to print: ", self.calib_data[CALIB_CENTER])
-        self.gui.print_calib_points(self.calib_data[CALIB_CENTER])
+        cur_pix = self.get_cur_pixel()
+        print("cur pix is: ", cur_pix)
+        cur_pix_lin_x = cur_pix[0][0].numpy()
+        cur_pix_lin_y = cur_pix[0][1].numpy()
 
-    def is_ok_for_net(self,point_a,point_b):
+        self.gui.print_calib_points((cur_pix_lin_x, cur_pix_lin_y), "green")
+        self.gui.print_calib_points(cur_pix[1])
+
+    def step_calib_stage(self):
+        if self.cur_stage == 9:
+            self.compute_scale()
+            self.print_center_pixel()
+            self.gui.print_calib_stage(self.cur_stage)
+            self.gui.wait_key()
+            return
+        self.gui.print_calib_stage(self.cur_stage)
+        self.gui.wait_key()
+        self.calib_data[self.cur_stage] = self.env.find_gaze()
+        self.cur_stage += 1
+
+    def is_ok_for_net(self, point_a, point_b):
         threshold_px = max_distance_for_net_mm * self.pixel_per_mm
-        if abs(point_a[0] -point_b[0]) > threshold_px or abs(point_a[1]-point_b[1]) > threshold_px:
+        if abs(point_a[0] - point_b[0]) > threshold_px or abs(point_a[1] - point_b[1]) > threshold_px:
+            print("x dist is: ", abs(point_a[0] - point_b[0]), "y dist is: ", abs(point_a[1] - point_b[1]))
             print("too far for net")
             return False
         else:
             return True
 
-    def step_calib_stage(self):
-        print("stage is: ", self.cur_stage)
-        if self.cur_stage == 9:
-            self.print_center_pixel()
-        self.gui.print_calib_stage(self.cur_stage)
-        self.gui.wait_key()
-        self.calib_data[self.cur_stage] = self.env.find_gaze()
+    def train_data(self):
+        for i in range(9):
+            linear_pixel = self.gaze_to_pixel_linear(self.calib_data[i][0])
+            trig_pixel = self.gaze_to_pixel_trig(self.calib_data[i][0],
+                                                 self.calib_data[i][1])
+            res_pixel = [stage_dot_locations[i][0] * self.gui.width,
+                         stage_dot_locations[i][1] * self.gui.height]
+            if self.is_ok_for_net(res_pixel, linear_pixel):
+                self.train_set_linear.append(linear_pixel)
+                self.train_set_linear_real.append(res_pixel)
+            if self.is_ok_for_net(res_pixel, trig_pixel):
+                self.train_set_trig.append(trig_pixel)
+                self.train_set_trig_real.append(res_pixel)
 
-        if self.cur_stage == 9:
-            return
-        # TODO: if re-calibrate, still train? or init the train set and real?
+        self.trig_fix_sys.train_model(epochs, self.train_set_trig_real, self.train_set_trig)
+        self.linear_fix_sys.train_model(epochs, self.train_set_linear_real, self.train_set_linear)
 
-        cur_res_pixel = self.gaze_to_pixel_trig(self.calib_data[self.cur_stage][0],
-                                                          self.calib_data[self.cur_stage][1])
-        cur_real_pixel = [stage_dot_locations[self.cur_stage][0] * self.gui.width,
-                                        stage_dot_locations[self.cur_stage][1] * self.gui.height]
-
-        if self.is_ok_for_net(cur_res_pixel, cur_real_pixel):
-            self.train_set.append(cur_res_pixel)
-            self.train_set_real.append(cur_real_pixel)
-        self.cur_stage += 1
+        print("weights for trig net: ", self.trig_fix_sys.model.fc1.weight, self.trig_fix_sys.model.fc1.bias)
+        print("weights for linear net: ", self.linear_fix_sys.model.fc1.weight, self.trig_fix_sys.model.fc1.bias)
 
     def calibrate_process(self):
         self.gui.master.update()
         for self.cur_stage in range(10):
             self.step_calib_stage()
-        self.compute_scale()
-        self.train_fix_model()
+        self.train_data()
 
     def re_calibration(self):
         self.gui.w.delete("all")

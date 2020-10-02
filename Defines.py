@@ -17,7 +17,7 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 
 epochs: int = 60
 
-max_distance_for_net_mm: int = 45
+max_distance_for_net_mm: int = 60
 #
 # class DateTime:
 #     year = 0

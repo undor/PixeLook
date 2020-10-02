@@ -370,3 +370,108 @@ Default Name,13.3,81,37,71,485.0,Linear,FullFace
 Default Name,13.3,17,17,2,485.0,Trigonometric,FullFace 
 Default Name,13.3,56,16,53,487.0,Linear,FullFace 
 Default Name,13.3,43,28,32,487.0,Trigonometric,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+Default Name,14.0,164,111,121,563,Trigonometric,0,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+
+Default Name,14.0,43,38,20,561,Trigonometric,0,FullFace
+Default Name,14.0,48,33,35,561,Linear,0,FullFace
+
+Default Name,14.0,48,4,48,570,Trigonometric,0,FullFace 
+Default Name,14.0,47,9,46,570,Linear,0,FullFace
+
+Default Name,14.0,1,0,0,573,Trigonometric,0,FullFace 
+Default Name,14.0,7,7,3,573,Linear,0,FullFace
+
+Default Name,14.0,23,23,1,571,Trigonometric,0,FullFace 
+Default Name,14.0,15,14,5,571,Linear,0,FullFace
+
+Default Name,14.0,11,3,10,577,Trigonometric,0,FullFace 
+Default Name,14.0,20,15,13,577,Linear,0,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+
+Default Name,14.0,100,72,70,640,Trigonometric,17,FullFace
+Default Name,14.0,46,40,22,640,Linear,-15,FullFace
+
+Default Name,14.0,46,38,25,648,Trigonometric,58,FullFace 
+Default Name,14.0,24,3,24,648,Linear,3,FullFace
+
+Default Name,14.0,60,34,49,588,Trigonometric,249,FullFace 
+Default Name,14.0,73,45,57,588,Linear,12,FullFace
+
+Default Name,14.0,28,25,12,578,Trigonometric,-12,FullFace 
+Default Name,14.0,2,2,0,578,Linear,6,FullFace
+
+Default Name,14.0,65,65,0,663,Trigonometric,72,FullFace 
+Default Name,14.0,66,37,55,663,Linear,-13,FullFace 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+Default Name,14.0,21,8,19,503,Trigonometric,FullFace,240 
+Default Name,14.0,79,50,61,503,Linear,FullFace,-3 
+Default Name,14.0,64,26,59,493,Trigonometric,FullFace,27 
+Default Name,14.0,51,47,21,493,Linear,FullFace,3 
+Default Name,14.0,10,8,6,537,Trigonometric,FullFace,45 
+Default Name,14.0,57,9,56,537,Linear,FullFace,8 
+Default Name,14.0,16,12,11,525,Trigonometric,FullFace,238 
+Default Name,14.0,63,48,41,525,Linear,FullFace,-5 
+Default Name,14.0,55,25,49,503,Trigonometric,FullFace,56 
+Default Name,14.0,98,15,96,503,Linear,FullFace,-9 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+Default Name,14.0,45,37,25,567,Trigonometric,FullFace,118 
+Default Name,14.0,16,5,15,567,Linear,FullFace,-16 
+Default Name,14.0,13,10,8,546,Trigonometric,FullFace,165 
+Default Name,14.0,9,3,8,546,Linear,FullFace,-9 
+Default Name,14.0,55,20,51,551,Trigonometric,FullFace,118 
+Default Name,14.0,39,5,39,551,Linear,FullFace,-39 
+Default Name,14.0,16,14,7,559,Trigonometric,FullFace,258 
+Default Name,14.0,10,8,6,559,Linear,FullFace,-10 
+Default Name,14.0,29,29,4,555,Trigonometric,FullFace,302 
+Default Name,14.0,19,19,4,555,Linear,FullFace,-19 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+Default Name,14.0,47,30,35,550,Trigonometric,FullFace,10 
+Default Name,14.0,34,23,25,550,Linear,FullFace,-19 
+Default Name,14.0,31,2,31,566,Trigonometric,FullFace,8 
+Default Name,14.0,26,4,26,566,Linear,FullFace,-11 
+Default Name,14.0,38,6,37,560,Trigonometric,FullFace,12 
+Default Name,14.0,42,7,42,560,Linear,FullFace,-24 
+Default Name,14.0,57,10,56,557,Trigonometric,FullFace,-4 
+Default Name,14.0,50,9,49,557,Linear,FullFace,-24 
+Default Name,14.0,25,25,4,531,Trigonometric,FullFace,9 
+Default Name,14.0,6,6,0,531,Linear,FullFace,2 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+Default Name,14.0,109,107,22,657,Trigonometric,HeadPose,0 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+Default Name,14.0,50,33,37,648,Trigonometric,HeadPose,-33 
+Default Name,14.0,135,3,135,648,Linear,HeadPose,-6 
+Default Name,14.0,159,126,97,646,Trigonometric,HeadPose,-41 
+Default Name,14.0,34,30,16,646,Linear,HeadPose,-14 
+Default Name,14.0,92,72,57,643,Trigonometric,HeadPose,-42 
+Default Name,14.0,108,29,104,643,Linear,HeadPose,-10 
+Default Name,14.0,220,193,104,648,Trigonometric,HeadPose,-29 
+Default Name,14.0,174,84,152,648,Linear,HeadPose,-9 
+Default Name,14.0,48,42,23,641,Trigonometric,HeadPose,15 
+Default Name,14.0,76,76,0,641,Linear,HeadPose,-19 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+Default Name,14.0,99,92,37,544,Trigonometric,HeadPose,-24 
+Default Name,14.0,268,18,268,544,Linear,HeadPose,34 
+Default Name,14.0,100,96,29,545,Trigonometric,HeadPose,41 
+Default Name,14.0,54,19,50,545,Linear,HeadPose,21 
+Default Name,14.0,230,228,28,552,Trigonometric,HeadPose,48 
+Default Name,14.0,194,61,184,552,Linear,HeadPose,38 
+Default Name,14.0,69,51,47,546,Trigonometric,HeadPose,47 
+Default Name,14.0,36,3,36,546,Linear,HeadPose,7 
+Default Name,14.0,43,41,13,561,Trigonometric,HeadPose,23 
+Default Name,14.0,640,245,591,561,Linear,HeadPose,75 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve
+Default Name,14.0,48,36,31,483,Trigonometric,FullFace,3 
+Default Name,14.0,38,27,26,483,Linear,FullFace,0 
+Default Name,14.0,55,54,5,468,Trigonometric,FullFace,5 
+Default Name,14.0,44,44,0,468,Linear,FullFace,-4 
+Default Name,14.0,34,33,8,480,Trigonometric,FullFace,6 
+Default Name,14.0,28,28,0,480,Linear,FullFace,-4 
+Default Name,14.0,34,3,34,485,Trigonometric,FullFace,-6 
+Default Name,14.0,58,7,57,485,Linear,FullFace,-1 
+Default Name,14.0,31,15,26,475,Trigonometric,FullFace,21 
+Default Name,14.0,21,21,2,475,Linear,FullFace,-13 

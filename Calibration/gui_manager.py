@@ -85,13 +85,17 @@ class FullScreenApp(object):
         self.master.update()
         return pixel
 
-    def print_calib_points(self, center):
+    def print_calib_points(self, center, colour = None):
         perimeter = 24
         radius = self.width*0.1
         self.w.create_oval(self.width/2 - radius, self.height/2 - radius, self.width/2 + radius, self.height/2 + radius,
                            fill="#FFFFFF")
         radius = 0.5*perimeter
-        self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
+        if colour is None:
+            self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
+        else:
+            self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill=colour)
+
         self.w.create_text((center[0]+radius, center[1]+radius), text="center dot",
                            font="MSGothic 8 bold", fill="#652828")
 

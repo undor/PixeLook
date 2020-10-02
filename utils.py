@@ -260,8 +260,8 @@ def normalize_face(cur_frame):
 #     def reg_time(self):
 #         self.counter = self.counter+1
 #         time_elapsed = datetime.datetime.now() - self.last_time
-#         if time_elapsed.seconds.real >= 1:
-#             self.fps = (self.counter / time_elapsed.seconds.real)
+#         if time_elapsed.seconds.pixel_real >= 1:
+#             self.fps = (self.counter / time_elapsed.seconds.pixel_real)
 #             self.counter = 0
 #             self.last_time = datetime.datetime.now()
 #

@@ -21,7 +21,7 @@ class FixNet(torch.nn.Module):
         init.eye_(self.fc1.weight)
 
     def init_bias(self):
-        init.constant_(self.fc1.bias, 10)
+        init.constant_(self.fc1.bias, 0)
 
 
 class FixNetCalibration:
@@ -31,16 +31,17 @@ class FixNetCalibration:
         self.optimizer = SGD(self.model.parameters(), lr=0.000001)
         self.is_trained = False
 
-    def train_model(self, epoches , real, res):
+    def train_model(self, epochs, real, res):
+        print("enter train model")
         self.model.train()
-        print("real data is", real)
+        print("pixel_real data is", real)
         print("res data is", res)
         data_size = int(np.size(res)/2)
         print("data size", data_size)
-        if data_size is 0:
+        if data_size < 4:
             return
         # create our training loop
-        for epoch in range(epoches):
+        for epoch in range(epochs):
             real_tensor = Variable(Tensor(real))
             res_tensor = Variable(Tensor(res))
 
@@ -54,13 +55,10 @@ class FixNetCalibration:
                 print("Epoch: {} Loss: {}".format(epoch, loss.data))
 
         self.is_trained = True
-        print('a & b:', self.model.fc1.weight)
-        print('c:', self.model.fc1.bias)
-        if self.model.fc1.weight[0 , 0] > 1.2 :
-            self.model.fc1.weight[0, 0] = 1.2
-        if self.model.fc1.weight[1, 1] > 1.2:
-            self.model.fc1.weight[1, 1] = 1.2
-
+        if self.model.fc1.weight[0, 0] > 1.5:
+            self.model.fc1.weight[0, 0] = 1.5
+        if self.model.fc1.weight[1, 1] > 1.5:
+            self.model.fc1.weight[1, 1] = 1.5
 
     def use_net(self, pixel):
         if self.is_trained:

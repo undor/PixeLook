@@ -14,7 +14,8 @@ from utils import *
 
 def new_csv_session(name):
     csv_file = open(name+".csv", "a")
-    csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve\n")
+    csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,"
+                   "net_improve\n")
     return csv_file
 
 
@@ -26,14 +27,25 @@ def log_sample_csv(smp, csv_file):
     csv_file.write(str(smp.err_mm_y) + ",")
     csv_file.write(str(smp.dist_screen) + ",")
     csv_file.write(str(smp.convert_method) + ",")
-    csv_file.write(str(smp.improve) + ",")
-    csv_file.write(str(smp.model_method) + " \n")
+    csv_file.write(str(smp.model_method) + ",")
+    csv_file.write(str(smp.improve) + " \n")
+    csv_file.flush()
     return
 
 
 def log_error(csv_file, error_type):
     s = "a " + error_type + " error has been occurred \n"
     csv_file.write(s)
+
+
+def compute_error_mm(pixel_a, pixel_b, pixel_per_mm):
+    x = abs(pixel_a[0] - pixel_b[0])
+    y = abs(pixel_a[1] - pixel_b[1])
+    d = np.sqrt(x**2+y**2)
+    err_mm = int(np.true_divide(d, pixel_per_mm))
+    err_mm_x = int(np.true_divide(x, pixel_per_mm))
+    err_mm_y = int(np.true_divide(y, pixel_per_mm))
+    return err_mm, err_mm_x, err_mm_y
 
 
 class Sample:
@@ -71,7 +83,7 @@ class Sample:
                                      [float(d[9]), float(d[10])], [float(d[11]), float(d[12])]])
         return
 
-    def set_from_session(self, true_pixel, res_pixel, screen_size, dist_screen, name, convert_method, model_method):
+    def set_from_session(self, true_pixel, res_pixel, screen_size, dist_screen, name, convert_method, model_method, err):
         self.true_pixel = true_pixel
         self.res_pixel = res_pixel
         self.screen_size = screen_size
@@ -79,17 +91,7 @@ class Sample:
         self.person_name = name
         self.convert_method = convert_method
         self.model_method = model_method
+        self.err_mm = err[0]
+        self.err_mm_x = err[1]
+        self.err_mm_y = err[2]
         return
-
-    def compute_error(self, pixel_per_mm):
-        x = abs(self.true_pixel[0] - self.res_pixel[0])
-        y = abs(self.true_pixel[1] - self.res_pixel[1])
-        d = np.sqrt(x**2+y**2)
-        self.err_mm = int(np.true_divide(d, pixel_per_mm))
-        self.err_mm_x = int(np.true_divide(x, pixel_per_mm))
-        self.err_mm_y = int(np.true_divide(y, pixel_per_mm))
-        # TODO: ask Dor why this size won't be 1 ? what's this weird test?
-        if np.size(self.err_mm) != 1:
-            self.err_mm = self.err_mm[0][0]
-            self.err_mm_x = self.err_mm_x[0][0]
-            self.err_mm_y = self.err_mm_y[0][0]
