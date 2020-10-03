@@ -75,14 +75,14 @@ class Test_Manager:
             self.draw_target()
             is_valid_pixel = self.capture()
             # TODO : check for both linear and trig pixels
-            if is_valid_pixel[1] is not error_in_detect:
+            if is_valid_pixel[1] is not error_in_detect or is_valid_pixel[0] is not error_in_detect:
                 self.pixel_trig_fixed = self.gaze_manager.trig_fix_sys.use_net(self.pixel_trig)
                 self.pixel_linear_fixed = self.gaze_manager.linear_fix_sys.use_net(self.pixel_linear)
 
                 self.new_log_input(cur_smp, "Trig")
                 self.new_log_input(cur_smp, "Linear")
 
-                self.gaze_manager.gui.print_pixel(self.pixel_trig, "green")
+                self.gaze_manager.gui.print_pixel(self.pixel_linear, "green")
                 self.gaze_manager.gui.print_pixel(self.pixel_trig_fixed, "blue")
 
                 self.gaze_manager.gui.wait_key()

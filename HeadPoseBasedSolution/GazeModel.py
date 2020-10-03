@@ -23,6 +23,7 @@ class GazeNet(nn.Module):
         x = F.max_pool2d(self.conv1(eye_img), kernel_size=2, stride=2)
         x = F.max_pool2d(self.conv2(x), kernel_size=2, stride=2)
         x = F.relu(self.fc1(x.view(x.size(0), -1)), inplace=True)
+        # print("x: ", x, "head_pose :", head_pose)
         x = torch.cat([x, head_pose], dim=1)
         x = self.fc2(x)
         return x
@@ -41,12 +42,9 @@ def use_net(model, frame):
     image = torch.from_numpy(image)
     image = image.unsqueeze(0).unsqueeze(0)
     head_pose = torch.from_numpy(frame.r_eye[1].astype(np.float32))
-
     with torch.no_grad():
         image = image.to(device)
         head_pose = head_pose.to(device)
-
         predictions = model(image, head_pose)
-        # predictions = predictions.cpu().numpy()
         predictions = predictions[0].cpu()
     return predictions

@@ -4,7 +4,7 @@ from Defines import *
 def normalizeData(img, face, hr, ht, cam):
     # normalized camera parameters
     focal_norm = 960  # focal length of normalized camera
-    distance_norm = 600  # normalized distance between eye and camera
+    distance_norm = 550  # normalized distance between eye and camera
     roiSize = (60, 36)  # size of cropped eye image
 
     img_u = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -50,13 +50,22 @@ def normalizeData(img, face, hr, ht, cam):
         # ---------- normalize rotation ----------
         hR_norm = np.dot(R, hR)  # rotation matrix in normalized space
         hr_norm = cv2.Rodrigues(hR_norm)[0]  # convert rotation matrix to rotation vectors
-
+        # TODO: to flip or not to flip, zo hasheela
         img_warped = cv2.flip(img_warped, -1)
 
-        hr_theta = np.arcsin(-1 * hr_norm[1])
-        hr_phi = np.arctan2(-1 * hr_norm[0], -1 * hr_norm[2])
+        # --------- Convert to euler angle -------
 
-        hr_res = np.array([hr_theta, hr_phi]).T
+        # hr_theta = np.arcsin(-1 * hr_norm[1])
+        # hr_phi = np.arctan2(-1 * hr_norm[0], -1 * hr_norm[2])
+        # hr_res = np.array([hr_theta, hr_phi]).T
+        # print("before hr res is: ", hr_res)
+        M_HP = cv2.Rodrigues(hr_norm)[0]
+        a = M_HP[2][0]
+        b = M_HP[2][1]
+        c = M_HP[2][2]
+        headpose_theta = np.arcsin(b)
+        headpose_phi = np.arctan2(a, c)
+        hr_res =np.array([[headpose_theta, headpose_phi]])
         data.append([img_warped, hr_res])
 
     return data
