@@ -1,4 +1,4 @@
-from HeadPoseBasedSolution.HeadPoseBasedSolution import GazeModel
+from HeadPoseBasedSolution.model import GazeModel
 import DataSetPreProcess.MPIIDataLoader as MPIIDataLoader
 import torch.nn as nn
 import torch

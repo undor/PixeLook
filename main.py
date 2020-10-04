@@ -1,6 +1,6 @@
 from Calibration.Choose_Methods import Configuration
-from TestInfo.TestDB import *
-from TestInfo.TestIDE import *
+from Tests.TestDB import *
+from Tests.TestIDE import *
 
 dataset_path = 'DataSetPreProcess/RES/MPIIGaze.h5'
 

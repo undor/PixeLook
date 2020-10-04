@@ -1,4 +1,4 @@
-from Defines import *
+from UtilsAndModels.Defines import *
 
 
 def normalizeData(img, face, hr, ht, cam):
@@ -50,8 +50,6 @@ def normalizeData(img, face, hr, ht, cam):
         # ---------- normalize rotation ----------
         hR_norm = np.dot(R, hR)  # rotation matrix in normalized space
         hr_norm = cv2.Rodrigues(hR_norm)[0]  # convert rotation matrix to rotation vectors
-        # TODO: to flip or not to flip, zo hasheela
-        img_warped = cv2.flip(img_warped, -1)
 
         # --------- Convert to euler angle -------
 
