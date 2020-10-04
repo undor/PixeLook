@@ -2,7 +2,7 @@ import FullFaceSolution.FullFaceBasedSolution as FullFaceSolution
 import HeadPoseBasedSolution.HeadPoseBasedSolution as HeadPoseBasedSolution
 from Calibration.LinearFix import *
 from Calibration.gui_manager import *
-from utils import *
+from UtilsAndModels.utils import *
 
 
 class gaze_manager:
@@ -61,13 +61,8 @@ class gaze_manager:
         y_location = -y * self.pixel_per_mm
 
         pixel = (x_location, y_location)
-        # print("trig pixel is: ", pixel)
         return pixel
 
-        # if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
-        #     pixel = (x_location, y_location)
-        #     return pixel
-        # return error_in_pixel
 
     def gaze_to_mm(self, gaze, ht):
         # p + t*v = (x, y, 0)
@@ -76,10 +71,10 @@ class gaze_manager:
         t = - ht[2] / v[2].numpy()
         # x = p(x)+t*v(x)
         x = ht[0] + t * v[0].numpy()
-        x = x[0]
+        x=x[0]
         # y = p(y)+t*v(y)
         y = ht[1] + t * v[1].numpy()
-        y = y[0]
+        y=y[0]
         return x, y
 
     def get_cur_pixel(self):
@@ -87,7 +82,7 @@ class gaze_manager:
         if ht[0] == 0 or ht[1] == 0 or ht[2] == 0:
             # error in find gaze - didn't detect face
             return error_in_detect
-        self.last_distance = ht[2][0]
+        self.last_distance = ht[2]
         return self.gaze_to_pixel_linear(gaze), self.gaze_to_pixel_trig(gaze, ht)
 
     # def get_cur_pixel_mean(self):
@@ -133,8 +128,8 @@ class gaze_manager:
         cur_pix_lin_x = cur_pix[0][0].numpy()
         cur_pix_lin_y = cur_pix[0][1].numpy()
 
-        self.gui.print_calib_points((cur_pix_lin_x, cur_pix_lin_y), "green")
-        self.gui.print_calib_points(cur_pix[1])
+        self.gui.print_calib_points((int(cur_pix_lin_x), int(cur_pix_lin_y)), "green")
+        self.gui.print_calib_points((int(cur_pix[1][0]),(int(cur_pix[1][1]))))
 
     def step_calib_stage(self):
         if self.cur_stage == 9:
@@ -151,21 +146,18 @@ class gaze_manager:
     def is_ok_for_net(self, point_a, point_b):
         threshold_px = max_distance_for_net_mm * self.pixel_per_mm
         if abs(point_a[0] - point_b[0]) > threshold_px or abs(point_a[1] - point_b[1]) > threshold_px:
-            # print("x dist is: ", abs(point_a[0] - point_b[0]), "y dist is: ", abs(point_a[1] - point_b[1]))
-            # print("too far for net")
             return False
         else:
             return True
 
     def train_data(self):
         for i in range(9):
-
-            # print("at stage: ", i, "calib data is: ", self.calib_data[i])
             linear_pixel = self.gaze_to_pixel_linear(self.calib_data[i][0])
             trig_pixel = self.gaze_to_pixel_trig(self.calib_data[i][0],
                                                  self.calib_data[i][1])
             res_pixel = [stage_dot_locations[i][0] * self.gui.width,
                          stage_dot_locations[i][1] * self.gui.height]
+
             if self.is_ok_for_net(res_pixel, linear_pixel):
                 self.train_set_linear.append(linear_pixel)
                 self.train_set_linear_real.append(res_pixel)

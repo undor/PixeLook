@@ -1,6 +1,4 @@
-import scipy
-
-import utils
+import UtilsAndModels.utils as utils
 from Calibration.calibration import *
 from Tests.TestUtils import *
 

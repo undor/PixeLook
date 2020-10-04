@@ -1,11 +1,11 @@
-from FullFaceSolution.model import gazenet
 from FrameData import *
+from FullFaceSolution.model.FullFaceModel import *
 
 
 class environment_ff:
     def __init__(self):
-        self.model = self.load_face_model()
-        self.cap = utils.set_camera(1280, 720)
+        self.init_net_model()
+        self.cap = utils.set_camera(capture_input_width, capture_input_height)
         utils.global_camera_matrix = np.array([960., 0., 640., 0., 960., 360., 0., 0., 1.]).reshape(3, 3)
         utils.global_camera_coeffs = np.zeros((5, 1))
 
@@ -21,27 +21,23 @@ class environment_ff:
             cur_frame.flip()
             if cur_frame.face_landmark_detect():
                 cur_frame.head_pose_detect()
-                cur_frame = self.normalize_face(cur_frame)
+                cur_frame = self.pre_process_for_net(cur_frame)
                 with torch.no_grad():
-                    gaze = self.model.get_gaze(cur_frame.debug_img)
+                    gaze = self.model.get_gaze(cur_frame.img_for_net)
                     gaze = gaze[0].data.cpu()
                     return gaze, cur_frame.translation_vector
         print("Find Gaze was unable to detect your face!")
         return -1, np.array([0, 0, 0])
 
-    def load_face_model(self):
+    def init_net_model(self):
         torch.manual_seed(0)
-        device = torch.device("cpu")
-        model = gazenet.GazeNet(device)
-        state_dict = torch.load('FullFaceSolution/model/weights/gazenet.pth', map_location=device)
-        model.load_state_dict(state_dict)
-        model.eval()
-        return model
+        self.model = GazeNet(device)
+        state_dict = torch.load('FullFaceSolution/model/trainedFullFaceNet.pth', map_location=device)
+        self.model.load_state_dict(state_dict)
+        self.model.eval()
 
-    def normalize_face(self,cur_frame):
-        # Adapted from imutils package
+    def pre_process_for_net(self,cur_frame):
         shape = cur_frame.shape
-        # 36, 39, 42, 45, 48, 54
 
         rcenter_x = (shape[0][0] + shape[1][0]) / 2
         rcenter_y = (shape[0][1] + shape[1][1]) / 2
@@ -79,11 +75,11 @@ class environment_ff:
         tY = 112 * left_eye_coord[1]
         M[0, 2] += (tX - gaze_origin[0])
         M[1, 2] += (tY - gaze_origin[1])
+
         cur_frame.flip()
         # apply the affine transformation
         cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (112, 112), flags=cv2.INTER_CUBIC)
         cur_frame.gaze_origin = gaze_origin
-        return img_for_net
-
+        return cur_frame
 
 my_env_ff = environment_ff()

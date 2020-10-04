@@ -1,6 +1,5 @@
 import UtilsAndModels.utils as utils
-from HeadPoseBasedSolution.NewImgPreProcess.NormalizeData import *
-from scipy.spatial.transform import Rotation
+from UtilsAndModels.Defines import *
 
 class FrameData:
     def __init__(self, img, is_debug=True):
@@ -42,7 +41,8 @@ class FrameData:
             self.is_face = True
         return self.is_face
 
-    def head_pose_detect(self, head_loc=None):
+
+    def head_pose_detect(self,twice = True, head_loc=None):
         if head_loc is None:
             landmarks = self.shape
         else:
@@ -51,22 +51,23 @@ class FrameData:
         # check for distortion
         dist_coeffs = utils.global_camera_coeffs
         camera_matrix = utils.global_camera_matrix
-        rvec = np.zeros(3, dtype=np.float)
-        tvec = np.array([0, 0, 1], dtype=np.float)
-        (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
-                                                                                camera_matrix,
-                                                                                dist_coeffs,rvec,tvec,
-                                                                                useExtrinsicGuess=True,
-                                                                                flags=cv2.SOLVEPNP_ITERATIVE )
-
-
-    def pre_process_for_net(self):
-        rotation_hp = Rotation.from_rotvec(self.rotation_vector)
-        net_input = normalizeData(self.orig_img, mini_face_model, self.rotation_vector, self.translation_vector,
-                                  utils.global_camera_matrix)
-        # show results of right eye image
-        self.r_eye = net_input[0]
-        self.l_eye = net_input[1]
-
-    # def eyes_detect(self):
-    #      self.r_eye, self.l_eye = eye_detector(self.orig_img, self.shape)
+        if twice:
+            (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
+                                                                                    camera_matrix,
+                                                                                    dist_coeffs,
+                                                                                    True)
+            (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
+                                                                                    camera_matrix,
+                                                                                    dist_coeffs,self.rotation_vector,
+                                                                                    self.translation_vector,
+                                                                                    True)
+        else:
+            rvec = np.zeros(3, dtype=np.float)
+            tvec = np.array([0, 0, 1], dtype=np.float)
+            (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
+                                                                                    camera_matrix,
+                                                                                    dist_coeffs, rvec, tvec,
+                                                                                    useExtrinsicGuess=True,
+                                                                                    flags=cv2.SOLVEPNP_ITERATIVE)
+            print (self.translation_vector)
+            print (self.rotation_vector)

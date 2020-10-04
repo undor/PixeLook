@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import yacs.config
 
 
 def initialize_weights(module: torch.nn.Module) -> None:
@@ -129,3 +128,4 @@ class Model(nn.Module):
         x = torch.cat([x, y], dim=1)
         x = self.fc(x)
         return x
+

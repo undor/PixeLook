@@ -1,9 +1,10 @@
-from HeadPoseBasedSolution.model import GazeModel
-import DataSetPreProcess.MPIIDataLoader as MPIIDataLoader
-import torch.nn as nn
-import torch
 import numpy as np
+import torch
+import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
+
+import DataSetPreProcess.MPIIDataLoader as MPIIDataLoader
+from HeadPoseBasedSolution.model import HeadPoseModel
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -94,7 +95,7 @@ def train(epoch, model, optimizer, loss_function, train_loader, writer):
 def train_and_validate_aux(num_ephocs):
     train_loader, val_loader, test_loader = MPIIDataLoader.create_dataloader()
 
-    model = GazeModel.GazeNet().to(device)
+    model = HeadPoseModel.GazeNet().to(device)
     model.init_weights()
     loss_function = nn.MSELoss(reduction='mean')
     optimizer = torch.optim.SGD(model.parameters(),

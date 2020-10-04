@@ -1,14 +1,14 @@
 import tkinter as tk
 from tkinter import Canvas
 
-from Defines import *
+from UtilsAndModels.Defines import *
 
 
 class FullScreenApp(object):
     def __init__(self):
         self.master = tk.Tk()
         self._geom = '200x200+0+0'
-        self.master.attributes('-fullscreen', True)
+        #self.master.attributes('-fullscreen', True)
         self.width = self.master.winfo_screenwidth()
         self.height = self.master.winfo_screenheight()
         self.w = Canvas(self.master)

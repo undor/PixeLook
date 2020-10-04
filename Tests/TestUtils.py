@@ -1,23 +1,11 @@
-from utils import *
-
-#
-# def new_log_session(model_method, convert_method, screen_size, DB):
-#     log_file = open('Test_Log', "a")
-#     time = datetime.now()
-#     time = "\n" + "starting new session at: " + time.strftime("%Y-%m-%d %H:%M:%S") + "\n"
-#     details = "Chosen methods are:" + model_method + "," + convert_method + ",screen size(inches):" \
-#               + str(screen_size) + ",DB is:" + DB + "\n"
-#     log_file.write(time)
-#     log_file.write(details)
-#     log_file.close()
+from UtilsAndModels.utils import *
 
 
 def new_csv_session(name):
-    csv_file = open(name+".csv", "a")
+    csv_file = open("Results/"+name+".csv", "a")
     csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,"
                    "net_improve\n")
     return csv_file
-
 
 def log_sample_csv(smp, csv_file):
     csv_file.write(str(smp.person_name) + ",")
@@ -31,7 +19,6 @@ def log_sample_csv(smp, csv_file):
     csv_file.write(str(smp.improve) + " \n")
     csv_file.flush()
     return
-
 
 def log_error(csv_file, error_type):
     s = "a " + error_type + " error has been occurred \n"
@@ -87,7 +74,7 @@ class Sample:
         self.true_pixel = true_pixel
         self.res_pixel = res_pixel
         self.screen_size = screen_size
-        self.dist_screen = abs(round(dist_screen))
+        self.dist_screen = abs(np.round(dist_screen))
         self.person_name = name
         self.convert_method = convert_method
         self.model_method = model_method

@@ -2,8 +2,8 @@ import numpy as np
 import torch
 from torch import Tensor
 from torch.autograd import Variable
-from torch.nn import Linear, MSELoss, init, ReLU, functional as F
-from torch.optim import SGD, Adam, RMSprop
+from torch.nn import Linear, MSELoss, init, ReLU
+from torch.optim import SGD
 
 
 class FixNet(torch.nn.Module):
@@ -40,7 +40,8 @@ class FixNetCalibration:
 
     def train_model(self, epochs, real, res):
         self.model.train()
-        # print("res data is", res)
+        print("res data is", res)
+        print("real data is", real)
         data_size = int(np.size(res)/2)
         # print("data size", data_size)
         if data_size < 4:

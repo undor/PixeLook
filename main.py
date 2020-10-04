@@ -5,13 +5,8 @@ from Tests.TestIDE import *
 dataset_path = 'DataSetPreProcess/RES/MPIIGaze.h5'
 
 
-# def __main__():
-#     my_test_db = TestDB("../DataBases/MPIIGaze","HeadPose")
-#     my_test_db.scan_db_hp()
-#     return
-
-
 def __main__():
+    print ("mini model",mini_face_model)
     configuration_manager = Configuration()
     model_method, screen_size, user_name = configuration_manager.config_model()
     print("working on: ", model_method, screen_size, user_name)
