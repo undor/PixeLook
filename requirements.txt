@@ -1,0 +1,7 @@
+numpy
+scipy
+opencv-python<4.2.0
+dlib-compiled
+torch
+torchvision
+

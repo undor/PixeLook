@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import Canvas
 
-from Defines import *
+from UtilsAndModels.Defines import *
 
 
 class FullScreenApp(object):

@@ -2,8 +2,8 @@ import numpy as np
 import torch
 from torch import Tensor
 from torch.autograd import Variable
-from torch.nn import Linear, MSELoss, init, ReLU, functional as F
-from torch.optim import SGD, Adam, RMSprop
+from torch.nn import Linear, MSELoss, init, ReLU
+from torch.optim import SGD
 
 
 class FixNet(torch.nn.Module):
@@ -38,9 +38,19 @@ class FixNetCalibration:
         self.optimizer = SGD(self.model.parameters(), lr=0.000001)
         self.is_trained = False
 
+    def limit_model(self):
+        with torch.no_grad():
+            for i in range(2):
+                if abs( 1 - self.model.fc1.weight[i][i]) > 0.15 :
+                    self.model.fc1.weight[i][i] = 1 - 0.15 * np.sign(1- self.model.fc1.weight[i][i])
+                if abs(self.model.fc1.bias[i]) > 0.1:
+                    self.model.fc1.bias[i] = 0.1 * np.sign(self.model.fc1.bias[i])
+
+
     def train_model(self, epochs, real, res):
         self.model.train()
-        # print("res data is", res)
+        print("res data is", res)
+        print("real data is", real)
         data_size = int(np.size(res)/2)
         # print("data size", data_size)
         if data_size < 4:
@@ -59,6 +69,7 @@ class FixNetCalibration:
             if epoch % 10 == 0:
                 print("Epoch: {} Loss: {}".format(epoch, loss.data))
 
+        self.limit_model()
         self.is_trained = True
 
     def use_net(self, pixel):
