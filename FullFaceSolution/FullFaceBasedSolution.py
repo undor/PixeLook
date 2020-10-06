@@ -1,7 +1,8 @@
 from FullFaceSolution.model.FullFaceModel import *
 from SolutionEnv import *
 
-#Full Face solution Env
+
+# Full Face solution Env
 class environment_ff(SolutionEnv):
     def __init__(self):
         SolutionEnv.__init__(self)

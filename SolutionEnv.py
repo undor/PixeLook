@@ -1,12 +1,12 @@
 from FrameData import *
 
 
-#General solution Env
+# General solution Env
 class SolutionEnv():
     def __init__(self,input_mode="camera"):
         self.init_net_model()
         self.input_mode = input_mode
-        if self.input_mode is "camera":
+        if self.input_mode == "camera":
             self.cap = utils.set_camera(capture_input_width, capture_input_height)
             self.reruns = 50
         else:
@@ -16,7 +16,7 @@ class SolutionEnv():
         self.extra_data = None
 
     def get_img(self,input_img=None):
-        if self.input_mode is "camera":
+        if self.input_mode == "camera":
             ret, img = self.cap.read()
             return img
         else:

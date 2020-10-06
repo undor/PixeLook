@@ -5,7 +5,7 @@ from Calibration.gui_manager import *
 from UtilsAndModels.utils import *
 
 
-class gaze_manager:
+class CalibrationManager:
 
     def __init__(self, model_method, screen_size, name):
         # screen size and pix init
@@ -39,38 +39,30 @@ class gaze_manager:
         self.train_set_trig = []
 
     def gaze_to_pixel_linear(self, gaze):
-
         width_ratio = abs(gaze[1] - self.calib_data[CALIB_LEFT][0][1]) / self.width_gaze_scale
         height_ratio = abs(gaze[0] - self.calib_data[CALIB_UP][0][0]) / self.height_gaze_scale
-
         x_location = width_ratio * self.width_px
         y_location = height_ratio * self.height_px
-
         pixel = (x_location, y_location)
         return pixel
 
 
     def gaze_to_pixel_trig(self, gaze, ht , extra_data =None):
         x, y = self.gaze_to_mm(gaze, ht , extra_data)
-
         x_location = (x * self.pixel_per_mm + self.width_px / 2)
         y_location = -y * self.pixel_per_mm
+        pixel = (x_location, y_location)
+        return pixel
 
-        return (x_location, y_location)
 
-
-    def gaze_to_mm(self, gaze, ht,hp_data=None):
-        # p + t*v = (x, y, 0)
+    def gaze_to_mm(self, gaze, ht,extra_data=None):
         v = convert_to_unit_vector_np(gaze)
-        if hp_data is not None:
-            v = v @ hp_data
-        # t = -p(z)/v(z)
+        if extra_data is not None:
+            v = v @ extra_data
         t = - ht[2] / v[2]
-        # x = p(x)+t*v(x)
         x = ht[0] + t * v[0]
-        # y = p(y)+t*v(y)
         y = ht[1] + t * v[1]
-        return x[0],y[0]
+        return x[0], y[0]
 
 
     def get_cur_pixel(self):
@@ -88,9 +80,7 @@ class gaze_manager:
 
     def print_center_pixel(self):
         cur_pix = self.get_cur_pixel()
-        # linear = green
-        self.gui.print_calib_points((int(cur_pix[0][0]), int(cur_pix[0][1])), "green")
-        # trig = red
+        self.gui.print_calib_points((int(cur_pix[0][0]), int(cur_pix[0][1])), "green") # linear = green
         self.gui.print_calib_points((int(cur_pix[1][0]),(int(cur_pix[1][1]))))
 
     def step_calib_stage(self):
@@ -103,7 +93,6 @@ class gaze_manager:
         self.gui.print_calib_stage(self.cur_stage)
         self.gui.wait_key()
         self.calib_data[self.cur_stage] = self.env.find_gaze()
-        print(self.calib_data[self.cur_stage])
         self.cur_stage += 1
 
     def is_ok_for_net(self, point_a, point_b):
@@ -114,6 +103,7 @@ class gaze_manager:
             return True
 
     def train_data(self):
+        print("threshold for using net is ", max_distance_for_net_mm/10, "cm")
         for i in range(9):
             linear_pixel = self.gaze_to_pixel_linear(self.calib_data[i][0])
             trig_pixel = self.gaze_to_pixel_trig(self.calib_data[i][0],
@@ -138,8 +128,6 @@ class gaze_manager:
         self.gui.master.update()
         for self.cur_stage in range(10):
             self.step_calib_stage()
-            # print("gaze step ", (self.cur_stage-1), ": ", self.calib_data[self.cur_stage-1][0])
-
         self.train_data()
 
     def re_calibration(self):

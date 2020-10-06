@@ -1,7 +1,10 @@
+from scipy.spatial.transform import Rotation
+
 from HeadPoseBasedSolution.model.HeadPoseModel import *
 from SolutionEnv import *
 
-#Head Pose solution solution Env
+
+# Head Pose solution solution Env
 class environment_hp(SolutionEnv):
     def __init__(self,is_right_eye=True):
         SolutionEnv.__init__(self)

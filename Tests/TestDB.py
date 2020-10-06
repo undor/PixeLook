@@ -8,9 +8,9 @@ class TestDB:
         self.db_location = db_location
         self.model_method = model_method
         if model_method == "FullFace":
-            self.gaze_manager = gaze_manager("FullFace", "NOT_LINEAR", -1)
+            self.gaze_manager = CalibrationManager("FullFace", "NOT_LINEAR", -1)
         elif model_method == "HeadPose":
-            self.gaze_manager = gaze_manager("HeadPose", "NOT_LINEAR", -1)
+            self.gaze_manager = CalibrationManager("HeadPose", "NOT_LINEAR", -1)
 
     def set_people_calib(self, path):
         screen_size_mat = scipy.io.loadmat(path+"/screenSize.mat")
