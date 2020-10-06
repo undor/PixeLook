@@ -1,7 +1,7 @@
 numpy
 scipy
 opencv-python<4.2.0
-dlib
+dlib-compiled
 torch
 torchvision
-tkinter
+

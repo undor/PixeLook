@@ -1,6 +1,8 @@
 import ctypes
 import tkinter
+
 from UtilsAndModels.Defines import *
+
 
 # vectors and geometric methods
 def _normalize_vector(vector: np.ndarray) -> np.ndarray:
@@ -11,6 +13,16 @@ def convert_to_unit_vector(angles):
     y = -torch.sin(angles[0])
     z = -torch.cos(angles[1]) * torch.cos(angles[1])
     norm = torch.sqrt(x ** 2 + y ** 2 + z ** 2)
+    x /= norm
+    y /= norm
+    z /= norm
+    return x, y, z
+
+def convert_to_unit_vector_np(angles):
+    x = -np.cos(angles[0]) * np.sin(angles[1])
+    y = -np.sin(angles[0])
+    z = -np.cos(angles[1]) * np.cos(angles[1])
+    norm = np.sqrt(x ** 2 + y ** 2 + z ** 2)
     x /= norm
     y /= norm
     z /= norm

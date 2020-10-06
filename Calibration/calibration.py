@@ -39,43 +39,39 @@ class gaze_manager:
         self.train_set_trig = []
 
     def gaze_to_pixel_linear(self, gaze):
-        gaze = gaze.numpy()
+
         width_ratio = abs(gaze[1] - self.calib_data[CALIB_LEFT][0][1]) / self.width_gaze_scale
         height_ratio = abs(gaze[0] - self.calib_data[CALIB_UP][0][0]) / self.height_gaze_scale
-        # print("linear : width ratio is: ", width_ratio, " and height ratio is: ", height_ratio)
+
         x_location = width_ratio * self.width_px
         y_location = height_ratio * self.height_px
 
         pixel = (x_location, y_location)
-        # print("pixel is: ", pixel)
         return pixel
-        # if 0 <= x_location <= self.width_px and self.height_px >= y_location >= 0:
-        #     pixel = (x_location, y_location)
-        #     return pixel
-        # return error_in_pixel
 
-    def gaze_to_pixel_trig(self, gaze, ht):
-        x, y = self.gaze_to_mm(gaze, ht)
+
+    def gaze_to_pixel_trig(self, gaze, ht , extra_data =None):
+        x, y = self.gaze_to_mm(gaze, ht , extra_data)
 
         x_location = (x * self.pixel_per_mm + self.width_px / 2)
         y_location = -y * self.pixel_per_mm
 
-        pixel = (x_location, y_location)
-        return pixel
+        return (x_location, y_location)
 
 
-    def gaze_to_mm(self, gaze, ht):
+    def gaze_to_mm(self, gaze, ht,hp_data=None):
         # p + t*v = (x, y, 0)
-        v = convert_to_unit_vector(gaze)
+        v = convert_to_unit_vector_np(gaze)
+        if hp_data is not None:
+            v = v @ hp_data
         # t = -p(z)/v(z)
-        t = - ht[2] / v[2].numpy()
+        t = - ht[2] / v[2]
         # x = p(x)+t*v(x)
-        x = ht[0] + t * v[0].numpy()
-        x=x[0]
+        x = ht[0] + t * v[0]
         # y = p(y)+t*v(y)
-        y = ht[1] + t * v[1].numpy()
-        y=y[0]
-        return x, y
+        y = ht[1] + t * v[1]
+        return x[0],y[0]
+
 
     def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
@@ -83,52 +79,18 @@ class gaze_manager:
             # error in find gaze - didn't detect face
             return error_in_detect
         self.last_distance = ht[2]
-        return self.gaze_to_pixel_linear(gaze), self.gaze_to_pixel_trig(gaze, ht)
-
-    # def get_cur_pixel_mean(self):
-    #     cur_sum = np.array([0.0, 0.0])
-    #     num = 0
-    #     error = 0
-    #     num_to_mean = 2
-    #     change num_to_mean in order to change number of pixels to mean from
-    #     change tries_to_error in order to change how many times until error
-    #     tries_to_error = 2 * num_to_mean
-    #     while num < num_to_mean and error < tries_to_error:
-    #         cur_pixel = np.array(self.get_cur_pixel())
-    #         # out of bounds or didn't detect face
-    #         if (cur_pixel[0] == error_in_detect[0] or cur_pixel[1] == error_in_detect[1] or
-    #                 cur_pixel[0] == error_in_pixel[0] or cur_pixel[1] == error_in_pixel[1]):
-    #             error += 1
-    #         # good pixel
-    #         else:
-    #             num += 1
-    #             cur_sum += cur_pixel
-    #     if error >= tries_to_error:
-    #         return error_in_pixel
-    #     return np.round(np.true_divide(cur_sum, num))
+        return self.gaze_to_pixel_linear(gaze), self.gaze_to_pixel_trig(gaze,ht,self.env.extra_data)
 
     def compute_scale(self):
         self.width_gaze_scale = abs(self.calib_data[CALIB_RIGHT][0][1] - self.calib_data[CALIB_LEFT][0][1])
         self.height_gaze_scale = abs(self.calib_data[CALIB_DOWN][0][0] - self.calib_data[CALIB_UP][0][0])
-        # print("\n width_gaze_scale: ", self.width_gaze_scale, "height_gaze_scale: ", self.height_gaze_scale)
-    # else:
-    #     right_gaze_mm_x = self.gaze_to_mm(self.calib_data.right_gaze[0], self.calib_data.right_gaze[1])[0]
-    #     left_gaze_mm_x = self.gaze_to_mm(self.calib_data.left_gaze[0], self.calib_data.left_gaze[1])[0]
-    #     up_gaze_mm_y = self.gaze_to_mm(self.calib_data.up_gaze[0], self.calib_data.up_gaze[1])[1]
-    #     down_gaze_mm_y = self.gaze_to_mm(self.calib_data.down_gaze[0], self.calib_data.down_gaze[1])[1]
-    #
-    #     width_length = abs(right_gaze_mm_x - left_gaze_mm_x)
-    #     height_length = abs(up_gaze_mm_y - down_gaze_mm_y)
-    #     self.width_calib_ratio = self.gui.width / (width_length * self.pixel_per_mm)
-    #     self.height_calib_ratio = self.gui.height / (height_length * self.pixel_per_mm)
+
 
     def print_center_pixel(self):
-        # trig
         cur_pix = self.get_cur_pixel()
-        cur_pix_lin_x = cur_pix[0][0].numpy()
-        cur_pix_lin_y = cur_pix[0][1].numpy()
-
-        self.gui.print_calib_points((int(cur_pix_lin_x), int(cur_pix_lin_y)), "green")
+        # linear = green
+        self.gui.print_calib_points((int(cur_pix[0][0]), int(cur_pix[0][1])), "green")
+        # trig = red
         self.gui.print_calib_points((int(cur_pix[1][0]),(int(cur_pix[1][1]))))
 
     def step_calib_stage(self):
@@ -141,6 +103,7 @@ class gaze_manager:
         self.gui.print_calib_stage(self.cur_stage)
         self.gui.wait_key()
         self.calib_data[self.cur_stage] = self.env.find_gaze()
+        print(self.calib_data[self.cur_stage])
         self.cur_stage += 1
 
     def is_ok_for_net(self, point_a, point_b):
@@ -154,7 +117,7 @@ class gaze_manager:
         for i in range(9):
             linear_pixel = self.gaze_to_pixel_linear(self.calib_data[i][0])
             trig_pixel = self.gaze_to_pixel_trig(self.calib_data[i][0],
-                                                 self.calib_data[i][1])
+                                                 self.calib_data[i][1], self.env.extra_data)
             res_pixel = [stage_dot_locations[i][0] * self.gui.width,
                          stage_dot_locations[i][1] * self.gui.height]
 

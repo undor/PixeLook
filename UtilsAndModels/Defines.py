@@ -40,7 +40,7 @@ text_for_capture = "#"
 MM_TO_IN = 0.0393700787
 
 # Calibration
-max_distance_for_net_mm: int = 60
+max_distance_for_net_mm: int = 40
 
 error_in_detect = np.array([-1, -1])
 error_in_pixel = np.zeros(2)

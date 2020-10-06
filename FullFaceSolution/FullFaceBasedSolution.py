@@ -1,33 +1,16 @@
-from FrameData import *
 from FullFaceSolution.model.FullFaceModel import *
+from SolutionEnv import *
 
-
-class environment_ff:
+#Full Face solution Env
+class environment_ff(SolutionEnv):
     def __init__(self):
-        self.init_net_model()
-        self.cap = utils.set_camera(capture_input_width, capture_input_height)
-        utils.global_camera_matrix = np.array([960., 0., 640., 0., 960., 360., 0., 0., 1.]).reshape(3, 3)
-        utils.global_camera_coeffs = np.zeros((5, 1))
+        SolutionEnv.__init__(self)
+        self.img_size_for_net = 112
 
-    def find_gaze(self, input_img=None):
-        reruns = 100
-        for counter_error in range(1, reruns):
-            if input_img is None:
-                ret, frame = self.cap.read()
-            else:
-                frame = input_img
-                reruns = 2
-            cur_frame = FrameData(frame[:, :, ::-1])
-            cur_frame.flip()
-            if cur_frame.face_landmark_detect():
-                cur_frame.head_pose_detect()
-                cur_frame = self.pre_process_for_net(cur_frame)
-                with torch.no_grad():
-                    gaze = self.model.get_gaze(cur_frame.img_for_net)
-                    gaze = gaze[0].data.cpu()
-                    return gaze, cur_frame.translation_vector
-        print("Find Gaze was unable to detect your face!")
-        return -1, np.array([0, 0, 0])
+    def use_net(self, cur_frame):
+        with torch.no_grad():
+            gaze = self.model.get_gaze(cur_frame.img_for_net)
+        return gaze.cpu().numpy()[0]
 
     def init_net_model(self):
         torch.manual_seed(0)
@@ -36,8 +19,13 @@ class environment_ff:
         self.model.load_state_dict(state_dict)
         self.model.eval()
 
+    def create_frame(self,img):
+        cur_frame = FrameData(img[:, :, ::-1])
+        cur_frame.flip()
+        return cur_frame
+
     def pre_process_for_net(self,cur_frame):
-        shape = cur_frame.shape
+        shape = cur_frame.landmarks_6
 
         rcenter_x = (shape[0][0] + shape[1][0]) / 2
         rcenter_y = (shape[0][1] + shape[1][1]) / 2
@@ -48,37 +36,34 @@ class environment_ff:
         lcenter = tuple([rcenter_x, rcenter_y])
         rcenter = tuple([lcenter_x, lcenter_y])
 
-        left_eye_coord = (0.70, 0.35)
-
         gaze_origin = (int((lcenter[0] + rcenter[0]) / 2), int((lcenter[1] + rcenter[1]) / 2))
-        # compute the angle between the eye centroids
+        # compute the angle between the eye centers
         dY = rcenter[1] - lcenter[1]
         dX = rcenter[0] - lcenter[0]
         angle = np.degrees(np.arctan2(dY, dX)) - 180
-        # compute the desired right eye x-coordinate based on the
-        # desired x-coordinate of the left eye
-        right_eye_x = 1.0 - left_eye_coord[0]
 
-        # determine the scale of the new resulting image by taking
-        # the ratio of the distance between eyes in the *current*
-        # image to the ratio of distance between eyes in the
-        # *desired* image
-        dist = np.sqrt((dX ** 2) + (dY ** 2))
-        new_dist = (right_eye_x - left_eye_coord[0])
-        new_dist *= 112
-        scale = new_dist / dist
-        # grab the rotation matrix for rotating and scaling the face
+        # desired x-coordinate of the left and right eye
+        left_eye_desired_percent = (0.70, 0.35)
+        right_eye_x_desired_percent = 1.0 - left_eye_desired_percent[0]
+
+        # determine the scale of the new resulting image
+        dist_px = np.sqrt((dX ** 2) + (dY ** 2))
+        new_dist_px = (right_eye_x_desired_percent - left_eye_desired_percent[0]) * self.img_size_for_net
+        scale = new_dist_px / dist_px
+
+        # get rotation matrix for rotating and scaling the face
         M = cv2.getRotationMatrix2D(gaze_origin, angle, scale)
 
         # update the translation component of the matrix
-        tX = 112 * 0.5
-        tY = 112 * left_eye_coord[1]
+        tX = self.img_size_for_net * 0.5
+        tY = self.img_size_for_net * left_eye_desired_percent[1]
         M[0, 2] += (tX - gaze_origin[0])
         M[1, 2] += (tY - gaze_origin[1])
 
-        cur_frame.flip()
+
         # apply the affine transformation
-        cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (112, 112), flags=cv2.INTER_CUBIC)
+        cur_frame.flip()
+        cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (self.img_size_for_net, self.img_size_for_net), flags=cv2.INTER_CUBIC)
         cur_frame.gaze_origin = gaze_origin
         return cur_frame
 
