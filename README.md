@@ -4,7 +4,7 @@ Dor Arad & Tomer Keren
 
 [![readme-img.png](https://i.postimg.cc/tRd9QxgS/readme-img.png)](https://postimg.cc/bdv71dkk)
 
-## Webcam requriements##
+## Webcam requriements ##
 1. at least 720p resolution
 
 2.located in the top center of the screen
@@ -28,7 +28,6 @@ python main.py
 
 
 ## Structure
-
 * `Calibration/` - all code regarding the calibration proccess
 * `Tests/` - all code regarding the Testing proccess
 * `FullFaceSolution/` - img to gaze solution based on [2]
