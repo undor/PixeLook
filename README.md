@@ -2,7 +2,7 @@
 Gaze detector from Webcam - Project for Technion , EE faculty.
 Dor Arad & Tomer Keren
 
-![Alt text](/results/readme_img.png?raw=true "Gaze Data Review")
+[![readme-img.png](https://i.postimg.cc/tRd9QxgS/readme-img.png)](https://postimg.cc/bdv71dkk)
 
 ## Webcam requriements##
 1. at least 720p resolution
