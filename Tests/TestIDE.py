@@ -72,7 +72,7 @@ class Test_Manager:
         return self.pixel_linear, self.pixel_trig
 
     def collect(self):
-        for self.iteration in range(5):
+        for self.iteration in range(num_pics_per_session):
             cur_smp = Sample()
             self.draw_target()
             is_valid_pixel = self.capture()
@@ -84,13 +84,12 @@ class Test_Manager:
                 self.new_log_input(cur_smp, "Trig")
                 self.new_log_input(cur_smp, "Linear")
 
-                self.gaze_manager.gui.print_pixel(self.pixel_trig, "black")
-                self.gaze_manager.gui.print_pixel(self.pixel_trig_fixed, "blue")
+                # self.gaze_manager.gui.print_pixel(self.pixel_trig, "black")
+                # self.gaze_manager.gui.print_pixel(self.pixel_trig_fixed, "blue")
+                # self.gaze_manager.gui.print_pixel(self.pixel_linear, "yellow")
+                # self.gaze_manager.gui.print_pixel(self.pixel_linear_fixed, "green")
+                # self.gaze_manager.gui.wait_key()
 
-                self.gaze_manager.gui.print_pixel(self.pixel_linear, "yellow")
-                self.gaze_manager.gui.print_pixel(self.pixel_linear_fixed, "green")
-
-                self.gaze_manager.gui.wait_key()
                 self.gaze_manager.gui.w.delete("all")
             # not valid
             else:

@@ -46,16 +46,14 @@ class CalibrationManager:
         pixel = (x_location, y_location)
         return pixel
 
-
-    def gaze_to_pixel_trig(self, gaze, ht , extra_data =None):
-        x, y = self.gaze_to_mm(gaze, ht , extra_data)
+    def gaze_to_pixel_trig(self, gaze, ht, extra_data=None):
+        x, y = self.gaze_to_mm(gaze, ht, extra_data)
         x_location = (x * self.pixel_per_mm + self.width_px / 2)
         y_location = -y * self.pixel_per_mm
         pixel = (x_location, y_location)
         return pixel
 
-
-    def gaze_to_mm(self, gaze, ht,extra_data=None):
+    def gaze_to_mm(self, gaze, ht, extra_data=None):
         v = convert_to_unit_vector_np(gaze)
         if extra_data is not None:
             v = v @ extra_data
@@ -64,24 +62,23 @@ class CalibrationManager:
         y = ht[1] + t * v[1]
         return x[0], y[0]
 
-
     def get_cur_pixel(self):
         gaze, ht = self.env.find_gaze()
         if ht[0] == 0 or ht[1] == 0 or ht[2] == 0:
             # error in find gaze - didn't detect face
             return error_in_detect
         self.last_distance = ht[2]
-        return self.gaze_to_pixel_linear(gaze), self.gaze_to_pixel_trig(gaze,ht,self.env.extra_data)
+        return self.gaze_to_pixel_linear(gaze), self.gaze_to_pixel_trig(gaze, ht, self.env.extra_data)
 
     def compute_scale(self):
         self.width_gaze_scale = abs(self.calib_data[CALIB_RIGHT][0][1] - self.calib_data[CALIB_LEFT][0][1])
         self.height_gaze_scale = abs(self.calib_data[CALIB_DOWN][0][0] - self.calib_data[CALIB_UP][0][0])
 
-
     def print_center_pixel(self):
         cur_pix = self.get_cur_pixel()
-        self.gui.print_calib_points((int(cur_pix[0][0]), int(cur_pix[0][1])), "green") # linear = green
-        self.gui.print_calib_points((int(cur_pix[1][0]),(int(cur_pix[1][1]))))
+        # linear = green
+        self.gui.print_calib_points((int(cur_pix[0][0]), int(cur_pix[0][1])), "green")
+        self.gui.print_calib_points((int(cur_pix[1][0]), (int(cur_pix[1][1]))))
 
     def step_calib_stage(self):
         if self.cur_stage == 9:

@@ -2,8 +2,8 @@ from FrameData import *
 
 
 # General solution Env
-class SolutionEnv():
-    def __init__(self,input_mode="camera"):
+class SolutionEnv:
+    def __init__(self, input_mode="camera"):
         self.init_net_model()
         self.input_mode = input_mode
         if self.input_mode == "camera":
@@ -15,7 +15,7 @@ class SolutionEnv():
         utils.global_camera_coeffs = np.zeros((5, 1))
         self.extra_data = None
 
-    def get_img(self,input_img=None):
+    def get_img(self, input_img=None):
         if self.input_mode == "camera":
             ret, img = self.cap.read()
             return img

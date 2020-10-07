@@ -6,18 +6,18 @@ from SolutionEnv import *
 
 # Head Pose solution solution Env
 class environment_hp(SolutionEnv):
-    def __init__(self,is_right_eye=True):
+    def __init__(self, is_right_eye=False):
         SolutionEnv.__init__(self)
         self.is_right_eye = is_right_eye
 
-    def use_net(self,cur_frame):
+    def use_net(self, cur_frame):
         with torch.no_grad():
             gaze = self.model.get_gaze(cur_frame.img_for_net, cur_frame.head_pose_for_net)
         if self.is_right_eye:
             gaze = gaze * np.array([1, -1])
         return gaze
 
-    def create_frame(self,img):
+    def create_frame(self, img):
         cur_frame = FrameData(img)
         return cur_frame
 
@@ -27,16 +27,16 @@ class environment_hp(SolutionEnv):
         self.model.load_state_dict(state_dict['model'])
         self.model.eval()
 
-    def head_pose_detect_for_net(self,cur_frame):
-            rvec = np.zeros(3, dtype=np.float)
-            tvec = np.array([0, 0, 1], dtype=np.float)
-            return cv2.solvePnP(LANDMARKS_HP, cur_frame.landmarks_all,utils.global_camera_matrix,
-                                utils.global_camera_coeffs, rvec, tvec,useExtrinsicGuess=True,
-                                flags=cv2.SOLVEPNP_ITERATIVE)
+    def head_pose_detect_for_net(self, cur_frame):
+        rvec = np.zeros(3, dtype=np.float)
+        tvec = np.array([0, 0, 1], dtype=np.float)
+        return cv2.solvePnP(LANDMARKS_HP, cur_frame.landmarks_all, utils.global_camera_matrix,
+                            utils.global_camera_coeffs, rvec, tvec, useExtrinsicGuess=True,
+                            flags=cv2.SOLVEPNP_ITERATIVE)
 
-    def pre_process_for_net(self,cur_frame):
+    def pre_process_for_net(self, cur_frame):
         # get head pose vectors
-        ___ , rotation_vector_hp_net, translation_vector_hp_net = self.head_pose_detect_for_net(cur_frame)
+        ___, rotation_vector_hp_net, translation_vector_hp_net = self.head_pose_detect_for_net(cur_frame)
 
         # set model eye center
         rot = Rotation.from_rotvec(rotation_vector_hp_net)
@@ -54,22 +54,21 @@ class environment_hp(SolutionEnv):
         y_axis = utils._normalize_vector(np.cross(z_axis, head_x_axis))
         x_axis = utils._normalize_vector(np.cross(y_axis, z_axis))
 
-        norm_rotation = Rotation.from_dcm(np.vstack([x_axis,y_axis,z_axis]))
+        norm_rotation = Rotation.from_dcm(np.vstack([x_axis, y_axis, z_axis]))
 
         # save data for outside
         self.extra_data = norm_rotation.as_matrix()
 
         camera_matrix_inv = np.linalg.inv(utils.global_camera_matrix)
-        camera_matrix_normalize= np.array([[960., 0., 30],
-                                   [0., 960., 18.],
-                                  [ 0., 0., 1.],],  dtype=np.float)
+        camera_matrix_normalize = np.array([[960., 0., 30],
+                                            [0., 960., 18.],
+                                            [0., 0., 1.], ], dtype=np.float)
         scale = np.array([
             [1, 0, 0],
             [0, 1, 0],
             [0, 0, 0.6 / distance],
         ],
-                        dtype=np.float)
-
+            dtype=np.float)
 
         conversion_matrix = scale @ norm_rotation.as_matrix()
         projection_matrix = camera_matrix_normalize @ conversion_matrix @ camera_matrix_inv
@@ -88,11 +87,12 @@ class environment_hp(SolutionEnv):
         normalize_head_pose = euler_angles2d * np.array([1, -1])
 
         if self.is_right_eye:
-            normalized_image = normalized_image[:,::-1]
+            normalized_image = normalized_image[:, ::-1]
             normalize_head_pose = normalize_head_pose * np.array([1, -1])
 
         cur_frame.img_for_net = normalized_image
         cur_frame.head_pose_for_net = normalize_head_pose
         return cur_frame
+
 
 my_env_hp = environment_hp()

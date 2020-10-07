@@ -7,6 +7,7 @@ def new_csv_session(name):
                    "net_improve\n")
     return csv_file
 
+
 def log_sample_csv(smp, csv_file):
     csv_file.write(str(smp.person_name) + ",")
     csv_file.write(str(smp.screen_size)+",")
@@ -19,6 +20,7 @@ def log_sample_csv(smp, csv_file):
     csv_file.write(str(smp.improve) + " \n")
     csv_file.flush()
     return
+
 
 def log_error(csv_file, error_type):
     s = "a " + error_type + " error has been occurred \n"

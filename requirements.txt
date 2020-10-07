@@ -1,7 +1,8 @@
-numpy
-scipy
-opencv-python<4.2.0
-dlib-compiled
-torch
-torchvision
-
+cv2==4.0.1
+dlib==19.20.0
+numpy==1.19.1
+scipy==1.5.0
+torch==1.6.0
+tkinter==8.6.10
+torchvision==0.7.0
+pillow~=7.2.0

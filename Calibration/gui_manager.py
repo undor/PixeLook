@@ -85,7 +85,7 @@ class FullScreenApp(object):
         self.master.update()
         return pixel
 
-    def print_calib_points(self, center, colour = None):
+    def print_calib_points(self, center, colour=None):
         perimeter = 24
         radius = self.width*0.1
         self.w.create_oval(self.width/2 - radius, self.height/2 - radius, self.width/2 + radius, self.height/2 + radius,

@@ -12,6 +12,8 @@ np.random.seed(0)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 epochs: int = 60
 
+num_pics_per_session = 30
+
 capture_input_width = 1280
 capture_input_height = 720
 
@@ -40,7 +42,7 @@ text_for_capture = "#"
 MM_TO_IN = 0.0393700787
 
 # Calibration
-max_distance_for_net_mm: int = 40
+max_distance_for_net_mm: int = 60
 
 error_in_detect = np.array([-1, -1])
 error_in_pixel = np.zeros(2)

@@ -1,6 +1,7 @@
 import UtilsAndModels.utils as utils
 from UtilsAndModels.Defines import *
 
+
 class FrameData:
     def __init__(self, img, is_debug=True):
         self.orig_img = img
@@ -21,7 +22,7 @@ class FrameData:
         self.debug_img = cv2.flip(self.debug_img, 1)
 
     def get_landmarks(self, shape, specific_locations=False):
-        if (specific_locations):
+        if specific_locations:
             num = len(self.relevant_locations)
             list = self.relevant_locations
         else:
@@ -46,7 +47,6 @@ class FrameData:
             self.is_face = True
         return self.is_face
 
-
     def head_pose_detect(self, head_loc=None):
         if head_loc is None:
             landmarks = self.landmarks_6
@@ -56,12 +56,12 @@ class FrameData:
         dist_coeffs = utils.global_camera_coeffs
         camera_matrix = utils.global_camera_matrix
         (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
-                                                                                    camera_matrix,
-                                                                                    dist_coeffs,
-                                                                                    True)
+                                                                                camera_matrix,
+                                                                                dist_coeffs,
+                                                                                True)
 
         (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
-                                                                                    camera_matrix,
-                                                                                    dist_coeffs,self.rotation_vector,
-                                                                                    self.translation_vector,
-                                                                                    True)
+                                                                                camera_matrix,
+                                                                                dist_coeffs, self.rotation_vector,
+                                                                                self.translation_vector,
+                                                                                True)

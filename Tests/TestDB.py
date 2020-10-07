@@ -19,12 +19,12 @@ class TestDB:
         self.gaze_manager.pixel_per_mm = (screen_size_mat['height_pixel']/screen_size_mat['height_mm'])
         self.gaze_manager.width_px = screen_size_mat['width_pixel']
         self.gaze_manager.height_px = screen_size_mat['height_pixel']
-        self.cur_screen_size = from_wh_mm_to_diag_inch(screen_size_mat['width_mm'],screen_size_mat['height_mm'])
+        self.cur_screen_size = from_wh_mm_to_diag_inch(screen_size_mat['width_mm'], screen_size_mat['height_mm'])
         utils.global_camera_matrix = camera_intrinsic_mat['cameraMatrix']
         utils.global_camera_coeffs = camera_intrinsic_mat['distCoeffs']
         return
 
-    def set_people_db_ff(self,txt_file_path):
+    def set_people_db_ff(self, txt_file_path):
         fd = open(txt_file_path, "r")
         self.cur_db = []
         for line in fd:
@@ -62,14 +62,14 @@ class TestDB:
             cur_s.screen_size = self.cur_screen_size
             self.cur_db.append(cur_s)
 
-    def get_pixel_from_img_path_hp(self,img_path,cur_p_path):
-        img_path_break=img_path.split("/")
+    def get_pixel_from_img_path_hp(self, img_path, cur_p_path):
+        img_path_break = img_path.split("/")
         day_path = img_path_break[0]
         fd_annotate = open(cur_p_path+"/"+day_path+"/annotation.txt")
         number = int((img_path_break[1].split("."))[0])
         line = fd_annotate.readlines()[number-1]
         line_split = line.split(" ")
-        return np.array([int(line_split[24]),int(line_split[25])])
+        return np.array([int(line_split[24]), int(line_split[25])])
 
     def scan_db_hp(self):
         csv_file_hp = new_csv_session(self.model_method)
@@ -77,9 +77,9 @@ class TestDB:
             people_str = "p"+f'{people:02}'
             cur_p_path = self.db_location + "/Data/Original/"+people_str
             self.set_people_calib(cur_p_path + "/Calibration")
-            self.set_people_db_hp(self.db_location+ "/Annotation Subset/" + people_str+ ".txt")
+            self.set_people_db_hp(self.db_location + "/Annotation Subset/" + people_str + ".txt")
             for sample in self.cur_db:
-                sample.true_pixel= self.get_pixel_from_img_path_hp(sample.img_path, cur_p_path)
+                sample.true_pixel = self.get_pixel_from_img_path_hp(sample.img_path, cur_p_path)
                 cur_img = cv2.imread(cur_p_path + "/" + sample.img_path)
                 cur_gaze, cur_ht = self.gaze_manager.env.find_gaze(cur_img, sample.head_points)
                 if cur_ht[2] == 0:
@@ -90,7 +90,3 @@ class TestDB:
                 log_sample_csv(sample, people, csv_file_hp)
                 print("logged ", cur_p_path + "/" + sample.img_path)
         csv_file_hp.close()
-
-
-
-

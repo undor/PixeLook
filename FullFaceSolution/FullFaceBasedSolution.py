@@ -20,12 +20,12 @@ class environment_ff(SolutionEnv):
         self.model.load_state_dict(state_dict)
         self.model.eval()
 
-    def create_frame(self,img):
+    def create_frame(self, img):
         cur_frame = FrameData(img[:, :, ::-1])
         cur_frame.flip()
         return cur_frame
 
-    def pre_process_for_net(self,cur_frame):
+    def pre_process_for_net(self, cur_frame):
         shape = cur_frame.landmarks_6
 
         rcenter_x = (shape[0][0] + shape[1][0]) / 2
@@ -61,11 +61,11 @@ class environment_ff(SolutionEnv):
         M[0, 2] += (tX - gaze_origin[0])
         M[1, 2] += (tY - gaze_origin[1])
 
-
         # apply the affine transformation
         cur_frame.flip()
         cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (self.img_size_for_net, self.img_size_for_net), flags=cv2.INTER_CUBIC)
         cur_frame.gaze_origin = gaze_origin
         return cur_frame
+
 
 my_env_ff = environment_ff()

@@ -41,16 +41,13 @@ class FixNetCalibration:
     def limit_model(self):
         with torch.no_grad():
             for i in range(2):
-                if abs( 1 - self.model.fc1.weight[i][i]) > 0.15 :
-                    self.model.fc1.weight[i][i] = 1 - 0.15 * np.sign(1- self.model.fc1.weight[i][i])
+                if abs(1 - self.model.fc1.weight[i][i]) > 0.15:
+                    self.model.fc1.weight[i][i] = 1 - 0.15 * np.sign(1 - self.model.fc1.weight[i][i])
                 if abs(self.model.fc1.bias[i]) > 0.1:
                     self.model.fc1.bias[i] = 0.1 * np.sign(self.model.fc1.bias[i])
 
-
     def train_model(self, epochs, real, res):
         self.model.train()
-        print("res data is", res)
-        print("real data is", real)
         data_size = int(np.size(res)/2)
         # print("data size", data_size)
         if data_size < 4:

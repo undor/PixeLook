@@ -8,6 +8,7 @@ from UtilsAndModels.Defines import *
 def _normalize_vector(vector: np.ndarray) -> np.ndarray:
     return vector / np.linalg.norm(vector)
 
+
 def convert_to_unit_vector(angles):
     x = -torch.cos(angles[0]) * torch.sin(angles[1])
     y = -torch.sin(angles[0])
@@ -17,6 +18,7 @@ def convert_to_unit_vector(angles):
     y /= norm
     z /= norm
     return x, y, z
+
 
 def convert_to_unit_vector_np(angles):
     x = -np.cos(angles[0]) * np.sin(angles[1])
@@ -29,16 +31,20 @@ def convert_to_unit_vector_np(angles):
     return x, y, z
 
 # capture
+
+
 def set_camera(width, height):
     cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
     return cap
 
+
 # gui and calibration  methods
 def from_wh_mm_to_diag_inch(x, y):
     res = (np.sqrt(x ** 2 + y ** 2) * MM_TO_IN)
     return round(res[0][0], 1)
+
 
 def get_mm_pixel_ratio(screen_size_inch):
     from tkinter import Tk
@@ -53,6 +59,7 @@ def get_mm_pixel_ratio(screen_size_inch):
     pixel_per_mm = diagonal_pixel/diagonal_mm
     # print("pixel_per_mm ", pixel_per_mm)
     return pixel_per_mm
+
 
 def get_dpi():
     # Set process DPI awareness
