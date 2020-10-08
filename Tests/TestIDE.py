@@ -5,7 +5,6 @@ from Tests.TestUtils import *
 
 class Test_Manager:
     def __init__(self, gaze_manager):
-
         self.pixel_real = np.zeros(2)
         self.pixel_linear = np.zeros(2)
         self.pixel_linear_fixed = np.zeros(2)
@@ -27,7 +26,6 @@ class Test_Manager:
         # self.gaze_manager.gui.wait_key()
 
     def not_valid_pixel(self):
-
         log_error(self.test_csv, "pixel")
         self.gaze_manager.gui.button.config(text="pixel was out of bounds! Click to continue")
         self.gaze_manager.gui.wait_key()
@@ -67,9 +65,21 @@ class Test_Manager:
         # self.gaze_manager.gui.print_capture_button(self.tag)
 
     def capture(self):
-        self.gaze_manager.gui.wait_key()
         self.pixel_linear, self.pixel_trig = self.gaze_manager.get_cur_pixel()
         return self.pixel_linear, self.pixel_trig
+
+    def get_pixel_with_method(self, kind="Trig", net=True):
+        pixel_linear, pixel_trig = self.capture()
+        if kind == "Trig":
+            if net:
+                return self.gaze_manager.trig_fix_sys.use_net(pixel_trig)
+            else:
+                return pixel_trig
+        else:
+            if net:
+                return self.gaze_manager.linear_fix_sys.use_net(self.pixel_linear)
+            else:
+                return pixel_linear
 
     def collect(self):
         for self.iteration in range(num_pics_per_session):

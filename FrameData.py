@@ -52,7 +52,7 @@ class FrameData:
             landmarks = self.landmarks_6
         else:
             landmarks = head_loc
-        mini_face_model_adj = mini_face_model.T.reshape(mini_face_model.shape[1], 1, 3)
+        mini_face_model_adj = LANDMARKS_6_PNP.T.reshape(LANDMARKS_6_PNP.shape[1], 1, 3)
         dist_coeffs = utils.global_camera_coeffs
         camera_matrix = utils.global_camera_matrix
         (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,

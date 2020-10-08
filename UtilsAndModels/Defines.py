@@ -1,10 +1,8 @@
-# relevant imports
 import os
 
 import cv2
 import dlib
 import numpy as np
-import scipy.io as sio
 import torch
 
 # Project Defines - Net
@@ -31,8 +29,6 @@ tvec = np.array([0, 0, 1], dtype=np.float)
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(os.getcwd() + "/UtilsAndModels/shape_predictor_68_face_landmarks.dat")
-
-mini_face_model = sio.loadmat('UtilsAndModels/faceModelGeneric.mat')['model']
 
 # Gui
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -71,8 +67,16 @@ stages = {'CALIB_LEFT': 0,
           'CALIB_CENTER': 8,
           'CHECK_CALIBRATION': 9,
           'FINISH_CALIBRATION': 10}
+
 stage_dot_locations = [(0.035, 0.5), (0.25, 0.25), (0.5, 0.035), (0.75, 0.25), (0.965, 0.5), (0.75, 0.75), (0.5, 0.965),
                        (0.25, 0.75), (0.5, 0.5), (0., 0.)]
+
+
+LANDMARKS_6_PNP = np.array([
+    [-4.50967681e+01, -2.13128582e+01 ,  2.13128582e+01 , 4.50967681e+01 , -2.62995769e+01 , 2.62995769e+01] ,
+ [-4.83773045e-01 , 4.83773045e-01 ,  4.83773045e-01  , -4.83773045e-01 , 6.85950353e+01 , 6.85950353e+01] ,
+ [ 2.39702984e+00 , -2.39702984e+00 , -2.39702984e+00 , 2.39702984e+00 , -9.86076132e-32 , -9.86076132e-32],] , dtype=np.float)
+
 
 LANDMARKS_HP: np.ndarray = np.array([
     [-0.07141807, -0.02827123, 0.08114384],
