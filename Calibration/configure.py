@@ -11,7 +11,7 @@ class Configuration:
         self.var = tk.IntVar()
         self.model_method = "Null"
         self.convert_method = "Null"
-        self.screen_size = 13.3
+        self.screen_size = 14
         self.name = "Default Name"
         self.button_a = tk.Button(self.master, font="MSGothic 10")
         self.button_b = tk.Button(self.master, font="MSGothic 10")

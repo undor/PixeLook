@@ -5,7 +5,7 @@ import pyautogui
 from Tests.TestIDE import Test_Manager
 
 
-def screen_record(test_manager: Test_Manager, size_mm: int = 50, frames : int = 70):
+def screen_record(test_manager: Test_Manager, size_mm: int = 50, frames: int = 70):
     pixel_per_mm = test_manager.gaze_manager.pixel_per_mm
     tkinter_to_real_ration = 2
     size = int(size_mm * pixel_per_mm * tkinter_to_real_ration *2)

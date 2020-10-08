@@ -32,13 +32,13 @@ predictor = dlib.shape_predictor(os.getcwd() + "/UtilsAndModels/shape_predictor_
 
 # Gui
 font = cv2.FONT_HERSHEY_SIMPLEX
-text_for_capture = "#"
+text_for_capture = "@"
 
 # Our convert from millimeters to inches
 MM_TO_IN = 0.0393700787
 
 # Calibration
-max_distance_for_net_mm: int = 60
+max_distance_for_net_mm: int = 65
 
 error_in_detect = np.array([-1, -1])
 error_in_pixel = np.zeros(2)

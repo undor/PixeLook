@@ -66,6 +66,7 @@ class Test_Manager:
 
     def capture(self):
         self.pixel_linear, self.pixel_trig = self.gaze_manager.get_cur_pixel()
+        self.gaze_manager.gui.wait_key()
         return self.pixel_linear, self.pixel_trig
 
     def get_pixel_with_method(self, kind="Trig", net=True):
