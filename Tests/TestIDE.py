@@ -61,7 +61,7 @@ class Test_Manager:
             log_sample_csv(cur_smp, self.test_csv)
 
     def draw_target(self):
-        self.pixel_real = [random.randint(0, self.width), random.randint(0, self.height)]
+        self.pixel_real = [random.randint(0, self.width-10), random.randint(0, self.height-10)]
         self.gaze_manager.gui.print_pixel(self.pixel_real)
         # wanted the button to move with the tag, but it's not working atm
         # self.gaze_manager.gui.print_capture_button(self.tag)
