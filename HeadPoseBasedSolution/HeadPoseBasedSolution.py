@@ -6,7 +6,7 @@ from SolutionEnv import *
 
 # Head Pose solution solution Env
 class environment_hp(SolutionEnv):
-    def __init__(self, is_right_eye=False):
+    def __init__(self, is_right_eye=True):
         SolutionEnv.__init__(self)
         self.is_right_eye = is_right_eye
 
@@ -71,7 +71,7 @@ class environment_hp(SolutionEnv):
             dtype=np.float)
 
         conversion_matrix = scale @ norm_rotation.as_matrix()
-        projection_matrix = camera_matrix_normalize @ conversion_matrix @ camera_matrix_inv
+        projection_matrix = camera_matrix_normalize @ conversion_matrix
 
         # normalize images
         normalized_image = cv2.warpPerspective(

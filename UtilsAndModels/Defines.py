@@ -3,17 +3,21 @@ import os
 import cv2
 import dlib
 import numpy as np
+import scipy.io as sio
 import torch
 
 # Project Defines - Net
 np.random.seed(0)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-epochs: int = 60
+epochs: int = 40
 
 num_pics_per_session = 30
 
 capture_input_width = 1280
 capture_input_height = 720
+
+regulate_weight_const = 100
+regulate_bias_const = 1000
 
 # Project Defines - Head Detection
 global global_camera_matrix
@@ -71,12 +75,7 @@ stages = {'CALIB_LEFT': 0,
 stage_dot_locations = [(0.035, 0.5), (0.25, 0.25), (0.5, 0.035), (0.75, 0.25), (0.965, 0.5), (0.75, 0.75), (0.5, 0.965),
                        (0.25, 0.75), (0.5, 0.5), (0., 0.)]
 
-
-LANDMARKS_6_PNP = np.array([
-    [-4.50967681e+01, -2.13128582e+01 ,  2.13128582e+01 , 4.50967681e+01 , -2.62995769e+01 , 2.62995769e+01] ,
- [-4.83773045e-01 , 4.83773045e-01 ,  4.83773045e-01  , -4.83773045e-01 , 6.85950353e+01 , 6.85950353e+01] ,
- [ 2.39702984e+00 , -2.39702984e+00 , -2.39702984e+00 , 2.39702984e+00 , -9.86076132e-32 , -9.86076132e-32],] , dtype=np.float)
-
+LANDMARKS_6_PNP = sio.loadmat('UtilsAndModels/faceModelGeneric.mat')['model']
 
 LANDMARKS_HP: np.ndarray = np.array([
     [-0.07141807, -0.02827123, 0.08114384],
