@@ -5,6 +5,8 @@ from torch.autograd import Variable
 from torch.nn import Linear, MSELoss, init, ReLU
 from torch.optim import SGD
 
+from UtilsAndModels.Defines import regulate_bias_const, regulate_weight_const
+
 
 class FixNet(torch.nn.Module):
     def __init__(self, gui_width, gui_height):
@@ -46,10 +48,18 @@ class FixNetCalibration:
                 if abs(self.model.fc1.bias[i]) > 0.2:
                     self.model.fc1.bias[i] = 0.2 * np.sign(self.model.fc1.bias[i])
 
+    def regularize_calc(self, const_mul=regulate_weight_const, const_bias=regulate_bias_const):
+        regulate_mul_x = torch.norm(1 - self.model.fc1.weight[0][0], 1)
+        regulate_mul_y = torch.norm(1 - self.model.fc1.weight[1][1], 1)
+        regulate_bias = torch.norm(self.model.fc1.bias)
+        return const_mul*(regulate_mul_x + regulate_mul_y) + const_bias * regulate_bias
+
     def train_model(self, epochs, real, res):
         self.model.train()
         data_size = int(np.size(res)/2)
         print("data size", data_size)
+        print("real", real)
+        print("res", res)
         if data_size < 4:
             return
         # create our training loop
@@ -59,14 +69,14 @@ class FixNetCalibration:
 
             pred = self.model(res_tensor)
             loss = self.loss_f(pred, real_tensor)
+            loss = loss + self.regularize_calc()
 
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            if epoch % 10 == 0:
+            if epoch % 5 == 0:
                 print("Epoch: {} Loss: {}".format(epoch, loss.data))
 
-        self.limit_model()
         self.is_trained = True
 
     def use_net(self, pixel):

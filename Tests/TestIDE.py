@@ -65,8 +65,8 @@ class Test_Manager:
         # self.gaze_manager.gui.print_capture_button(self.tag)
 
     def capture(self):
-        self.pixel_linear, self.pixel_trig = self.gaze_manager.get_cur_pixel()
         self.gaze_manager.gui.wait_key()
+        self.pixel_linear, self.pixel_trig = self.gaze_manager.get_cur_pixel()
         return self.pixel_linear, self.pixel_trig
 
     def get_pixel_with_method(self, kind="Trig", net=True):
@@ -95,11 +95,11 @@ class Test_Manager:
                 self.new_log_input(cur_smp, "Trig")
                 self.new_log_input(cur_smp, "Linear")
 
-                # self.gaze_manager.gui.print_pixel(self.pixel_trig, "black")
-                # self.gaze_manager.gui.print_pixel(self.pixel_trig_fixed, "blue")
-                # self.gaze_manager.gui.print_pixel(self.pixel_linear, "yellow")
-                # self.gaze_manager.gui.print_pixel(self.pixel_linear_fixed, "green")
-                # self.gaze_manager.gui.wait_key()
+                self.gaze_manager.gui.print_pixel(self.pixel_trig, "black")
+                self.gaze_manager.gui.print_pixel(self.pixel_trig_fixed, "blue")
+                self.gaze_manager.gui.print_pixel(self.pixel_linear, "yellow")
+                self.gaze_manager.gui.print_pixel(self.pixel_linear_fixed, "green")
+                self.gaze_manager.gui.wait_key()
 
                 self.gaze_manager.gui.w.delete("all")
             # not valid

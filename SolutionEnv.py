@@ -11,7 +11,9 @@ class SolutionEnv:
             self.reruns = 50
         else:
             self.reruns = 1
-        utils.global_camera_matrix = np.array([960., 0., 640., 0., 960., 360., 0., 0., 1.]).reshape(3, 3)
+        utils.global_camera_matrix = np.array([capture_input_width, 0., capture_input_width/2,
+                                               0., capture_input_height, capture_input_height/2,
+                                               0., 0., 1.]).reshape(3, 3)
         utils.global_camera_coeffs = np.zeros((5, 1))
         self.extra_data = None
 
