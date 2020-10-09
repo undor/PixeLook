@@ -2,12 +2,18 @@
 Gaze detector from Webcam - Project for Technion , EE faculty.
 Dor Arad & Tomer Keren
 
-[![readme-img.png](https://i.postimg.cc/tRd9QxgS/readme-img.png)](https://postimg.cc/bdv71dkk)
+<table>
+  <tr>
+    <td>
+<img src="https://i.postimg.cc/tRd9QxgS/readme-img.png" width="525" height="375">
+<img src=".idea/video_screen.gif" width="388" height="388">
+    </td>
+  </tr>
+  </table>
 
 ## Webcam requriements ##
 1. at least 720p resolution
-
-2.located in the top center of the screen
+2. located in the top center of the screen
 
 ## Running the demo ##
 1. Download repo
