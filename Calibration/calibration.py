@@ -14,6 +14,7 @@ class CalibrationManager:
         self.screen_size = screen_size
         self.height_px = self.gui.height
         self.width_px = self.gui.width
+        self.focal_lengths = self.get_focal_length()
         # model method init
         self.model_method = model_method
         if self.model_method == "FullFace":
@@ -37,6 +38,14 @@ class CalibrationManager:
         self.train_set_linear = []
         self.train_set_trig_real = []
         self.train_set_trig = []
+
+    #compute new focal lengths
+    def get_focal_length(self):
+        # parameter for field of view
+        alpha = 55
+        focal_x = (self.width_px / 2) * (np.arctan(alpha / 2))
+        focal_y = (self.height_px / 2) * (np.arctan(alpha / 2))
+        return focal_x, focal_y
 
     def gaze_to_pixel_linear(self, gaze):
         width_ratio = abs(gaze[1] - self.calib_data[CALIB_LEFT][0][1]) / self.width_gaze_scale

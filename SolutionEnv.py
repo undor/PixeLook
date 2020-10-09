@@ -1,7 +1,13 @@
 from FrameData import *
 
+# set new focal lengths for global camera matrix
+def set_camera_new_focal(focal_lengths):
+    utils.global_camera_matrix = np.array([focal_lengths[0], 0., capture_input_width / 2,
+                                           0., focal_lengths[1], capture_input_height / 2,
+                                           0., 0., 1.]).reshape(3, 3)
 
 # General solution Env
+
 class SolutionEnv:
     def __init__(self, input_mode="camera"):
         self.init_net_model()
