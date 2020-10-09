@@ -69,10 +69,11 @@ class FullScreenApp(object):
         self.finish = True
         self.var.set(1)
 
-    def print_capture_button(self, pixel):
-        print("putting button in: ", pixel[0], pixel[1])
+    def move_button_to_pixel(self, pixel):
+        self.w.focus_set()
+        self.button.place_forget()
         self.button.place(x=pixel[0], y=pixel[1], anchor="c")
-        self.button.config(text="@")
+        self.master.update()
 
     def print_pixel(self, pixel, colour=None):
         delta = 5
