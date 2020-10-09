@@ -3,13 +3,10 @@ Gaze detector from Webcam - Project for Technion , EE faculty.
 Dor Arad & Tomer Keren
 
 <table>
-  <tr>
-    <td>
-<img src="https://i.postimg.cc/tRd9QxgS/readme-img.png" width="525" height="375">
-<img src=".idea/video_screen.gif" width="388" height="388">
-    </td>
-  </tr>
-  </table>
+  <tr><td>
+<img src="https://i.postimg.cc/tRd9QxgS/readme-img.png" width="262" height="187">
+<img src=".idea/video_screen.gif" width="190" height="190">
+   </td></tr></table>
 
 ## Webcam requriements ##
 1. at least 720p resolution
