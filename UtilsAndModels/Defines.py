@@ -28,6 +28,10 @@ LANDMARKS_6_PNP = sio.loadmat('UtilsAndModels/faceModelGeneric.mat')['model']
 # Head Pose Detect attributes
 rvec = np.zeros(3, dtype=np.float)
 tvec = np.array([0, 0, 1], dtype=np.float)
+
+face_cascade = cv2.CascadeClassifier()
+face_cascade.load("UtilsAndModels/frontal_face_detector.xml")
+
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(os.getcwd() + "/UtilsAndModels/shape_predictor_68_face_landmarks.dat")
 LANDMARKS_HP: np.ndarray = np.array([

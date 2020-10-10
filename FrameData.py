@@ -39,9 +39,18 @@ class FrameData:
         if head_loc is not None:
             return True
         gray = cv2.cvtColor(self.orig_img, cv2.COLOR_BGR2GRAY)
-        rects = detector(gray, 0)
-        if np.size(rects) > 0:
-            prediction = predictor(gray, rects[0])
+
+        # dlib face detector
+        # rects_dlib = detector(gray, 0)
+
+        # cv2 face detector
+        rects_cv = face_cascade.detectMultiScale(gray)
+
+        #  scaleFactor=1.1,
+        if np.size(rects_cv) > 0:
+            rects_cv_to_dlib = dlib.rectangle(rects_cv[0][0], rects_cv[0][1], rects_cv[0][0] + rects_cv[0][2],
+                                              rects_cv[0][1] + rects_cv[0][3])
+            prediction = predictor(gray, rects_cv_to_dlib)
             self.landmarks_all = self.get_landmarks(prediction, False)
             self.landmarks_6 = self.landmarks_all[self.relevant_locations]
             self.is_face = True
