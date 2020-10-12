@@ -64,6 +64,12 @@ class environment_ff(SolutionEnv):
         # apply the affine transformation
         cur_frame.flip()
         cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (self.img_size_for_net, self.img_size_for_net), flags=cv2.INTER_CUBIC)
+        # cur_frame.img_for_net = cv2.cvtColor(cur_frame.img_for_net, cv2.COLOR_BGR2GRAY)
+        # cur_frame.img_for_net = cv2.equalizeHist(cur_frame.img_for_net)
+        # cv2.imshow("before", img)
+        # cv2.waitKey()
+        # cv2.imshow("after", img)
+        # cv2.waitKey()
         cur_frame.gaze_origin = gaze_origin
         return cur_frame
 

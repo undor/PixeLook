@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torchvision.models as models
 from PIL import Image
 from torchvision import transforms
-
+import cv2
 
 class GazeNet(nn.Module):
 
@@ -69,6 +69,7 @@ class GazeNet(nn.Module):
 
     def get_gaze(self, img):
         img = Image.fromarray(img)
+
         img = self.preprocess(img)[np.newaxis, :, :, :]
         gaze = self.forward(img.to(self.device))
         return gaze
