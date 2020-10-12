@@ -1,4 +1,5 @@
 import random
+import time
 
 from Tests.TestUtils import *
 
@@ -24,6 +25,8 @@ class Test_Manager:
         self.debug_total_improve_linear = 0
         self.debug_total_error_trig = 0
         self.debug_total_improve_trig = 0
+
+        self.start_time_iteration = 0
 
     def self_check(self):
         self.gaze_manager.gui.print_pixel(self.gaze_manager.get_cur_pixel())
@@ -76,7 +79,13 @@ class Test_Manager:
 
     def capture(self):
         self.gaze_manager.gui.wait_key()
+        self.start_time_iteration = time.perf_counter()
+        # time measurement
+        start_time = time.perf_counter()
         self.pixel_linear, self.pixel_trig = self.gaze_manager.get_cur_pixel()
+        # print(time.perf_counter() - start_time)
+        # print("9. get cur pixel took: ", (time.perf_counter() - start_time))
+
         return self.pixel_linear, self.pixel_trig
 
     def get_pixel_with_method(self, kind="Trig", net=True):
@@ -98,10 +107,15 @@ class Test_Manager:
             self.draw_target()
             is_valid_pixel = self.capture()
             # TODO : check for both linear and trig pixels
+            start_time = time.perf_counter()
             if is_valid_pixel[1] is not error_in_detect or is_valid_pixel[0] is not error_in_detect:
                 self.pixel_trig_fixed = self.gaze_manager.trig_fix_sys.use_net(self.pixel_trig)
+                # print(time.perf_counter() - start_time)
+                # print("10. trig fix net took: ", time.perf_counter() - start_time)
+                start_time = time.perf_counter()
                 self.pixel_linear_fixed = self.gaze_manager.linear_fix_sys.use_net(self.pixel_linear)
-
+                # print(time.perf_counter() - start_time)
+                # print("11. linear fix net took: ", time.perf_counter() - start_time)
                 self.new_log_input(cur_smp, "Trig")
                 self.new_log_input(cur_smp, "Linear")
 
@@ -115,6 +129,8 @@ class Test_Manager:
             # not valid
             else:
                 self.not_valid_detect()
+            # print(time.perf_counter() - self.start_time_iteration)
+            # print("12. entire iteration from click to next compute took: ", time.perf_counter() - self.start_time_iteration)
         self.finish_test()
 
     def finish_test(self):
