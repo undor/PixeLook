@@ -9,6 +9,7 @@ class environment_hp(SolutionEnv):
     def __init__(self, is_right_eye=True):
         SolutionEnv.__init__(self)
         self.is_right_eye = is_right_eye
+        self.model = Model()
 
     def use_net(self, cur_frame):
         with torch.no_grad():
@@ -28,10 +29,10 @@ class environment_hp(SolutionEnv):
         self.model.eval()
 
     def head_pose_detect_for_net(self, cur_frame):
-        rvec = np.zeros(3, dtype=np.float)
-        tvec = np.array([0, 0, 1], dtype=np.float)
-        return cv2.solvePnP(LANDMARKS_HP, cur_frame.landmarks_all, utils.global_camera_matrix,
-                            utils.global_camera_coeffs, rvec, tvec, useExtrinsicGuess=True,
+        rotation_vector = np.zeros(3, dtype=np.float)
+        translation_vector = np.array([0, 0, 1], dtype=np.float)
+        return cv2.solvePnP(LANDMARKS_HP, cur_frame.landmarks_all_points, utils.global_camera_matrix,
+                            utils.global_camera_coeffs, rotation_vector, translation_vector, useExtrinsicGuess=True,
                             flags=cv2.SOLVEPNP_ITERATIVE)
 
     def pre_process_for_net(self, cur_frame):
@@ -59,7 +60,7 @@ class environment_hp(SolutionEnv):
         # save data for outside
         self.extra_data = norm_rotation.as_matrix()
 
-        camera_matrix_inv = np.linalg.inv(utils.global_camera_matrix)
+        # camera_matrix_inv = np.linalg.inv(utils.global_camera_matrix)
         camera_matrix_normalize = np.array([[960., 0., 30],
                                             [0., 960., 18.],
                                             [0., 0., 1.], ], dtype=np.float)

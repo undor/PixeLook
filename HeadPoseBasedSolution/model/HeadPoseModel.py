@@ -131,8 +131,8 @@ class Model(nn.Module):
         x = self.fc(x)
         return x
 
-    def get_gaze(self,img,head_pose):
-        head_pose = np.array(head_pose,dtype=np.float32)
+    def get_gaze(self, img, head_pose):
+        head_pose = np.array(head_pose, dtype=np.float32)
         scale = torchvision.transforms.Lambda(lambda x: x.astype(np.float32) / 255)
         transform = torchvision.transforms.Compose([
             scale,
@@ -143,7 +143,5 @@ class Model(nn.Module):
         head_pose_tensor = torch.from_numpy(head_pose)
         img_tensor = img_tensor.unsqueeze(0)
         head_pose_tensor = head_pose_tensor.unsqueeze(0)
-        res = self.forward(img_tensor,head_pose_tensor)
+        res = self.forward(img_tensor, head_pose_tensor)
         return res.cpu().numpy()[0]
-
-
