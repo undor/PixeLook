@@ -32,8 +32,14 @@ class SolutionEnv:
             cur_frame = self.create_frame(img)
             if cur_frame.face_landmark_detect():
                 cur_frame.head_pose_detect()
+                start_time = time.perf_counter()
                 cur_frame = self.pre_process_for_net(cur_frame)
+                # print(time.perf_counter() - start_time)
+                # print("4. preprocess for net took: ", time.perf_counter() - start_time)
+                start_time = time.perf_counter()
                 gaze = self.use_net(cur_frame)
+                # print(time.perf_counter() - start_time)
+                # print("5. net prediction took: ", time.perf_counter() - start_time)
                 return gaze, cur_frame.translation_vector
-        # print("Find Gaze was unable to detect your face!")
+        print("Find Gaze was unable to detect your face!")
         return -1, np.array([0, 0, 0])

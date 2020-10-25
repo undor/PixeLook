@@ -2,7 +2,6 @@ import UtilsAndModels.utils as utils
 from Calibration.calibration import *
 from Tests.TestUtils import *
 
-# file TestDB was for computing errors from DataBases we've used, and due to further changes is no longer valid.
 
 class TestDB:
     def __init__(self, db_location, model_method):
@@ -18,8 +17,8 @@ class TestDB:
         camera_intrinsic_mat = scipy.io.loadmat(path + "/Camera.mat")
 
         self.gaze_manager.pixel_per_mm = (screen_size_mat['height_pixel']/screen_size_mat['height_mm'])
-        self.gaze_manager.screen_width_pixel = screen_size_mat['width_pixel']
-        self.gaze_manager.screen_height_pixel = screen_size_mat['height_pixel']
+        self.gaze_manager.width_px = screen_size_mat['width_pixel']
+        self.gaze_manager.height_px = screen_size_mat['height_pixel']
         self.cur_screen_size = from_wh_mm_to_diag_inch(screen_size_mat['width_mm'], screen_size_mat['height_mm'])
         utils.global_camera_matrix = camera_intrinsic_mat['cameraMatrix']
         utils.global_camera_coeffs = camera_intrinsic_mat['distCoeffs']

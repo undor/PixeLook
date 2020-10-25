@@ -5,8 +5,7 @@ import torch.nn.functional as F
 import torchvision.models as models
 from PIL import Image
 from torchvision import transforms
-# import cv2
-
+import cv2
 
 class GazeNet(nn.Module):
 

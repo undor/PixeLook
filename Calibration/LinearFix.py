@@ -4,6 +4,7 @@ from torch import Tensor
 from torch.autograd import Variable
 from torch.nn import Linear, MSELoss, init, ReLU
 from torch.optim import SGD
+
 from UtilsAndModels.Defines import regulate_bias_const, regulate_weight_const
 
 
@@ -17,18 +18,12 @@ class FixNet(torch.nn.Module):
         self.init_weights()
         self.init_bias()
 
-    def normalize_pixel(self, x, into_net):
-        if into_net is True:
-            x[0] = x[0] / self.gui_width
-            x[1] = x[1] / self.gui_height
-        else:
-            x[0] = x[0] * self.gui_width
-            x[1] = x[1] * self.gui_height
-
     def forward(self, x):
-        self.normalize_pixel(x, True)
+        x[0] = x[0] / self.gui_width
+        x[1] = x[1] / self.gui_height
         x = self.relu(self.fc1(x))
-        self.normalize_pixel(x, False)
+        x[0] = x[0] * self.gui_width
+        x[1] = x[1] * self.gui_height
         return x
 
     def init_weights(self):
@@ -41,8 +36,8 @@ class FixNet(torch.nn.Module):
 class FixNetCalibration:
     def __init__(self, gui_width, gui_height):
         self.model = FixNet(gui_width, gui_height)
-        self.loss_function = MSELoss()
-        self.optimization_algorithm = SGD(self.model.parameters(), lr=0.000001)
+        self.loss_f = MSELoss()
+        self.optimizer = SGD(self.model.parameters(), lr=0.000001)
         self.is_trained = False
 
     def limit_model(self):
@@ -62,24 +57,25 @@ class FixNetCalibration:
     def train_model(self, epochs, real, res):
         self.model.train()
         data_size = int(np.size(res)/2)
-        # print("data size", data_size)
-        # print("real", real)
-        # print("res", res)
+        print("data size", data_size)
+        print("real", real)
+        print("res", res)
         if data_size < 4:
             return
+        # create our training loop
         for epoch in range(epochs):
             real_tensor = Variable(Tensor(real))
             res_tensor = Variable(Tensor(res))
 
-            prediction = self.model(res_tensor)
-            loss = self.loss_function(prediction, real_tensor)
+            pred = self.model(res_tensor)
+            loss = self.loss_f(pred, real_tensor)
             loss = loss + self.regularize_calc()
 
-            self.optimization_algorithm.zero_grad()
+            self.optimizer.zero_grad()
             loss.backward()
-            self.optimization_algorithm.step()
-            # if epoch % 5 == 0:
-            # print("Epoch: {} Loss: {}".format(epoch, loss.data))
+            self.optimizer.step()
+            if epoch % 5 == 0:
+                print("Epoch: {} Loss: {}".format(epoch, loss.data))
 
         self.is_trained = True
 

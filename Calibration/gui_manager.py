@@ -22,7 +22,13 @@ class FullScreenApp(object):
         self.button = tk.Button(self.master, text="@", command=lambda: self.var.set(1))
         self.second_button = tk.Button(self.master, text="I'm satisfied with the result", command=lambda: self.setvar())
         self.text_box = 0
-        self.finish_calibration = False
+        self.finish = False
+
+    # def toggle_geom(self, event):
+    #     geom = self.master.winfo_geometry()
+    #     print(geom, self._geom)
+    #     self.master.geometry(self._geom)
+    #     self._geom = geom
 
     def print_calib_stage(self, stage):
         s = "Current stage number: " + str(stage) + "\n Please look on the "
@@ -59,6 +65,16 @@ class FullScreenApp(object):
         self.button.place(relx=x, rely=y, anchor="c")
         self.w.itemconfig(self.text_box, text=my_text)
 
+    def setvar(self):
+        self.finish = True
+        self.var.set(1)
+
+    def move_button_to_pixel(self, pixel):
+        self.w.focus_set()
+        self.button.place_forget()
+        self.button.place(x=pixel[0], y=pixel[1], anchor="c")
+        self.master.update()
+
     def print_pixel(self, pixel, colour=None):
         delta = 5
         self.w.focus_set()
@@ -78,22 +94,11 @@ class FullScreenApp(object):
         radius = 0.5*perimeter
         if colour is None:
             self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill="#FF0000")
-            self.w.create_text((center[0] + radius, center[1] + radius), text="Trig center dot",
-                               font="MSGothic 8 bold", fill="#652828")
         else:
             self.w.create_oval(center[0], center[1], center[0] + perimeter, center[1] + perimeter, fill=colour)
-            self.w.create_text((center[0] + radius, center[1] + radius), text="linear center dot",
-                               font="MSGothic 8 bold", fill="#652828")
 
-    def move_button_to_pixel(self, pixel):
-        self.w.focus_set()
-        self.button.place_forget()
-        self.button.place(x=pixel[0], y=pixel[1], anchor="c")
-        self.master.update()
-
-    def setvar(self):
-        self.finish_calibration = True
-        self.var.set(1)
+        self.w.create_text((center[0]+radius, center[1]+radius), text="center dot",
+                           font="MSGothic 8 bold", fill="#652828")
 
     def wait_key(self):
         self.button.wait_variable(self.var)
