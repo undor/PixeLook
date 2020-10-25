@@ -3,7 +3,7 @@ import HeadPoseBasedSolution.HeadPoseBasedSolution as HeadPoseBasedSolution
 from Calibration.LinearFix import *
 from Calibration.gui_manager import *
 from UtilsAndModels.utils import *
-import time
+
 
 class CalibrationManager:
 
@@ -40,24 +40,18 @@ class CalibrationManager:
 
 
     def gaze_to_pixel_linear(self, gaze):
-        start_time = time.perf_counter()
         width_ratio = abs(gaze[1] - self.calib_data[CALIB_LEFT][0][1]) / self.width_gaze_scale
         height_ratio = abs(gaze[0] - self.calib_data[CALIB_UP][0][0]) / self.height_gaze_scale
         x_location = width_ratio * self.width_px
         y_location = height_ratio * self.height_px
         pixel = (x_location, y_location)
-        # print(time.perf_counter() - start_time)
-        # print("7. gaze to pixel linear took: ", time.perf_counter() - start_time)
         return pixel
 
     def gaze_to_pixel_trig(self, gaze, ht, extra_data=None):
-        start_time = time.perf_counter()
         x, y = self.gaze_to_mm(gaze, ht, extra_data)
         x_location = (x * self.pixel_per_mm + self.width_px / 2)
         y_location = -y * self.pixel_per_mm
         pixel = (x_location, y_location)
-        # print(time.perf_counter() - start_time)
-        # print("8. gaze to pixel trig took: ", time.perf_counter() - start_time)
         return pixel
 
     def gaze_to_mm(self, gaze, ht, extra_data=None):
@@ -70,11 +64,7 @@ class CalibrationManager:
         return x[0], y[0]
 
     def get_cur_pixel(self):
-        # time measurement
-        start_time = time.perf_counter()
         gaze, ht = self.env.find_gaze()
-        # print(time.perf_counter() - start_time)
-        # print("6. find gaze took: ", (time.perf_counter() - start_time))
         if ht[0] == 0 or ht[1] == 0 or ht[2] == 0:
             # error in find gaze - didn't detect face
             return error_in_detect

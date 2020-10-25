@@ -1,6 +1,6 @@
 import UtilsAndModels.utils as utils
 from UtilsAndModels.Defines import *
-import time
+
 
 class FrameData:
     def __init__(self, img, is_debug=True):
@@ -44,18 +44,13 @@ class FrameData:
         # rects_dlib = detector(gray, 0)
 
         # cv2 face detector
-        start_time = time.perf_counter()
         rects_cv = face_cascade.detectMultiScale(gray)
-        # print(time.perf_counter() - start_time)
-        # print("1. detect face took: ", time.perf_counter()-start_time)
+
         #  scaleFactor=1.1,
         if np.size(rects_cv) > 0:
             rects_cv_to_dlib = dlib.rectangle(rects_cv[0][0], rects_cv[0][1], rects_cv[0][0] + rects_cv[0][2],
                                               rects_cv[0][1] + rects_cv[0][3])
-            start_time = time.perf_counter()
             prediction = predictor(gray, rects_cv_to_dlib)
-            # print(time.perf_counter() - start_time)
-            # print("2. predict face landmarks took: ", time.perf_counter()-start_time)
             self.landmarks_all = self.get_landmarks(prediction, False)
             self.landmarks_6 = self.landmarks_all[self.relevant_locations]
             self.is_face = True
@@ -69,7 +64,6 @@ class FrameData:
         mini_face_model_adj = LANDMARKS_6_PNP.T.reshape(LANDMARKS_6_PNP.shape[1], 1, 3)
         dist_coeffs = utils.global_camera_coeffs
         camera_matrix = utils.global_camera_matrix
-        start_time = time.perf_counter()
         (success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(mini_face_model_adj, landmarks,
                                                                                 camera_matrix,
                                                                                 dist_coeffs,
@@ -80,5 +74,3 @@ class FrameData:
                                                                                 dist_coeffs, self.rotation_vector,
                                                                                 self.translation_vector,
                                                                                 True)
-        # print(time.perf_counter() - start_time)
-        # print("3. head pose detect took: ", time.perf_counter()- start_time)
