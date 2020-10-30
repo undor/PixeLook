@@ -56,11 +56,6 @@ class FrameData:
             prediction = predictor(gray, rects_cv_to_dlib)
             self.landmarks_all = self.get_landmarks(prediction)
             self.landmarks_6 = self.landmarks_all[self.relevant_locations]
-            image = cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB)
-            for (x, y) in self.landmarks_6:
-                cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
-            cv2.imshow("Output", image)
-            cv2.waitKey(0)
             self.is_face = True
         return self.is_face
 
@@ -85,7 +80,8 @@ class FrameData:
 
     def create_show_img(self,pitchyaw):
         r_eye_center , ___  = self.get_eye_centers()
-        img = utils.draw_gaze(self.orig_img, eye_pos=r_eye_center, pitchyaw=pitchyaw)
+        img = utils.draw_gaze(self.orig_img, eye_pos=r_eye_center, pitchyaw=pitchyaw,thickness=4,length=300)
         for (x, y) in self.landmarks_6:
-            cv2.circle(img, (x, y), 1, (0, 255, 0), -1)
+            cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
+        img = cv2.flip(img,0)
         return img

@@ -1929,3 +1929,4 @@ Regev, 14, 34, 11, 31, [477.], Trigonometric, FullFace, 27, [878, 117]
 Regev, 14, 32, 3, 32, [477.], Linear, FullFace, 12, [878, 117] 
 Regev, 14, 40, 40, 4, [475.], Trigonometric, FullFace, 13, [436, 79] 
 Regev, 14, 46, 45, 8, [475.], Linear, FullFace, 23, [436, 79] 
+person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,net_improve,true_pixel_location
