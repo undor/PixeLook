@@ -4,7 +4,7 @@ from Tests.TestUtils import *
 
 
 class Test_Manager:
-    def __init__(self, gaze_manager):
+    def __init__(self, gaze_manager,screen_record_mode = False):
         self.pixel_real = np.zeros(2)
         self.pixel_linear = np.zeros(2)
         self.pixel_linear_fixed = np.zeros(2)
@@ -20,15 +20,15 @@ class Test_Manager:
         self.iteration = 0
         self.test_csv = new_csv_session("OurDB")
 
-        self.debug_total_error_linear =0
+        self.screen_record_mode = screen_record_mode
+        self.gaze_manager.env.screen_record_mode = screen_record_mode
+        self.debug_total_error_linear = 0
         self.debug_total_improve_linear = 0
         self.debug_total_error_trig = 0
         self.debug_total_improve_trig = 0
 
     def self_check(self):
         self.gaze_manager.gui.print_pixel(self.gaze_manager.get_cur_pixel())
-        # un-comment if you want to wait for mouse-clicks to capture
-        # self.gaze_manager.gui.wait_key()
 
     def not_valid_pixel(self):
         log_error(self.test_csv, "pixel")
@@ -75,7 +75,8 @@ class Test_Manager:
         # self.gaze_manager.gui.print_capture_button(self.tag)
 
     def capture(self):
-        self.gaze_manager.gui.wait_key()
+        if not self.screen_record_mode:
+            self.gaze_manager.gui.wait_key()
         self.pixel_linear, self.pixel_trig = self.gaze_manager.get_cur_pixel()
         return self.pixel_linear, self.pixel_trig
 
@@ -91,6 +92,12 @@ class Test_Manager:
                 return self.gaze_manager.linear_fix_sys.use_net(self.pixel_linear)
             else:
                 return pixel_linear
+
+    def get_pixel_combined(self):
+        pixel_linear, pixel_trig = self.capture()
+        x = self.gaze_manager.trig_fix_sys.use_net(pixel_trig)[0]
+        y = pixel_linear[1]
+        return (x, y)
 
     def collect(self):
         for self.iteration in range(num_pics_per_session):

@@ -88,82 +88,48 @@ def get_dpi():
     print(round(hdpi, 1), round(vdpi, 1), round(ddpi, 1))
 
 
-#
-# def eye_detector(img, shape):
-#     right_eye = get_eye(shape, 38, 40, 39, 36)
-#     left_eye = get_eye(shape, 44, 46, 45, 42)
-#     return right_eye, left_eye
-#
-#
-# def get_eye_center(eye):
-#      x_center = (eye[0][0] + eye[1][0]) / 2
-#      y_center = (eye[0][1] + eye[1][1]) / 2
-#      return np.array([x_center, y_center, 0])
+def draw_axis(img, yaw, pitch, roll, tdx=None, tdy=None, size=100):
+    pitch = pitch * np.pi / 180
+    yaw = -(yaw * np.pi / 180)
+    roll = roll * np.pi / 180
 
-# def draw_axis(img, yaw, pitch, roll, tdx=None, tdy=None, size=100):
-#     pitch = pitch * np.pi / 180
-#     yaw = -(yaw * np.pi / 180)
-#     roll = roll * np.pi / 180
-#
-#     if tdx != None and tdy != None:
-#         tdx = tdx
-#         tdy = tdy
-#     else:
-#         height, width = img.shape[:2]
-#         tdx = width / 2
-#         tdy = height / 2
-#
-#     # X-Axis pointing to right. drawn in red
-#     x1 = size * (np.cos(yaw) * np.cos(roll)) + tdx
-#     y1 = size * (np.cos(pitch) * np.sin(roll) + np.cos(roll) * np.sin(pitch) * np.sin(yaw)) + tdy
-#
-#     # Y-Axis | drawn in green
-#     #        v
-#     x2 = size * (-np.cos(yaw) * np.sin(roll)) + tdx
-#     y2 = size * (np.cos(pitch) * np.cos(roll) - np.sin(pitch) * np.sin(yaw) * np.sin(roll)) + tdy
-#
-#     # Z-Axis (out of the screen) drawn in blue
-#     x3 = size * (np.sin(yaw)) + tdx
-#     y3 = size * (-np.cos(yaw) * np.sin(pitch)) + tdy
-#
-#     cv2.line(img, (int(tdx), int(tdy)), (int(x1), int(y1)), (0, 0, 255), 3)
-#     cv2.line(img, (int(tdx), int(tdy)), (int(x2), int(y2)), (0, 255, 0), 3)
-#     cv2.line(img, (int(tdx), int(tdy)), (int(x3), int(y3)), (255, 0, 0), 2)
-#
-#     return img
+    if tdx != None and tdy != None:
+        tdx = tdx
+        tdy = tdy
+    else:
+        height, width = img.shape[:2]
+        tdx = width / 2
+        tdy = height / 2
 
-# def print_gaze_line(img, eye_center, gaze_vector, r_vec, t_vec):
-#     length = 0.0001
-#     gaze_vector = gaze_vector / np.linalg.norm(gaze_vector)
-#     points = np.array([eye_center + length * gaze_vector])
-#     (eye_end_point2D, jacobian) = cv2.projectPoints(points, r_vec, t_vec, camera_matrix_a, dist_coeff_a)
-#     p1 = (int(eye_center[0]), int(eye_center[1]))
-#     p2 = (int(eye_end_point2D[0][0][0]), int(eye_end_point2D[0][0][1]))
-#     cv2.line(img, p1, p2, (255, 255, 0), 2)
-#     return img
+    # X-Axis pointing to right. drawn in red
+    x1 = size * (np.cos(yaw) * np.cos(roll)) + tdx
+    y1 = size * (np.cos(pitch) * np.sin(roll) + np.cos(roll) * np.sin(pitch) * np.sin(yaw)) + tdy
 
-# def add_data_on_img(frame, gaze_angles, fps):
-#     gaze_angles = gaze_angles[0]
-#     head_angles = frame.get_head_pose()
-#     cv2.putText(frame.debug_img, "gaze angles: " + str(gaze_angles[0]) + "  " + str(gaze_angles[1]),
-#                 (100, 100), font, 1, (0, 150, 0), 2, cv2.LINE_4)
-#     cv2.putText(frame.debug_img, "head angles: " + str(head_angles[0]) + "  " + str(head_angles[1]),
-#                 (100, 200), font, 1, (0, 150, 0), 2, cv2.LINE_4)
-#     cv2.putText(frame.debug_img, "fps  :  " + str(fps), (100, 300), font, 1, (0, 150, 0), 2, cv2.LINE_4)
-#
-#
+    # Y-Axis | drawn in green
+    #        v
+    x2 = size * (-np.cos(yaw) * np.sin(roll)) + tdx
+    y2 = size * (np.cos(pitch) * np.cos(roll) - np.sin(pitch) * np.sin(yaw) * np.sin(roll)) + tdy
 
-# def draw_gaze(image_in, eye_pos, pitchyaw, length=200, thickness=1, color=(0, 0, 255)):
-#     image_out = image_in
-#     if len(image_out.shape) == 2 or image_out.shape[2] == 1:
-#         image_out = cv2.cvtColor(image_out, cv2.COLOR_GRAY2BGR)
-#
-#     dx = -length * np.sin(pitchyaw[1])
-#     dy = -length * np.sin(pitchyaw[0])
-#     cv2.arrowedLine(image_out, tuple(np.round(eye_pos).astype(np.int32)),
-#                     tuple(np.round([eye_pos[0] + dx, eye_pos[1] + dy]).astype(int)), color,
-#                     thickness, cv2.LINE_AA, tipLength=0.5)
-#     return image_out
+    # Z-Axis (out of the screen) drawn in blue
+    x3 = size * (np.sin(yaw)) + tdx
+    y3 = size * (-np.cos(yaw) * np.sin(pitch)) + tdy
+
+    cv2.line(img, (int(tdx), int(tdy)), (int(x1), int(y1)), (0, 0, 255), 3)
+    cv2.line(img, (int(tdx), int(tdy)), (int(x2), int(y2)), (0, 255, 0), 3)
+    cv2.line(img, (int(tdx), int(tdy)), (int(x3), int(y3)), (255, 0, 0), 2)
+    return img
+
+def draw_gaze(image_in, eye_pos, pitchyaw, length=200, thickness=1, color=(255, 0, 0)):
+    image_out = image_in
+    if len(image_out.shape) == 2 or image_out.shape[2] == 1:
+        image_out = cv2.cvtColor(image_out, cv2.COLOR_GRAY2BGR)
+
+    dx = -length * np.sin(pitchyaw[1])
+    dy = -length * np.sin(pitchyaw[0])
+    cv2.arrowedLine(image_out, tuple(np.round(eye_pos).astype(np.int32)),
+                    tuple(np.round([eye_pos[0] + dx, eye_pos[1] + dy]).astype(int)), color,
+                    thickness, cv2.LINE_AA, tipLength=0.5)
+    return image_out
 
 #
 # class fpsHelper:
