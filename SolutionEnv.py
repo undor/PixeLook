@@ -1,8 +1,7 @@
 from FrameData import *
-import time
+
 
 # General solution Env
-
 
 class SolutionEnv:
     def __init__(self, input_mode="camera"):
@@ -35,5 +34,5 @@ class SolutionEnv:
                 cur_frame = self.pre_process_for_net(cur_frame)
                 gaze = self.use_net(cur_frame)
                 return gaze, cur_frame.translation_vector
-        # print("Find Gaze was unable to detect your face!")
+        print("Find Gaze was unable to detect your face!")
         return -1, np.array([0, 0, 0])

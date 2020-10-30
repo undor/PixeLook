@@ -3,7 +3,7 @@ from UtilsAndModels.utils import *
 
 def new_csv_session(name):
     csv_file = open("Results/"+name+".csv", "a")
-    csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, gaze_net_method,"
+    csv_file.write("person,screen_size,err_mm,err_mm_x,err_mm_y,dist_screen_mm, convert_pixel_method, model_method,"
                    "net_improve,true_pixel_location\n")
     return csv_file
 
@@ -16,7 +16,7 @@ def log_sample_csv(smp, csv_file):
     csv_file.write(str(smp.err_mm_y) + ", ")
     csv_file.write(str(smp.dist_screen) + ", ")
     csv_file.write(str(smp.convert_method) + ", ")
-    csv_file.write(str(smp.gaze_net_method) + ", ")
+    csv_file.write(str(smp.model_method) + ", ")
     csv_file.write(str(smp.improve) + ", ")
     csv_file.write(str(smp.true_pixel) + " \n")
     csv_file.flush()
