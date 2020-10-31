@@ -57,12 +57,8 @@ class FixNetCalibration:
     def train_model(self, epochs, real, res):
         self.model.train()
         data_size = int(np.size(res)/2)
-        print("data size", data_size)
-        print("real", real)
-        print("res", res)
         if data_size < 4:
             return
-        # create our training loop
         for epoch in range(epochs):
             real_tensor = Variable(Tensor(real))
             res_tensor = Variable(Tensor(res))
@@ -74,8 +70,6 @@ class FixNetCalibration:
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
-            if epoch % 5 == 0:
-                print("Epoch: {} Loss: {}".format(epoch, loss.data))
 
         self.is_trained = True
 

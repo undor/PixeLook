@@ -1,16 +1,11 @@
 from typing import Any
-
 from FrameData import *
 
-
-# General solution Env
-
 class SolutionEnv:
-    def __init__(self, input_mode="camera", screen_record_mode=False):
+    def __init__(self, camera_number =0 , screen_record_mode=False):
         self.init_net_model()
-        self.input_mode = input_mode
-        if self.input_mode == "camera":
-            self.cap = utils.set_camera(capture_input_width, capture_input_height)
+        if camera_number != -1:
+            self.cap = utils.set_camera(capture_input_width, capture_input_height,camera_number)
             self.reruns = 50
         else:
             self.reruns = 1
@@ -23,7 +18,7 @@ class SolutionEnv:
         self.webcam_shot = np.zeros((capture_input_width, capture_input_height))
 
     def get_img(self, input_img=None):
-        if self.input_mode == "camera":
+        if input_img is None:
             ret, img = self.cap.read()
             return img
         else:

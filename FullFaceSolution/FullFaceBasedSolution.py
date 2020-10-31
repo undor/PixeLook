@@ -4,8 +4,8 @@ from SolutionEnv import *
 
 # Full Face solution Env
 class environment_ff(SolutionEnv):
-    def __init__(self):
-        SolutionEnv.__init__(self)
+    def __init__(self,camera_number ):
+        SolutionEnv.__init__(self,camera_number = camera_number)
         self.img_size_for_net = 112
 
     def use_net(self, cur_frame):
@@ -58,6 +58,3 @@ class environment_ff(SolutionEnv):
         cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (self.img_size_for_net, self.img_size_for_net), flags=cv2.INTER_CUBIC)
         cur_frame.gaze_origin = gaze_origin
         return cur_frame
-
-
-my_env_ff = environment_ff()

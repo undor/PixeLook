@@ -83,5 +83,5 @@ class FrameData:
         img = utils.draw_gaze(self.orig_img, eye_pos=r_eye_center, pitchyaw=pitchyaw,thickness=4,length=300)
         for (x, y) in self.landmarks_6:
             cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
-        img = cv2.flip(img,0)
+        img = cv2.flip(img,1)
         return img
