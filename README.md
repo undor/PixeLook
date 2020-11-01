@@ -11,6 +11,26 @@ Gaze detector Python Pkg API
 1. at least 720p resolution
 2. located in the top center of the screen
 
+## Using The API ##
+The api made simple as possible.
+for example:
+
+```python
+from PixelGetter import PixelGetter
+
+def __main__():
+    my_px_gt = PixelGetter(screen_size=13.3, camera_number=0) #Create PixelGetter
+    my_px_gt.calibrate() # start the calibration process (GUI)
+    cur_pixel = my_px_gt.get_pixel() #use this method to get the cur pixel from webcam.
+    if cur_pixel[0]>PixelGetter.screen_width: # (x,y) = (cur_pixel[0],cur_pixel[1])
+        print("you are looking in the right side of the screen!")
+
+    my_px_gt.set_screen_shots(with_webcam=True) # set a screen shot video params
+    my_px_gt.start_screen_shots(max_frames=100) # start the screen record session (new thread)
+    wait(100)
+    my_px_gt.stop_screen_shots()    # stop screen recording thread
+```
+
 ## Running the demo ##
 1. Download repo
 ```
@@ -20,7 +40,7 @@ git clone https://github.com/araddor1/ReadHelper.git
 ```
 pip install -r requirements.txt
 ```
-3. run main.py
+3. run demo.py
 ```
 python main.py
 ```
