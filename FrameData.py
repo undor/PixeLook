@@ -21,13 +21,22 @@ class FrameData:
     def flip(self):
         self.debug_img = cv2.flip(self.debug_img, 1)
 
-    def get_landmarks(self, shape, specific_locations=False):
-        if specific_locations:
-            num = len(self.relevant_locations)
-            list = self.relevant_locations
-        else:
-            num = 68
-            list = range(num)
+    def get_eye_centers(self):
+        shape = self.landmarks_6
+
+        rcenter_x = (shape[0][0] + shape[1][0]) / 2
+        rcenter_y = (shape[0][1] + shape[1][1]) / 2
+
+        lcenter_x = (shape[2][0] + shape[3][0]) / 2
+        lcenter_y = (shape[2][1] + shape[3][1]) / 2
+
+        lcenter = tuple([rcenter_x, rcenter_y])
+        rcenter = tuple([lcenter_x, lcenter_y])
+        return rcenter,lcenter
+
+    def get_landmarks(self, shape):
+        num = 68
+        list = range(num)
         coords = np.zeros((num, 2), dtype="float32")
         j = 0
         for i in list:
@@ -39,19 +48,13 @@ class FrameData:
         if head_loc is not None:
             return True
         gray = cv2.cvtColor(self.orig_img, cv2.COLOR_BGR2GRAY)
-
-        # dlib face detector
-        # rects_dlib = detector(gray, 0)
-
-        # cv2 face detector
         rects_cv = face_cascade.detectMultiScale(gray)
 
-        #  scaleFactor=1.1,
         if np.size(rects_cv) > 0:
             rects_cv_to_dlib = dlib.rectangle(rects_cv[0][0], rects_cv[0][1], rects_cv[0][0] + rects_cv[0][2],
                                               rects_cv[0][1] + rects_cv[0][3])
             prediction = predictor(gray, rects_cv_to_dlib)
-            self.landmarks_all = self.get_landmarks(prediction, False)
+            self.landmarks_all = self.get_landmarks(prediction)
             self.landmarks_6 = self.landmarks_all[self.relevant_locations]
             self.is_face = True
         return self.is_face
@@ -74,3 +77,11 @@ class FrameData:
                                                                                 dist_coeffs, self.rotation_vector,
                                                                                 self.translation_vector,
                                                                                 True)
+
+    def create_show_img(self,pitchyaw):
+        r_eye_center , ___  = self.get_eye_centers()
+        img = utils.draw_gaze(self.orig_img, eye_pos=r_eye_center, pitchyaw=pitchyaw,thickness=4,length=300)
+        for (x, y) in self.landmarks_all:
+            cv2.circle(img, (x, y), 2, (0, 255, 0), -1)
+        img = cv2.flip(img,1)
+        return img

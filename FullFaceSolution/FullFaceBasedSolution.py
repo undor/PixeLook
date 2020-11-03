@@ -4,8 +4,8 @@ from SolutionEnv import *
 
 # Full Face solution Env
 class environment_ff(SolutionEnv):
-    def __init__(self):
-        SolutionEnv.__init__(self)
+    def __init__(self,camera_number ):
+        SolutionEnv.__init__(self,camera_number = camera_number)
         self.img_size_for_net = 112
 
     def use_net(self, cur_frame):
@@ -21,21 +21,13 @@ class environment_ff(SolutionEnv):
         self.model.eval()
 
     def create_frame(self, img):
-        cur_frame = FrameData(img[:, :, ::-1])
+        cur_frame = FrameData(img)
+        cur_frame.debug_img = img[:, :, ::-1]
         cur_frame.flip()
         return cur_frame
 
-    def pre_process_for_net(self, cur_frame):
-        shape = cur_frame.landmarks_6
-
-        rcenter_x = (shape[0][0] + shape[1][0]) / 2
-        rcenter_y = (shape[0][1] + shape[1][1]) / 2
-
-        lcenter_x = (shape[2][0] + shape[3][0]) / 2
-        lcenter_y = (shape[2][1] + shape[3][1]) / 2
-
-        lcenter = tuple([rcenter_x, rcenter_y])
-        rcenter = tuple([lcenter_x, lcenter_y])
+    def pre_process_for_net(self, cur_frame: FrameData):
+        rcenter , lcenter = cur_frame.get_eye_centers()
 
         gaze_origin = (int((lcenter[0] + rcenter[0]) / 2), int((lcenter[1] + rcenter[1]) / 2))
         # compute the angle between the eye centers
@@ -64,14 +56,11 @@ class environment_ff(SolutionEnv):
         # apply the affine transformation
         cur_frame.flip()
         cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (self.img_size_for_net, self.img_size_for_net), flags=cv2.INTER_CUBIC)
-        # cur_frame.img_for_net = cv2.cvtColor(cur_frame.img_for_net, cv2.COLOR_BGR2GRAY)
-        # cur_frame.img_for_net = cv2.equalizeHist(cur_frame.img_for_net)
-        # cv2.imshow("before", img)
-        # cv2.waitKey()
-        # cv2.imshow("after", img)
-        # cv2.waitKey()
         cur_frame.gaze_origin = gaze_origin
+
+        #
+        # deb_img =  cv2.resize(cur_frame.debug_img,(0,0),False , 0.5,0.5)
+        # deb_img[0:112,0:112] = cur_frame.img_for_net
+        # cv2.imshow("fdsfs",deb_img)
+        # cv2.waitKey()
         return cur_frame
-
-
-my_env_ff = environment_ff()

@@ -1,6 +1,5 @@
 # ReadHelper
-Gaze detector from Webcam - Project for Technion , EE faculty.
-Dor Arad & Tomer Keren
+Gaze detector Python Pkg API
 
 <table>
   <tr><td>
@@ -12,6 +11,26 @@ Dor Arad & Tomer Keren
 1. at least 720p resolution
 2. located in the top center of the screen
 
+## Using The API ##
+The api made simple as possible.
+for example:
+
+```python
+from PixelGetter import PixelGetter
+
+def __main__():
+    my_px_gt = PixelGetter(screen_size=13.3, camera_number=0) #Create PixelGetter
+    my_px_gt.calibrate() # start the calibration process (GUI)
+    cur_pixel = my_px_gt.get_pixel() #use this method to get the cur pixel from webcam.
+    if cur_pixel[0]>PixelGetter.screen_width: # (x,y) = (cur_pixel[0],cur_pixel[1])
+        print("you are looking in the right side of the screen!")
+
+    my_px_gt.set_screen_shots(with_webcam=True) # set a screen shot video params
+    my_px_gt.start_screen_shots(max_frames=100) # start the screen record session (new thread)
+    wait(100)
+    my_px_gt.stop_screen_shots()    # stop screen recording thread
+```
+
 ## Running the demo ##
 1. Download repo
 ```
@@ -21,7 +40,7 @@ git clone https://github.com/araddor1/ReadHelper.git
 ```
 pip install -r requirements.txt
 ```
-3. run main.py
+3. run demo.py
 ```
 python main.py
 ```
@@ -29,16 +48,6 @@ python main.py
 
 5.Enjoy!
 
-
-## Structure
-* `Calibration/` - all code regarding the calibration proccess
-* `Tests/` - all code regarding the Testing proccess
-* `FullFaceSolution/` - img to gaze solution based on [2]
-* `HeadPoseBasedSolution/` - img to gaze solution based on [1]
-* `Results/` - the accumulated result of the tested system (.csv files)
-* `UtilsAndModels/` - collection of defines,models and utils methods needed across the system
-
 ## References ##
-* [1] Zhang, Xucong, Yusuke Sugano, Mario Fritz, and Andreas Bulling. "Appearance-based Gaze Estimation in the Wild." Proc. of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2015. arXiv:1504.02863, Project Page
-* [2] Zhang, Xucong, Yusuke Sugano, Mario Fritz, and Andreas Bulling. "It's Written All Over Your Face: Full-Face Appearance-Based Gaze Estimation." Proc. of the IEEE Conference on Computer Vision and Pattern Recognition Workshops(CVPRW), 2017. arXiv:1611.08860, Project Page
-* [3] Zhang, Xucong, Yusuke Sugano, Mario Fritz, and Andreas Bulling. "MPIIGaze: Real-World Dataset and Deep Appearance-Based Gaze Estimation." IEEE transactions on pattern analysis and machine intelligence 41 (2017). arXiv:1711.09017
+* [1] Zhang, Xucong, Yusuke Sugano, Mario Fritz, and Andreas Bulling. "It's Written All Over Your Face: Full-Face Appearance-Based Gaze Estimation." Proc. of the IEEE Conference on Computer Vision and Pattern Recognition Workshops(CVPRW), 2017. arXiv:1611.08860, Project Page
+* [2] Zhang, Xucong, Yusuke Sugano, Mario Fritz, and Andreas Bulling. "MPIIGaze: Real-World Dataset and Deep Appearance-Based Gaze Estimation." IEEE transactions on pattern analysis and machine intelligence 41 (2017). arXiv:1711.09017

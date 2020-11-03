@@ -1,5 +1,4 @@
 import FullFaceSolution.FullFaceBasedSolution as FullFaceSolution
-import HeadPoseBasedSolution.HeadPoseBasedSolution as HeadPoseBasedSolution
 from Calibration.LinearFix import *
 from Calibration.gui_manager import *
 from UtilsAndModels.utils import *
@@ -7,7 +6,7 @@ from UtilsAndModels.utils import *
 
 class CalibrationManager:
 
-    def __init__(self, model_method, screen_size, name):
+    def __init__(self, screen_size, camera_number):
         # screen size and pix init
         self.gui = FullScreenApp()
         self.pixel_per_mm = get_mm_pixel_ratio(screen_size)
@@ -15,26 +14,19 @@ class CalibrationManager:
         self.height_px = self.gui.height
         self.width_px = self.gui.width
         # model method init
-        self.model_method = model_method
-        if self.model_method == "FullFace":
-            self.env = FullFaceSolution.my_env_ff
-        elif self.model_method == "HeadPose":
-            self.env = HeadPoseBasedSolution.my_env_hp
+        self.env = FullFaceSolution.environment_ff(camera_number=camera_number)
+
         # calib data init
         self.calib_data = [[(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)],
                            [(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)],
                            [(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)],
                            [(0., 0.), np.zeros(3)]]
-        self.user_name = name
         self.height_gaze_scale = 0
         self.width_gaze_scale = 0
         self.last_distance = 0
         self.cur_stage = 0
         # train init
         self.trig_fix_sys = FixNetCalibration(self.width_px, self.height_px)
-        self.linear_fix_sys = FixNetCalibration(self.width_px, self.height_px)
-        self.train_set_linear_real = []
-        self.train_set_linear = []
         self.train_set_trig_real = []
         self.train_set_trig = []
 
@@ -77,9 +69,7 @@ class CalibrationManager:
 
     def print_center_pixel(self):
         cur_pix = self.get_cur_pixel()
-        # linear = green
-        self.gui.print_calib_points((int(cur_pix[0][0]), int(cur_pix[0][1])), "green")
-        self.gui.print_calib_points((int(cur_pix[1][0]), (int(cur_pix[1][1]))))
+        self.gui.print_calib_points((int(cur_pix[1][0]), int(cur_pix[0][1])), "green")
 
     def step_calib_stage(self):
         if self.cur_stage == 9:
@@ -101,26 +91,18 @@ class CalibrationManager:
             return True
 
     def train_data(self):
-        print("threshold for using net is ", max_distance_for_net_mm/10, "cm")
         for i in range(9):
-            linear_pixel = self.gaze_to_pixel_linear(self.calib_data[i][0])
             trig_pixel = self.gaze_to_pixel_trig(self.calib_data[i][0],
                                                  self.calib_data[i][1], self.env.extra_data)
             res_pixel = [stage_dot_locations[i][0] * self.gui.width,
                          stage_dot_locations[i][1] * self.gui.height]
 
-            if self.is_ok_for_net(res_pixel, linear_pixel):
-                self.train_set_linear.append(linear_pixel)
-                self.train_set_linear_real.append(res_pixel)
             if self.is_ok_for_net(res_pixel, trig_pixel):
                 self.train_set_trig.append(trig_pixel)
                 self.train_set_trig_real.append(res_pixel)
 
         self.trig_fix_sys.train_model(epochs, self.train_set_trig_real, self.train_set_trig)
-        self.linear_fix_sys.train_model(epochs, self.train_set_linear_real, self.train_set_linear)
 
-        print("weights for trig net: ", self.trig_fix_sys.model.fc1.weight, "bias is: ", self.trig_fix_sys.model.fc1.bias, "\n at pixels its: ", self.trig_fix_sys.model.fc1.bias[0]*self.width_px, self.trig_fix_sys.model.fc1.bias[1]*self.height_px)
-        print("weights for linear net: ", self.linear_fix_sys.model.fc1.weight, "bias is: ", self.linear_fix_sys.model.fc1.bias, "\n at pixels its: ", self.linear_fix_sys.model.fc1.bias[0]*self.width_px, self.linear_fix_sys.model.fc1.bias[1]*self.height_px)
 
     def calibrate_process(self):
         self.gui.master.update()
