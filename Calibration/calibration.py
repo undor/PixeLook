@@ -69,9 +69,7 @@ class CalibrationManager:
 
     def print_center_pixel(self):
         cur_pix = self.get_cur_pixel()
-        # linear = green
-        self.gui.print_calib_points((int(cur_pix[0][0]), int(cur_pix[0][1])), "green")
-        self.gui.print_calib_points((int(cur_pix[1][0]), (int(cur_pix[1][1]))))
+        self.gui.print_calib_points((int(cur_pix[1][0]), int(cur_pix[0][1])), "green")
 
     def step_calib_stage(self):
         if self.cur_stage == 9:

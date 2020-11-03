@@ -57,4 +57,10 @@ class environment_ff(SolutionEnv):
         cur_frame.flip()
         cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (self.img_size_for_net, self.img_size_for_net), flags=cv2.INTER_CUBIC)
         cur_frame.gaze_origin = gaze_origin
+
+        #
+        # deb_img =  cv2.resize(cur_frame.debug_img,(0,0),False , 0.5,0.5)
+        # deb_img[0:112,0:112] = cur_frame.img_for_net
+        # cv2.imshow("fdsfs",deb_img)
+        # cv2.waitKey()
         return cur_frame
