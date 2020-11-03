@@ -7,7 +7,7 @@ import pyautogui
 import cv2
 from UtilsAndModels.utils import capture_input_height,capture_input_width
 
-class PixelGetter:
+class PixeLook:
     def __init__(self, screen_size = 13.3 ,  camera_number = 0):
         self.__calibration_manager = CalibrationManager(camera_number= camera_number, screen_size=screen_size)
         self.__shots_defined= False
@@ -55,14 +55,16 @@ class PixelGetter:
         tkinter_to_real_ratio = 2
         circle_size = int(250 * self.__resize_factor)
         for i in range(max_frames):
-            print("frame",i)
             cur_pix = np.array(self.get_pixel())
             cur_pix = cur_pix*self.__resize_factor
             # get shots
             screen_shot = pyautogui.screenshot()
+
             webcam_shot = self.__calibration_manager.env.webcam_shot
             # edit the screenshot
             frame = np.array(screen_shot)
+            print("frame", i, "size ",frame.shape )
+            cv2.imshow("fram",frame)
             width = int(frame.shape[1] * self.__resize_factor)
             height = int(frame.shape[0] * self.__resize_factor)
             # resize image

@@ -16,13 +16,13 @@ The api made simple as possible.
 for example:
 
 ```python
-from PixelGetter import PixelGetter
+from PixeLook import PixeLook
 
 def __main__():
-    my_px_gt = PixelGetter(screen_size=13.3, camera_number=0) #Create PixelGetter
+    my_px_gt = PixeLook(screen_size=13.3, camera_number=0) #Create PixelGetter
     my_px_gt.calibrate() # start the calibration process (GUI)
     cur_pixel = my_px_gt.get_pixel() #use this method to get the cur pixel from webcam.
-    if cur_pixel[0]>PixelGetter.screen_width: # (x,y) = (cur_pixel[0],cur_pixel[1])
+    if cur_pixel[0]>my_px_gt.screen_width/2: # (x,y) = (cur_pixel[0],cur_pixel[1])
         print("you are looking in the right side of the screen!")
 
     my_px_gt.set_screen_shots(with_webcam=True) # set a screen shot video params
