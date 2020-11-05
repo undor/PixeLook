@@ -3,8 +3,10 @@ eyes to pixel Python Pkg API
 
 <table>
   <tr><td>
-<img src="https://i.postimg.cc/tRd9QxgS/readme-img.png" width="262" height="187">
-<img src=".idea/video_screen.gif" width="190" height="190">
+<!--<img src="https://i.postimg.cc/tRd9QxgS/readme-img.png" width="262" height="187">
+<img src=".idea/video_screen.gif" width="190" height="190">-->
+<img src=".idea/waldo_final.gif">
+
    </td></tr></table>
 
 ## Webcam requriements ##
