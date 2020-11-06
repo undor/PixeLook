@@ -63,8 +63,6 @@ class PixeLook:
             webcam_shot = self.__calibration_manager.env.webcam_shot
             # edit the screenshot
             frame = np.array(screen_shot)
-            print("frame", i, "size ",frame.shape )
-            cv2.imshow("fram",frame)
             width = int(frame.shape[1] * self.__resize_factor)
             height = int(frame.shape[0] * self.__resize_factor)
             # resize image
