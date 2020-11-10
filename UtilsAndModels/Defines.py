@@ -32,7 +32,8 @@ face_cascade = cv2.CascadeClassifier()
 face_cascade.load("UtilsAndModels/frontal_face_detector.xml")
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor(os.getcwd() + "/UtilsAndModels/shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor(os.getcwd() + "/UtilsAndModels/shape_predictor_68_face_landmarks_new.dat")
+
 LANDMARKS_HP: np.ndarray = np.array([
     [-0.07141807, -0.02827123, 0.08114384],
     [-0.07067417, -0.00961522, 0.08035654],
@@ -108,6 +109,7 @@ LANDMARKS_HP: np.ndarray = np.array([
 # Gui attributes
 font = cv2.FONT_HERSHEY_SIMPLEX
 text_for_capture = "@"
+eyes_image = str(os.getcwd() + "/UtilsAndModels/eyes.png")
 
 # Gaze to pixel attributes
 MM_TO_IN = 0.0393700787
@@ -120,7 +122,6 @@ error_in_pixel = np.zeros(2)
 
 np.random.seed(0)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
 
 # Calibration attributes
 CALIB_LEFT: int = 0

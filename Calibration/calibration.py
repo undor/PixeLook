@@ -30,7 +30,6 @@ class CalibrationManager:
         self.train_set_trig_real = []
         self.train_set_trig = []
 
-
     def gaze_to_pixel_linear(self, gaze):
         width_ratio = abs(gaze[1] - self.calib_data[CALIB_LEFT][0][1]) / self.width_gaze_scale
         height_ratio = abs(gaze[0] - self.calib_data[CALIB_UP][0][0]) / self.height_gaze_scale
@@ -102,7 +101,6 @@ class CalibrationManager:
                 self.train_set_trig_real.append(res_pixel)
 
         self.trig_fix_sys.train_model(epochs, self.train_set_trig_real, self.train_set_trig)
-
 
     def calibrate_process(self):
         self.gui.master.update()

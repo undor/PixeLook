@@ -14,12 +14,10 @@ class FullScreenApp(object):
         self.w = Canvas(self.master)
         self.w.focus_set()
         self.w.pack(fill="both", expand=True)
-        # self.text_box = self.w.create_text((610, 120), text="Starting calibration",
-        # font="MSGothic 20 bold", fill="#652828")
         self.counter = 0
 
         self.var = tk.IntVar()
-        self.button = tk.Button(self.master, text="@", command=lambda: self.var.set(1))
+        self.button = tk.Button(self.master, text="#", command=lambda: self.var.set(1))
         self.second_button = tk.Button(self.master, text="I'm satisfied with the result", command=lambda: self.setvar())
         self.text_box = 0
         self.finish = False
@@ -75,6 +73,18 @@ class FullScreenApp(object):
         self.button.place(x=pixel[0], y=pixel[1], anchor="c")
         self.master.update()
 
+    def arrange_live_draw(self):
+        self.button.place(relx=0.25, rely=0.5, anchor="c")
+        self.button.config(text="Click to re-Draw")
+        self.second_button.place(relx=.75, rely=.5, anchor="c")
+        self.second_button.config(text="Click to STOP")
+        self.wait_key()
+        self.button.place_forget()
+        self.second_button.place_forget()
+        self.counter = 0
+        self.w.delete("all")
+        self.master.update()
+
     def print_pixel(self, pixel, colour=None):
         delta = 5
         self.w.focus_set()
@@ -99,3 +109,5 @@ class FullScreenApp(object):
 
     def wait_key(self):
         self.button.wait_variable(self.var)
+
+

@@ -4,8 +4,8 @@ from SolutionEnv import *
 
 # Full Face solution Env
 class environment_ff(SolutionEnv):
-    def __init__(self,camera_number ):
-        SolutionEnv.__init__(self,camera_number = camera_number)
+    def __init__(self, camera_number):
+        SolutionEnv.__init__(self, camera_number=camera_number)
         self.img_size_for_net = 112
 
     def use_net(self, cur_frame):
