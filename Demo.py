@@ -1,7 +1,8 @@
 from PixeLook import PixeLook
 
 def __main__():
-    my_px_gt = PixeLook(screen_size=14, camera_number=0, calib_ratio=1)
+
+    my_px_gt = PixeLook.create_from_file()
     my_px_gt.calibrate()
 
     # Live Draw for demonstration

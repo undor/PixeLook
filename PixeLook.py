@@ -8,12 +8,22 @@ from UtilsAndModels.utils import capture_input_height,capture_input_width
 
 class PixeLook:
     def __init__(self, screen_size=13.3,  camera_number=0, calib_ratio=2):
-        self.__calibration_manager = CalibrationManager(camera_number=camera_number, screen_size=screen_size)
+        print("screen-size=",screen_size)
+        self.__calibration_manager = CalibrationManager(camera_number=int(camera_number), screen_size=screen_size)
         self.__shots_defined = False
         self.__thread = None
-        self.calib_real_ratio = calib_ratio
+        self.calib_real_ratio = int(calib_ratio)
         self.screen_width = self.__calibration_manager.width_px * self.calib_real_ratio
         self.screen_height = self.__calibration_manager.height_px * self.calib_real_ratio
+
+    def create_from_file(file="config.txt"):
+        f = open(file, "r")
+        attr =[]
+        for line in f:
+            attr.append(float(line))
+            print (attr)
+        return PixeLook(attr[0],attr[1],attr[2])
+
 
     def calibrate(self):
         self.__calibration_manager.calibrate()

@@ -21,7 +21,12 @@ for example:
 from PixeLook import PixeLook
 
 def __main__():
-    my_px_gt = PixeLook(screen_size=13.3, camera_number=0) #Create PixelGetter
+    
+    ## Option 1: Create PixelGetter with arguments in code
+    my_px_gt = PixeLook(screen_size=13.3, camera_number=0)  
+    ## Option 2: Create PixelGetter from config file (see config.txt in this repo)
+    my_px_gt = PixeLook.create_from_file() # "config.txt" is the default 
+    
     my_px_gt.calibrate() # start the calibration process (GUI)
     cur_pixel = my_px_gt.get_pixel() #use this method to get the cur pixel from webcam.
     if cur_pixel[0]>my_px_gt.screen_width/2: # (x,y) = (cur_pixel[0],cur_pixel[1])
