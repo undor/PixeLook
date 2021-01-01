@@ -1,29 +1,21 @@
+from time import sleep
+from Logging import Logging
+from Calibration.calibration import CalibrationManager
+from UtilsAndModels.utils import capture_input_height,capture_input_width
 import threading
 import numpy as np
-from Calibration.calibration import CalibrationManager
 import pyautogui
 import cv2
-from UtilsAndModels.utils import capture_input_height,capture_input_width
-
 
 class PixeLook:
-    def __init__(self, screen_size=13.3,  camera_number=0, calib_ratio=2):
-        print("screen-size=",screen_size)
+    def __init__(self, screen_size=13.3,  camera_number=0, calib_ratio=2,logs = False):
         self.__calibration_manager = CalibrationManager(camera_number=int(camera_number), screen_size=screen_size)
         self.__shots_defined = False
         self.__thread = None
         self.calib_real_ratio = int(calib_ratio)
         self.screen_width = self.__calibration_manager.width_px * self.calib_real_ratio
         self.screen_height = self.__calibration_manager.height_px * self.calib_real_ratio
-
-    def create_from_file(file="config.txt"):
-        f = open(file, "r")
-        attr =[]
-        for line in f:
-            attr.append(float(line))
-            print (attr)
-        return PixeLook(attr[0],attr[1],attr[2])
-
+        self.logs = Logging() if logs else None
 
     def calibrate(self):
         self.__calibration_manager.calibrate()
@@ -36,7 +28,10 @@ class PixeLook:
         pixel_linear, pixel_trig = self.capture()
         x = self.__calibration_manager.trig_fix_sys.use_net(pixel_trig)[0] * self.calib_real_ratio
         y = pixel_linear[1] * self.calib_real_ratio
-        return (x, y)
+        res = (x, y)
+        if self.logs is not None:
+            self.logs.add_pixel(res)
+        return res
 
     def draw_live(self):
         gui = self.__calibration_manager.gui
@@ -47,7 +42,7 @@ class PixeLook:
             if gui.counter == 50:
                 gui.arrange_live_draw()
                 if gui.finish is True:
-                    exit(0)
+                    break
 
     def set_screen_shots(self, file_name="output_screen.avi", with_webcam=False, webcam_file_name="output_webcam.avi", resize_factor=0.5):
         self.__out_screen = cv2.VideoWriter(file_name, 0, 2, (int(self.screen_width * resize_factor) , int(self.screen_height * resize_factor)))
@@ -58,12 +53,27 @@ class PixeLook:
         self.__with_webcam = with_webcam
         self.__calibration_manager.env.screen_record_mode = self.__with_webcam
 
-    def start_screen_shots(self, max_frames=500):
+    def run_without_app(self):
+        gui = self.__calibration_manager.gui
+        gui.only_exit_button()
+        while True:
+            np.array(self.get_pixel())
+            if gui.finish is True:
+                break
+
+    def start_screen_shots(self, max_frames=1000):
         self.__stop_runing = False
         if self.__shots_defined == False:
             print("Cant run without set_screen_shots defined!")
         self.__thread = threading.Thread(target=self.__screen_shot_loop, args=(max_frames,))
+        gui = self.__calibration_manager.gui
+        gui.only_exit_button()
         self.__thread.start()
+        while True:
+            sleep(1)
+            if gui.finish is True:
+                self.__stop_runing = True
+                break
         self.__thread.join()
 
     def stop_screen_shots(self):
@@ -71,7 +81,6 @@ class PixeLook:
         self.__thread.join()
 
     def __screen_shot_loop(self, max_frames):
-        # tkinter_to_real_ratio = 2
         circle_size = int(175 * self.__resize_factor)
         for i in range(max_frames):
             cur_pix = np.array(self.get_pixel())

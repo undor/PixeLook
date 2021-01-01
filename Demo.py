@@ -1,15 +1,41 @@
 from PixeLook import PixeLook
+import configparser
+
+
+def str_to_bool(str):
+    return True if str == "true" else False
+
+
+def PixeLook_from_config(settings):
+    params = ['screen_size', 'camera_number', 'calib_ratio']
+    for param in params:
+        if param not in settings:
+            print("missing", param, "in config file.")
+            exit()
+        settings[param] = float(settings[param])
+    logs = False if "logs" not in settings else str_to_bool(settings['logs'])
+    return PixeLook(screen_size=settings["screen_size"], camera_number=settings["camera_number"],
+                    calib_ratio=settings["calib_ratio"], logs=logs)
+
 
 def __main__():
+    config = configparser.ConfigParser()
+    config.read("config.txt")
+    config = {s: dict(config.items(s)) for s in config.sections()}
+    my_px_gt = PixeLook_from_config(config['settings'])
 
-    my_px_gt = PixeLook.create_from_file()
+    mode = "none" if "mode" not in config["operation"] else config["operation"]["mode"]
+    webcam = False if "webcam" not in config["operation"] else str_to_bool(config["operation"]["webcam"])
+
     my_px_gt.calibrate()
 
-    # Live Draw for demonstration
-    my_px_gt.draw_live()
-    # Screen recorder
-    # my_px_gt.set_screen_shots(with_webcam=True)
-    # my_px_gt.start_screen_shots(200)
+    if mode == "dots":
+        my_px_gt.draw_live()
+    elif mode == "screenshots":
+        my_px_gt.set_screen_shots(with_webcam=str_to_bool(webcam))
+        my_px_gt.start_screen_shots()
+    elif mode == "none":
+        my_px_gt.run_without_app()
 
 
 if __name__ == "__main__":

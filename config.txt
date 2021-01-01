@@ -1,3 +1,15 @@
-14
-0
-1
+[settings]
+# screen_size : screen size in inches
+screen_size = 14
+# camera_number : usually 0 - change if you want to choose other camera
+camera_number = 0
+# calib_ratio : usually 2 - change to 1 if bad result
+calib_ratio = 2
+# logs : true / false - enable logs of pixel per time
+logs = true
+
+[operation]
+# mode : dots/ screenshots/ none
+mode = dots
+# webcam : true / false - create video file from webcam (only in screenshots mode)
+webcam = false

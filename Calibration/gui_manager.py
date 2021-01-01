@@ -77,9 +77,19 @@ class FullScreenApp(object):
         self.button.place(relx=0.25, rely=0.5, anchor="c")
         self.button.config(text="Click to re-Draw")
         self.second_button.place(relx=.75, rely=.5, anchor="c")
-        self.second_button.config(text="Click to STOP")
+        self.second_button.config(text="Click to Exit")
         self.wait_key()
         self.button.place_forget()
+        self.second_button.place_forget()
+        self.counter = 0
+        self.w.delete("all")
+        self.master.update()
+
+    def only_exit_button(self):
+        self.button.place_forget()
+        self.second_button.place(relx=.75, rely=.5, anchor="c")
+        self.second_button.config(text="Click to Exit")
+        self.wait_key()
         self.second_button.place_forget()
         self.counter = 0
         self.w.delete("all")
