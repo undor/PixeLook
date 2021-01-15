@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import Canvas
 
 from UtilsAndModels.Defines import *
-
+from PIL import Image
 
 class FullScreenApp(object):
     def __init__(self):
@@ -16,45 +16,54 @@ class FullScreenApp(object):
         self.w.pack(fill="both", expand=True)
         self.counter = 0
 
+        # if want to use another photo, convert it (code at defines) and make it a tk photo image. then add to button
+        self.calib_photo = tk.PhotoImage(file="Calibration/morty.ppm")
+        self.end_calib_photo = tk.PhotoImage(file="Calibration/happy_morty.ppm")
+        self.recalibrate_photo = tk.PhotoImage(file="Calibration/angry_morty.ppm")
+        self.exit_photo = tk.PhotoImage(file="Calibration/end_morty.ppm")
+
         self.var = tk.IntVar()
-        self.button = tk.Button(self.master, text="#", command=lambda: self.var.set(1))
+        self.button = tk.Button(self.master, text="#", image=self.calib_photo, command=lambda: self.var.set(1))
         self.second_button = tk.Button(self.master, text="I'm satisfied with the result", command=lambda: self.setvar())
         self.text_box = 0
         self.finish = False
 
-    # def toggle_geom(self, event):
+
+        # def toggle_geom(self, event):
     #     geom = self.master.winfo_geometry()
     #     print(geom, self._geom)
     #     self.master.geometry(self._geom)
     #     self._geom = geom
 
+
     def print_calib_stage(self, stage):
         s = "Current stage number: " + str(stage) + "\n Please look on the "
         if stage == 0:
-            self.text_box = self.w.create_text((610, 120), text="Starting Calibration",
+            self.text_box = self.w.create_text((850, 120), text="Starting Calibration",
                                                font="MSGothic 20 bold", fill="#652828")
-            my_text = s + "left dot"
+            my_text = s + "left Morty"
         elif stage == 1:
-            my_text = s + "upper left dot"
+            my_text = s + "upper left Morty"
         elif stage == 2:
-            my_text = s + "upper dot"
+            my_text = s + "upper Morty"
         elif stage == 3:
-            my_text = s + "upper right dot"
+            my_text = s + "upper right Morty"
         elif stage == 4:
-            my_text = s + "right dot"
+            my_text = s + "right Morty"
         elif stage == 5:
-            my_text = s + "downer right dot"
+            my_text = s + "downer right Morty"
         elif stage == 6:
-            my_text = s + "downer dot"
+            my_text = s + "downer Morty"
         elif stage == 7:
-            my_text = s + "downer left dot"
+            my_text = s + "downer left Morty"
         elif stage == 8:
-            my_text = s + "center dot"
+            my_text = s + "center Morty"
         elif stage == 9:
             self.w.itemconfig(self.text_box, text="Check your calibration points")
             self.button.place(relx=0.25, rely=0.5, anchor="c")
-            self.button.config(text="Click to Recalibrate")
+            self.button.config(text="I want to Recalibrate", image=self.recalibrate_photo, compound="left")
             self.second_button.place(relx=.75, rely=.5, anchor="c")
+            self.second_button.config(image=self.end_calib_photo, compound="left")
             return
         else:
             my_text = " "
@@ -87,8 +96,8 @@ class FullScreenApp(object):
 
     def only_exit_button(self):
         self.button.place_forget()
-        self.second_button.place(relx=.75, rely=.5, anchor="c")
-        self.second_button.config(text="Click to Exit")
+        self.second_button.place(relx=.5, rely=.5, anchor="c")
+        self.second_button.config(text="Click to Exit", image=self.exit_photo, compound="left")
         self.wait_key()
         self.second_button.place_forget()
         self.counter = 0

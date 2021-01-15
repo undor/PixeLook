@@ -1,11 +1,11 @@
 import numpy as np
-import torch
+from torch import mul
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 from PIL import Image
 from torchvision import transforms
-import cv2
+
 
 class GazeNet(nn.Module):
 
@@ -59,7 +59,7 @@ class GazeNet(nn.Module):
         y = F.relu(self.Conv2(y))
         y = F.relu(self.Conv3(y))
         
-        x = F.dropout(F.relu(torch.mul(x, y)), 0.5)
+        x = F.dropout(F.relu(mul(x, y)), 0.5)
         x = x.view(x.size(0), -1)
         x = self.fc1(x)
         x = self.fc2(x)

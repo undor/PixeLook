@@ -34,6 +34,7 @@ face_cascade.load("UtilsAndModels/frontal_face_detector.xml")
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(os.getcwd() + "/UtilsAndModels/shape_predictor_68_face_landmarks_new.dat")
 
+
 LANDMARKS_HP: np.ndarray = np.array([
     [-0.07141807, -0.02827123, 0.08114384],
     [-0.07067417, -0.00961522, 0.08035654],
@@ -111,6 +112,17 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 text_for_capture = "@"
 eyes_image = str(os.getcwd() + "/UtilsAndModels/eyes.png")
 
+# code for saving jpg image and convert it to ppm , for using it at tkinter.
+# from PIL import Image
+# image = Image.open("<path to jpg image>")
+# image = image.resize((150, 100), Image.ANTIALIAS)
+# image.save("<path to desired saved location>.ppm", "ppm")
+
+# image = Image.open("Calibration/eyes.png")
+# image = image.resize((75, 75), Image.ANTIALIAS)
+# image.save("Calibration/morty.ppm", "ppm")
+
+# self.photo = tk.PhotoImage(file="Calibration/eyes.png")
 # Gaze to pixel attributes
 MM_TO_IN = 0.0393700787
 
@@ -122,6 +134,7 @@ error_in_pixel = np.zeros(2)
 
 np.random.seed(0)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print(f"device used is: {device}")
 
 # Calibration attributes
 CALIB_LEFT: int = 0
