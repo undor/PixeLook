@@ -12,4 +12,4 @@ logs = false
 # mode : dots/ screenshots/ none
 mode = screenshots
 # webcam : true / false - create video file from webcam (only in screenshots mode)
-webcam = true
+webcam = false

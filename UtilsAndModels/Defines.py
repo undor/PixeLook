@@ -109,7 +109,7 @@ LANDMARKS_HP: np.ndarray = np.array([
 
 # Gui attributes
 font = cv2.FONT_HERSHEY_SIMPLEX
-text_for_capture = "@"
+text_for_capture = "."
 eyes_image = str(os.getcwd() + "/UtilsAndModels/eyes.png")
 
 # code for saving jpg image and convert it to ppm , for using it at tkinter.
@@ -118,11 +118,6 @@ eyes_image = str(os.getcwd() + "/UtilsAndModels/eyes.png")
 # image = image.resize((150, 100), Image.ANTIALIAS)
 # image.save("<path to desired saved location>.ppm", "ppm")
 
-# image = Image.open("Calibration/eyes.png")
-# image = image.resize((75, 75), Image.ANTIALIAS)
-# image.save("Calibration/morty.ppm", "ppm")
-
-# self.photo = tk.PhotoImage(file="Calibration/eyes.png")
 # Gaze to pixel attributes
 MM_TO_IN = 0.0393700787
 

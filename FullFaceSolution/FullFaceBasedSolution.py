@@ -7,6 +7,8 @@ class environment_ff(SolutionEnv):
     def __init__(self, camera_number):
         SolutionEnv.__init__(self, camera_number=camera_number)
         self.img_size_for_net = 112
+        # for pre process video capturing
+        # self.writer = cv2.VideoWriter("preprocess_vid.avi", 0, 2, (int(448), int(224)))
 
     def use_net(self, cur_frame):
         with torch.no_grad():
@@ -27,6 +29,7 @@ class environment_ff(SolutionEnv):
         return cur_frame
 
     def pre_process_for_net(self, cur_frame: FrameData):
+        orig_img = cur_frame.orig_img
         rcenter , lcenter = cur_frame.get_eye_centers()
 
         gaze_origin = (int((lcenter[0] + rcenter[0]) / 2), int((lcenter[1] + rcenter[1]) / 2))
@@ -58,9 +61,13 @@ class environment_ff(SolutionEnv):
         cur_frame.img_for_net = cv2.warpAffine(cur_frame.debug_img, M, (self.img_size_for_net, self.img_size_for_net), flags=cv2.INTER_CUBIC)
         cur_frame.gaze_origin = gaze_origin
 
-        #
         # deb_img =  cv2.resize(cur_frame.debug_img,(0,0),False , 0.5,0.5)
         # deb_img[0:112,0:112] = cur_frame.img_for_net
-        # cv2.imshow("fdsfs",deb_img)
-        # cv2.waitKey()
+
+        # For pre process video capturing
+        # deb_img = cur_frame.img_for_net
+        # deb_img = cv2.resize(deb_img, (224, 224), interpolation=cv2.INTER_AREA)
+        # orig_img = cv2.resize(orig_img, (224, 224), interpolation=cv2.INTER_AREA)
+        # dual_imgs = np.hstack((orig_img, deb_img))
+        # self.writer.write(dual_imgs)
         return cur_frame

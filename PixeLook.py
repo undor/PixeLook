@@ -57,7 +57,7 @@ class PixeLook:
 
     def run_without_app(self):
         gui = self.__calibration_manager.gui
-        gui.only_exit_button()
+        # gui.only_exit_button()
         while True:
             np.array(self.get_pixel())
             if gui.finish is True:
@@ -84,7 +84,7 @@ class PixeLook:
         self.__thread.join()
 
     def __screen_shot_loop(self, max_frames):
-        circle_size = int(175 * self.__resize_factor)
+        circle_size = int(150 * self.__resize_factor)
         for i in range(max_frames):
 
             cur_pix = np.array(self.get_pixel())
@@ -92,7 +92,7 @@ class PixeLook:
 
             # get shots
             screen_shot = pyautogui.screenshot()
-            webcam_shot = self.__calibration_manager.env.webcam_shot
+            # webcam_shot = self.__calibration_manager.env.webcam_shot
 
             # edit the screenshot
             frame = np.array(screen_shot)
@@ -103,12 +103,13 @@ class PixeLook:
             frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             overlay = frame.copy()
-            overlay = cv2.circle(overlay, (int(cur_pix[0]), int(cur_pix[1])), circle_size, (255, 0, 0), -1)
+            overlay = cv2.circle(overlay, (int(cur_pix[0]), int(cur_pix[1])), circle_size, (255, 50, 50), -1)
             final_frame = cv2.addWeighted(overlay, 0.3, frame, 0.7, 0)
+
             # write the frames
             self.__out_screen.write(final_frame)
-            if self.__with_webcam:
-                self.__out_webcam.write(webcam_shot)
+            # if self.__with_webcam:
+                # self.__out_webcam.write(webcam_shot)
             if self.__stop_running:
                 self.__calibration_manager.env.cap.release()
                 break

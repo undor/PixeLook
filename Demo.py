@@ -2,23 +2,7 @@ from PixeLook import PixeLook
 import configparser
 
 
-def str_to_bool(str):
-    return True if str == "true" else False
-
-
-def PixeLook_from_config(settings):
-    params = ['screen_size', 'camera_number', 'calib_ratio']
-    for param in params:
-        if param not in settings:
-            print("missing", param, "in config file.")
-            exit()
-        settings[param] = float(settings[param])
-    logs = False if "logs" not in settings else str_to_bool(settings['logs'])
-    return PixeLook(screen_size=settings["screen_size"], camera_number=settings["camera_number"],
-                    calib_ratio=settings["calib_ratio"], logs=logs)
-
-
-def tomer():
+def create_political_cv_images():
     import cv2
     from UtilsAndModels.Defines import face_cascade, predictor
     import random
@@ -52,8 +36,24 @@ def tomer():
     exit(0)
 
 
+def str_to_bool(str):
+    return True if str == "true" else False
+
+
+def PixeLook_from_config(settings):
+    params = ['screen_size', 'camera_number', 'calib_ratio']
+    for param in params:
+        if param not in settings:
+            print("missing", param, "in config file.")
+            exit()
+        settings[param] = float(settings[param])
+    logs = False if "logs" not in settings else str_to_bool(settings['logs'])
+    return PixeLook(screen_size=settings["screen_size"], camera_number=settings["camera_number"],
+                    calib_ratio=settings["calib_ratio"], logs=logs)
+
+
 def __main__():
-    # tomer()
+    # create_political_cv_images()
     config = configparser.ConfigParser()
     config.read("config.txt")
     config = {s: dict(config.items(s)) for s in config.sections()}
