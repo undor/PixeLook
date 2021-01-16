@@ -124,7 +124,7 @@ MM_TO_IN = 0.0393700787
 # Generic project usage
 num_pics_per_session = 30
 
-error_in_detect = np.array([-1, -1])
+error_in_detect = np.array([[-1, -1],[-1,-1]])
 error_in_pixel = np.zeros(2)
 
 np.random.seed(0)

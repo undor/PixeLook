@@ -1,7 +1,15 @@
-import ctypes
-import tkinter
 from UtilsAndModels.Defines import *
+from mss import mss
 
+def get_screen_shot():
+    with mss() as sct:
+        monitor = sct.monitors[0]
+        sct_img = sct.grab(monitor)
+        return sct_img
+
+def post_screen_shot(im):
+    frame = np.array(im, dtype=np.uint8)
+    return np.flip(frame[:, :, :3], 2)
 
 # vectors and geometric methods
 def _normalize_vector(vector: np.ndarray) -> np.ndarray:

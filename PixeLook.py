@@ -1,38 +1,40 @@
-from time import sleep
-from Logging import Logging
+from Logging import *
 from Calibration.calibration import CalibrationManager
 from UtilsAndModels.utils import capture_input_height, capture_input_width
 import threading
 import numpy as np
-import pyautogui
+from UtilsAndModels.utils import get_screen_shot,post_screen_shot
 import cv2
 
+fps = 4
 
 class PixeLook:
     def __init__(self, screen_size=13.3,  camera_number=0, calib_ratio=1, logs=False):
-        self.__calibration_manager = CalibrationManager(camera_number=int(camera_number), screen_size=screen_size)
+        self.camera_number = int(camera_number)
+        self.__calibration_manager = CalibrationManager(camera_number=self.camera_number, screen_size=screen_size)
         self.__shots_defined = False
         self.__thread = None
+        self.logs = Logging() if logs else None
+        self.__stop_running = False
         self.calib_real_ratio = int(calib_ratio)
         self.screen_width = self.__calibration_manager.width_px * self.calib_real_ratio
         self.screen_height = self.__calibration_manager.height_px * self.calib_real_ratio
-        self.logs = Logging() if logs else None
-        self.__stop_running = False
+        self.__with_webcam = False
 
     def calibrate(self):
         self.__calibration_manager.calibrate()
 
-    def capture(self):
-        self.pixel_linear, self.pixel_trig = self.__calibration_manager.get_cur_pixel()
+    def capture(self,input_img=None):
+        self.pixel_linear, self.pixel_trig = self.__calibration_manager.get_cur_pixel(input_img)
         return self.pixel_linear, self.pixel_trig
 
-    def get_pixel(self):
-        pixel_linear, pixel_trig = self.capture()
+    def get_pixel(self,cur_time=None,image=None):
+        pixel_linear, pixel_trig = self.capture(image)
         x = self.__calibration_manager.trig_fix_sys.use_net(pixel_trig)[0] * self.calib_real_ratio
         y = pixel_linear[1] * self.calib_real_ratio
-        res = (x, y)
+        res = (x,y)
         if self.logs is not None:
-            self.logs.add_pixel(res)
+            self.logs.add_pixel(res,cur_time)
         return res
 
     def draw_live(self):
@@ -46,58 +48,96 @@ class PixeLook:
                 if gui.finish is True:
                     break
 
-    def set_screen_shots(self, file_name="output_screen.avi", with_webcam=False, webcam_file_name="output_webcam.avi", resize_factor=0.5):
-        self.__out_screen = cv2.VideoWriter(file_name, 0, 2, (int(self.screen_width * resize_factor), int(self.screen_height * resize_factor)))
-        self.__resize_factor = resize_factor
-        if with_webcam:
-            self.__out_webcam = cv2.VideoWriter(webcam_file_name, 0, 2, (capture_input_width, capture_input_height))
-        self.__shots_defined = True
-        self.__with_webcam = with_webcam
-        self.__calibration_manager.env.screen_record_mode = self.__with_webcam
-
-    def run_without_app(self):
+    def run_in_background(self, post= False , screen_shots= False):
         gui = self.__calibration_manager.gui
-        # gui.only_exit_button()
-        while True:
-            np.array(self.get_pixel())
-            if gui.finish is True:
-                break
-
-    def start_screen_shots(self, max_frames=1000):
-        self.__stop_running = False
-        if not self.__shots_defined:
-            print("Cant run without set_screen_shots defined!")
-
-        self.__thread = threading.Thread(target=self.__screen_shot_loop, args=(max_frames,))
-        gui = self.__calibration_manager.gui
+        gui.finish = False
+        if post:
+            self.__thread = threading.Thread(target=self.__capture,args=(screen_shots,))
+        else:
+            self.__thread = threading.Thread(target=self.__capture_calc_and_log)
         self.__thread.start()
-        gui.only_exit_button()
-        while True:
-            sleep(1)
-            if gui.finish is True:
-                self.__stop_running = True
-                break
+        gui.only_exit_button() #waiting to click exit
+        self.__stop_running = True
         self.__thread.join()
+        if post:
+            self.__log_from_images_post()
+
+    def __capture(self, screen_shots=False):
+        from datetime import datetime
+        cap = self.__calibration_manager.env.cap
+        self.times = []
+        self.images = []
+        if screen_shots:
+            self.screen_shots_list=[]
+        while not self.__stop_running:
+            ret, frame = cap.read()
+            self.times.append(datetime.now())
+            self.images.append(frame)
+            if screen_shots:
+                self.screen_shots_list.append(get_screen_shot())
+
+    def __log_from_images_post(self):
+        self.pixels_list =[]
+        self.__calibration_manager.env.reruns = 1
+        n = len(self.times)
+        if self.__with_webcam:
+            self.webcam_post_list = []
+        for i in range(n):
+            self.pixels_list.append(self.get_pixel(self.times[i], self.images[i]))
+            if self.__with_webcam:
+                self.webcam_post_list.append(self.__calibration_manager.env.webcam_shot)
+            if i % 10 == 0:
+                self.__calibration_manager.gui.post_process((i/n)*100)
+
+    def __capture_calc_and_log(self):
+        self.pixels_list =[]
+        while not self.__stop_running:
+            self.pixels_list.append(self.get_pixel())
+
+    def init_webcam_video(self):
+        self.__with_webcam = True
+        self.__calibration_manager.env.screen_record_mode = self.__with_webcam
+        self.__out_webcam = cv2.VideoWriter(create_time_file_name("PixeLookWebcamShot", "avi"), 0,fps,(capture_input_width, capture_input_height))
+
+
+    def start_screen_shots(self,resize_factor = 0.5,post = False,webcam=False):
+        if webcam:
+            self.init_webcam_video()
+        if post:
+            self.run_in_background(post,screen_shots=True) #get captures and pixels and log it.
+            self.__screen_shot_loop(post=post)
+        else:
+            self.__stop_running = False
+            self.__thread = threading.Thread(target=self.__screen_shot_loop, args=(resize_factor,post,))
+            self.__thread.start()
+            self.__calibration_manager.gui.only_exit_button() #waiting to click exit
+            self.__stop_running = True
+            self.__thread.join()
 
     def stop_screen_shots(self):
         self.__stop_running = True
         self.__thread.join()
 
-    def __screen_shot_loop(self, max_frames):
-        circle_size = int(150 * self.__resize_factor)
-        for i in range(max_frames):
+    def __screen_shot_loop(self, resize_factor= 0.5 , post=False,max_frmaes= 10*60*30):
+        __out_screen = cv2.VideoWriter(create_time_file_name("PixeLookScreenShot", "avi"), 0, fps, (int(self.screen_width * resize_factor), int(self.screen_height * resize_factor)))
+        circle_size = int(150 * resize_factor)
+        n = max_frmaes if post is False else len(self.pixels_list)
+        for i in range(n):
+            if post:
+                got_pix = self.pixels_list[i]
+                got_screen = self.screen_shots_list[i]
+            else:
+                got_pix = self.get_pixel()
+                got_screen = get_screen_shot()
 
-            cur_pix = np.array(self.get_pixel())
-            cur_pix = cur_pix*self.__resize_factor
-
-            # get shots
-            screen_shot = pyautogui.screenshot()
-            # webcam_shot = self.__calibration_manager.env.webcam_shot
+            screen_shot = post_screen_shot(got_screen)
+            cur_pix = np.array(got_pix)
+            cur_pix = cur_pix*resize_factor
 
             # edit the screenshot
-            frame = np.array(screen_shot)
-            width = int(frame.shape[1] * self.__resize_factor)
-            height = int(frame.shape[0] * self.__resize_factor)
+            frame = screen_shot
+            width = int(frame.shape[1] * resize_factor)
+            height = int(frame.shape[0] * resize_factor)
 
             # resize image
             frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
@@ -107,14 +147,16 @@ class PixeLook:
             final_frame = cv2.addWeighted(overlay, 0.3, frame, 0.7, 0)
 
             # write the frames
-            self.__out_screen.write(final_frame)
-            # if self.__with_webcam:
-                # self.__out_webcam.write(webcam_shot)
-            if self.__stop_running:
-                self.__calibration_manager.env.cap.release()
+            __out_screen.write(final_frame)
+            if self.__with_webcam:
+                webcam_shot = self.webcam_post_list[i] if post else self.__calibration_manager.env.webcam_shot
+                self.__out_webcam.write(webcam_shot)
+            if not post and self.__stop_running:
                 break
+            if post and i%10 == 0:
+                self.__calibration_manager.gui.post_process((i/n)*100,"Videos Creation")
         # make sure everything is closed when exited
-        self.__out_screen.release()
-
+        self.__calibration_manager.env.cap.release()
+        __out_screen.release()
         if self.__with_webcam:
             self.__out_webcam.release()

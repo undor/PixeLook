@@ -61,16 +61,16 @@ def __main__():
 
     mode = "none" if "mode" not in config["operation"] else config["operation"]["mode"]
     webcam = False if "webcam" not in config["operation"] else str_to_bool(config["operation"]["webcam"])
+    post = False if "post" not in config["operation"] else str_to_bool(config["operation"]["post"])
 
     my_px_gt.calibrate()
 
     if mode == "dots":
         my_px_gt.draw_live()
     elif mode == "screenshots":
-        my_px_gt.set_screen_shots(with_webcam=str_to_bool(webcam))
-        my_px_gt.start_screen_shots()
+        my_px_gt.start_screen_shots(post=post,webcam=webcam)
     elif mode == "none":
-        my_px_gt.run_without_app()
+        my_px_gt.run_in_background(post=post)
 
 
 if __name__ == "__main__":

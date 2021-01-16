@@ -15,7 +15,9 @@ class CalibrationManager:
         self.width_px = self.gui.width
         # model method init
         self.env = FullFaceSolution.environment_ff(camera_number=camera_number)
+        self.init_calib_data()
 
+    def init_calib_data(self):
         # calib data init
         self.calib_data = [[(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)],
                            [(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)], [(0., 0.), np.zeros(3)],
@@ -54,8 +56,8 @@ class CalibrationManager:
         y = ht[1] + t * v[1]
         return x[0], y[0]
 
-    def get_cur_pixel(self):
-        gaze, ht = self.env.find_gaze()
+    def get_cur_pixel(self,input_img=None):
+        gaze, ht = self.env.find_gaze(input_img)
         if ht[0] == 0 or ht[1] == 0 or ht[2] == 0:
             # error in find gaze - didn't detect face
             return error_in_detect
@@ -67,12 +69,17 @@ class CalibrationManager:
         self.height_gaze_scale = abs(self.calib_data[CALIB_DOWN][0][0] - self.calib_data[CALIB_UP][0][0])
 
     def print_center_pixel(self):
-        cur_pix = self.get_cur_pixel()
-        self.gui.print_calib_points((int(cur_pix[1][0]), int(cur_pix[0][1])), "green")
+        pixel_linear, pixel_trig = self.get_cur_pixel()
+        x = self.trig_fix_sys.use_net(pixel_trig)[0]
+        y = pixel_linear[1]
+        self.gui.print_calib_points((int(x), int(y)), "green")
 
     def step_calib_stage(self):
+        if self.cur_stage == 0:
+            self.init_calib_data()
         if self.cur_stage == 9:
             self.compute_scale()
+            self.train_data()
             self.print_center_pixel()
             self.gui.print_calib_stage(self.cur_stage)
             self.gui.wait_key()
@@ -106,7 +113,7 @@ class CalibrationManager:
         self.gui.master.update()
         for self.cur_stage in range(10):
             self.step_calib_stage()
-        self.train_data()
+
 
     def re_calibration(self):
         self.gui.w.delete("all")
