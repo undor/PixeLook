@@ -56,7 +56,7 @@ class PixeLook:
         else:
             self.__thread = threading.Thread(target=self.__capture_calc_and_log)
         self.__thread.start()
-        gui.only_exit_button() #waiting to click exit
+        gui.only_exit_button() # waiting to click exit
         self.__stop_running = True
         self.__thread.join()
         if post:
@@ -70,11 +70,12 @@ class PixeLook:
         if screen_shots:
             self.screen_shots_list=[]
         while not self.__stop_running:
+            if screen_shots:
+                self.screen_shots_list.append(get_screen_shot())
             ret, frame = cap.read()
             self.times.append(datetime.now())
             self.images.append(frame)
-            if screen_shots:
-                self.screen_shots_list.append(get_screen_shot())
+
 
     def __log_from_images_post(self):
         self.pixels_list =[]
@@ -99,8 +100,7 @@ class PixeLook:
         self.__calibration_manager.env.screen_record_mode = self.__with_webcam
         self.__out_webcam = cv2.VideoWriter(create_time_file_name("PixeLookWebcamShot", "avi"), 0,fps,(capture_input_width, capture_input_height))
 
-
-    def start_screen_shots(self,resize_factor = 0.5,post = False,webcam=False):
+    def start_screen_shots(self,resize_factor = 1,post = False,webcam=False):
         if webcam:
             self.init_webcam_video()
         if post:
@@ -118,7 +118,7 @@ class PixeLook:
         self.__stop_running = True
         self.__thread.join()
 
-    def __screen_shot_loop(self, resize_factor= 0.5 , post=False,max_frmaes= 10*60*30):
+    def __screen_shot_loop(self, resize_factor=1 , post=False,max_frmaes= 10*60*30):
         __out_screen = cv2.VideoWriter(create_time_file_name("PixeLookScreenShot", "avi"), 0, fps, (int(self.screen_width * resize_factor), int(self.screen_height * resize_factor)))
         circle_size = int(150 * resize_factor)
         n = max_frmaes if post is False else len(self.pixels_list)

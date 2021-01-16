@@ -3,7 +3,7 @@ from mss import mss
 
 def get_screen_shot():
     with mss() as sct:
-        monitor = sct.monitors[0]
+        monitor = sct.monitors[1]
         sct_img = sct.grab(monitor)
         return sct_img
 
