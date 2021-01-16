@@ -129,4 +129,10 @@ class FullScreenApp(object):
     def wait_key(self):
         self.button.wait_variable(self.var)
 
-
+    def post_process(self,precent=0,process_name="Getting Pixels from video"):
+        if self.finish:
+            self.post_text_box = self.w.create_text((850, 120), text="", font="MSGothic 20 bold", fill="#652828")
+            self.master.update()
+            self.finish = False
+        self.w.itemconfig(self.post_text_box, text="Postprocess. \n {} \n {:.2f}%".format(process_name,precent))
+        self.master.update()
