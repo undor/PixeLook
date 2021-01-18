@@ -1,13 +1,20 @@
 # PixelLook
-Eyes to pixel Python Pkg API
+Multy platform gaze detector based on It's Written All Over Your Face [1] article.
+
+Includes:
+1. Drawing app - draw dots with your eyes
+2. Data Collection - saves all pixels looked in a csv file
+3. Screen capture - creates video of your screen with mark on the gazed area.
+4. Library API - a simple API to use this project to make you own gaze-based app
 
 <table>
   <tr><td>
-<!--<img src="https://i.postimg.cc/tRd9QxgS/readme-img.png" width="262" height="187">
-<img src=".idea/video_screen.gif" width="190" height="190">-->
-<img src=".idea/waldo_final.gif">
-
-   </td></tr></table>
+<img src=".idea/waldo_final.gif"  width="450" height="300">
+    Mac
+    </td><td>
+<img src=".idea/netflixgif.gif"  width="450" height="300">
+    Linux
+    </td> </tr></table>
 
 ## Webcam requriements ##
 1. at least 720p resolution
@@ -38,21 +45,22 @@ def __main__():
     my_px_gt.stop_screen_shots()    # stop screen recording thread
 ```
 
+
 ## Running the demo ##
 1. Download repo
 ```
 git clone https://github.com/araddor1/ReadHelper.git
 ```
-2. install requriements:
+2. Install requriements:
 ```
 pip install -r requirements.txt
 ```
-3. run demo.py
-```
-python main.py
-```
-4.Enter needed information
+3. Edit the config.txt file (explenation inside)
 
+4. Run demo.py
+```
+python Demo.py
+```
 5.Enjoy!
 
 ## References ##
