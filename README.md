@@ -28,21 +28,19 @@ for example:
 from PixeLook import PixeLook
 
 def __main__():
-    
-    ## Option 1: Create PixelGetter with arguments in code
-    my_px_gt = PixeLook(screen_size=13.3, camera_number=0)  
-    ## Option 2: Create PixelGetter from config file (see config.txt in this repo)
-    my_px_gt = PixeLook.create_from_file() # "config.txt" is the default 
-    
-    my_px_gt.calibrate() # start the calibration process (GUI)
-    cur_pixel = my_px_gt.get_pixel() #use this method to get the cur pixel from webcam.
-    if cur_pixel[0]>my_px_gt.screen_width/2: # (x,y) = (cur_pixel[0],cur_pixel[1])
-        print("you are looking in the right side of the screen!")
-
-    my_px_gt.set_screen_shots(with_webcam=True) # set a screen shot video params
-    my_px_gt.start_screen_shots(max_frames=100) # start the screen record session (new thread)
-    wait(100)
-    my_px_gt.stop_screen_shots()    # stop screen recording thread
+# step 1: get parameters from config file
+    configuration()
+# step 2: create PixeLook
+    my_px_gt = PixeLook_from_config(config['settings'])
+# step 3: calibrate 
+    my_px_gt.calibrate()
+# step 4: use the app as defined mode
+    if mode == "dots":
+        my_px_gt.draw_live()
+    elif mode == "screenshots":
+        my_px_gt.start_screen_shots(post=post, webcam=webcam)
+    elif mode == "none":
+        my_px_gt.run_in_background(post=post)
 ```
 
 
@@ -55,9 +53,16 @@ git clone https://github.com/araddor1/ReadHelper.git
 ```
 pip install -r requirements.txt
 ```
-3. Edit the config.txt file (explenation inside)
+3. Install dlib:
+if using conda:
+```
+conda install -c conda-forge dlib
+```
+else, install via visual studio c++
 
-4. Run demo.py
+4. Edit the config.txt file (explenation inside)
+
+5. Run demo.py
 ```
 python Demo.py
 ```
