@@ -68,6 +68,7 @@ python Demo.py
 ```
 5.Enjoy!
 
+A hebrew manual can be found in https://tinyurl.com/yalnpf2u
 ## References ##
 * [1] Zhang, Xucong, Yusuke Sugano, Mario Fritz, and Andreas Bulling. "It's Written All Over Your Face: Full-Face Appearance-Based Gaze Estimation." Proc. of the IEEE Conference on Computer Vision and Pattern Recognition Workshops(CVPRW), 2017. arXiv:1611.08860, Project Page
 * [2] Zhang, Xucong, Yusuke Sugano, Mario Fritz, and Andreas Bulling. "MPIIGaze: Real-World Dataset and Deep Appearance-Based Gaze Estimation." IEEE transactions on pattern analysis and machine intelligence 41 (2017). arXiv:1711.09017
