@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import scipy.io as sio
 import torch
-
+import dlib
 
 # Linear Fix Net hyper parameters
 epochs: int = 40
@@ -33,6 +33,11 @@ tvec = np.array([0, 0, 1], dtype=np.float)
 font = cv2.FONT_HERSHEY_SIMPLEX
 text_for_capture = "."
 eyes_image = str(os.getcwd() + "/UtilsAndModels/eyes.png")
+
+face_cascade = cv2.CascadeClassifier()
+face_cascade.load("UtilsAndModels/frontal_face_detector.xml")
+
+predictor = dlib.shape_predictor(os.getcwd() + "/UtilsAndModels/shape_predictor_68_face_landmarks_new.dat")
 
 
 # Gaze to pixel attributes
