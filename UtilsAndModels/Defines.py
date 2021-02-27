@@ -113,10 +113,10 @@ text_for_capture = "."
 eyes_image = str(os.getcwd() + "/UtilsAndModels/eyes.png")
 
 # code for saving jpg image and convert it to ppm , for using it at tkinter.
-# from PIL import Image
-# image = Image.open("<path to jpg image>")
-# image = image.resize((150, 100), Image.ANTIALIAS)
-# image.save("<path to desired saved location>.ppm", "ppm")
+from PIL import Image
+image = Image.open("download.jpg")
+image = image.resize((450, 300), Image.ANTIALIAS)
+image.save("Calibration/morty_wait.ppm", "ppm")
 
 # Gaze to pixel attributes
 MM_TO_IN = 0.0393700787

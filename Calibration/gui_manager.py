@@ -4,6 +4,7 @@ from tkinter import Canvas
 from UtilsAndModels.Defines import *
 from PIL import Image
 
+
 class FullScreenApp(object):
     def __init__(self):
         self.master = tk.Tk()
@@ -17,16 +18,18 @@ class FullScreenApp(object):
         self.counter = 0
 
         # if want to use another photo, convert it (code at defines) and make it a tk photo image. then add to button
-        self.calib_photo = tk.PhotoImage(file="Calibration/morty.ppm")
-        self.end_calib_photo = tk.PhotoImage(file="Calibration/happy_morty.ppm")
-        self.recalibrate_photo = tk.PhotoImage(file="Calibration/angry_morty.ppm")
-        self.exit_photo = tk.PhotoImage(file="Calibration/end_morty.ppm")
+        self.calib_photo = tk.PhotoImage(file="Calibration/morty_eyes.ppm")
+        self.end_calib_photo = tk.PhotoImage(file="Calibration/morty_happy.ppm")
+        self.recalibrate_photo = tk.PhotoImage(file="Calibration/morty_angry.ppm")
+        self.exit_photo = tk.PhotoImage(file="Calibration/morty_exit.ppm")
+        self.wait_photo = tk.PhotoImage(file="Calibration/morty_wait.ppm")
 
         self.var = tk.IntVar()
         self.button = tk.Button(self.master, text="#", image=self.calib_photo, command=lambda: self.var.set(1))
         self.second_button = tk.Button(self.master, text="I'm satisfied with the result", command=lambda: self.setvar())
         self.text_box = 0
         self.finish = False
+
 
 
         # def toggle_geom(self, event):
@@ -129,10 +132,10 @@ class FullScreenApp(object):
     def wait_key(self):
         self.button.wait_variable(self.var)
 
-    def post_process(self,precent=0,process_name="Getting Pixels from video"):
+    def post_process(self, precent=0, process_name="Getting Pixels from video"):
         if self.finish:
             self.post_text_box = self.w.create_text((850, 120), text="", font="MSGothic 20 bold", fill="#652828")
             self.master.update()
             self.finish = False
-        self.w.itemconfig(self.post_text_box, text="Postprocess. \n {} \n {:.2f}%".format(process_name,precent))
+        self.w.itemconfig(self.post_text_box, text="Postprocess. \n {} \n {:.2f}%".format(process_name, precent))
         self.master.update()

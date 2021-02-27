@@ -68,7 +68,7 @@ def __main__():
     if mode == "dots":
         my_px_gt.draw_live()
     elif mode == "screenshots":
-        my_px_gt.start_screen_shots(post=post,webcam=webcam)
+        my_px_gt.start_screen_shots(post=post, webcam=webcam)
     elif mode == "none":
         my_px_gt.run_in_background(post=post)
 

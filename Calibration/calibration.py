@@ -62,6 +62,7 @@ class CalibrationManager:
             # error in find gaze - didn't detect face
             return error_in_detect
         self.last_distance = ht[2]
+        # return self.gaze_to_pixel_trig(gaze, ht, self.env.extra_data), self.gaze_to_pixel_trig(gaze, ht, self.env.extra_data)
         return self.gaze_to_pixel_linear(gaze), self.gaze_to_pixel_trig(gaze, ht, self.env.extra_data)
 
     def compute_scale(self):
@@ -72,6 +73,7 @@ class CalibrationManager:
         pixel_linear, pixel_trig = self.get_cur_pixel()
         x = self.trig_fix_sys.use_net(pixel_trig)[0]
         y = pixel_linear[1]
+        y = self.trig_fix_sys.use_net(pixel_trig)[1]
         self.gui.print_calib_points((int(x), int(y)), "green")
 
     def step_calib_stage(self):
