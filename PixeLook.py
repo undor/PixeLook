@@ -3,7 +3,7 @@ from Calibration.calibration import CalibrationManager
 from UtilsAndModels.utils import capture_input_height, capture_input_width
 import threading
 import numpy as np
-from UtilsAndModels.utils import get_screen_shot,post_screen_shot
+from UtilsAndModels.utils import get_screen_shot,post_screen_shot,compute_error
 import cv2
 
 fps = 4
@@ -36,6 +36,18 @@ class PixeLook:
         if self.logs is not None:
             self.logs.add_pixel(res,cur_time)
         return res
+
+    def test_run(self,number_of_dots=20):
+        test_logs = Logging_test()
+        import random
+        print (self.__calibration_manager.width_px, self.__calibration_manager.height_px)
+        for i in range(number_of_dots):
+            tag = [random.randint(0, self.__calibration_manager.width_px), random.randint(0, self.__calibration_manager.height_px)]
+            self.__calibration_manager.gui.print_pixel(tag,clear_prev=True)
+            self.__calibration_manager.gui.wait_key()
+            cur_pix = np.array(self.get_pixel())
+            errors = compute_error(tag,cur_pix,self.__calibration_manager.pixel_per_mm)
+            test_logs.add_pixel(cur_pixel=cur_pix,tag_pixel=tag,cur_time=None,errors=errors)
 
     def draw_live(self):
         gui = self.__calibration_manager.gui

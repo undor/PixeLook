@@ -22,21 +22,13 @@ class FullScreenApp(object):
         self.end_calib_photo = tk.PhotoImage(file="Calibration/morty_happy.ppm")
         self.recalibrate_photo = tk.PhotoImage(file="Calibration/morty_angry.ppm")
         self.exit_photo = tk.PhotoImage(file="Calibration/morty_exit.ppm")
-        self.wait_photo = tk.PhotoImage(file="Calibration/morty_wait.ppm")
+        self.wait_photo = tk.PhotoImage(file="Calibration/morty_happy.ppm")
 
         self.var = tk.IntVar()
         self.button = tk.Button(self.master, text="#", image=self.calib_photo, command=lambda: self.var.set(1))
         self.second_button = tk.Button(self.master, text="I'm satisfied with the result", command=lambda: self.setvar())
         self.text_box = 0
         self.finish = False
-
-
-
-        # def toggle_geom(self, event):
-    #     geom = self.master.winfo_geometry()
-    #     print(geom, self._geom)
-    #     self.master.geometry(self._geom)
-    #     self._geom = geom
 
 
     def print_calib_stage(self, stage):
@@ -107,8 +99,11 @@ class FullScreenApp(object):
         self.w.delete("all")
         self.master.update()
 
-    def print_pixel(self, pixel, colour=None):
-        delta = 5
+    def print_pixel(self, pixel, colour=None,clear_prev=False):
+        if(clear_prev):
+            self.w.delete("all")
+            self.master.update()
+        delta = 15
         self.w.focus_set()
         if colour is not None:
             self.w.create_oval(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill=colour)

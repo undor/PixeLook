@@ -74,3 +74,15 @@ def draw_gaze(image_in, eye_pos, pitchyaw, length=200, thickness=1, color=(255, 
                     tuple(np.round([eye_pos[0] + dx, eye_pos[1] + dy]).astype(int)), color,
                     thickness, cv2.LINE_AA, tipLength=0.5)
     return image_out
+
+
+## check errors
+def compute_error(true_pixel,res_pixel, pixel_per_mm):
+    x = abs(true_pixel[0] - res_pixel[0])
+    y = abs(true_pixel[1] - res_pixel[1])
+    d = np.sqrt(x ** 2 + y ** 2)
+    err_mm = int(np.true_divide(d, pixel_per_mm))
+    err_mm_x = int(np.true_divide(x, pixel_per_mm))
+    err_mm_y = int(np.true_divide(y, pixel_per_mm))
+
+    return [x,y,d,err_mm_x,err_mm_y,err_mm]

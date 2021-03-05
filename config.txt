@@ -10,9 +10,11 @@ logs = false
 
 
 [operation]
-# mode : dots/ screenshots/ none
+# mode : dots/ screenshots/ test / none
 mode = dots
 # post : true / false - do calculation in post process (only works for screenshots/none)
 post = false
 # webcam : true / false - create video file from webcam  (only works for screenshots)
 webcam = false
+# test_size : number of points to collect (relevant only for test mode)
+test_size = 5

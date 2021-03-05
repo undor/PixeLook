@@ -29,6 +29,9 @@ def __main__():
 
     my_px_gt.calibrate()
 
+    if mode == "test":
+        test_size = None if "test_size" not in config["operation"] else int(config["operation"]["test_size"])
+        my_px_gt.test_run(test_size)
     if mode == "dots":
         my_px_gt.draw_live()
     elif mode == "screenshots":
