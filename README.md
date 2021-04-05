@@ -53,16 +53,11 @@ git clone https://github.com/araddor1/ReadHelper.git
 ```
 pip install -r requirements.txt
 ```
-3. Install dlib:
-if using conda:
-```
-conda install -c conda-forge dlib
-```
 else, install via visual studio c++
 
-4. Edit the config.txt file (explenation inside)
+3. Edit the config.txt file (explenation inside)
 
-5. Run demo.py
+4. Run demo.py
 ```
 python Demo.py
 ```
