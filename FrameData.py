@@ -9,7 +9,7 @@ class FrameData:
         self.is_face = False
         self.landmarks_6 = 0
         self.landmarks_all = 0
-        self.relevant_locations = [36, 39, 42, 45, 48, 54]
+        self.relevant_locations = np.array([36, 39, 42, 45, 48, 54])
         self.rotation_vector = np.zeros(3)
         self.translation_vector = np.zeros(3)
         self.is_debug = is_debug
@@ -34,28 +34,15 @@ class FrameData:
         rcenter = tuple([lcenter_x, lcenter_y])
         return rcenter,lcenter
 
-    def get_landmarks(self, shape):
-        num = 68
-        list = range(num)
-        coords = np.zeros((num, 2), dtype="float32")
-        j = 0
-        for i in list:
-            coords[j] = (shape.part(i).x, shape.part(i).y)
-            j = j + 1
-        return coords
-
     def face_landmark_detect(self, head_loc=None):
         if head_loc is not None:
             return True
         gray = cv2.cvtColor(self.orig_img, cv2.COLOR_BGR2GRAY)
-        rects_cv = face_cascade.detectMultiScale(gray)
-
-        if np.size(rects_cv) > 0:
-            rects_cv_to_dlib = dlib.rectangle(rects_cv[0][0], rects_cv[0][1], rects_cv[0][0] + rects_cv[0][2],
-                                              rects_cv[0][1] + rects_cv[0][3])
-            prediction = predictor(gray, rects_cv_to_dlib)
-            self.landmarks_all = self.get_landmarks(prediction)
-            self.landmarks_6 = self.landmarks_all[self.relevant_locations]
+        faces = face_cascade.detectMultiScale(gray)
+        
+        if np.size(faces) > 0:
+            _, self.landmarks_all = landmark_detector.fit(gray, faces)
+            self.landmarks_6 = self.landmarks_all[0][0][self.relevant_locations,:]
             self.is_face = True
         return self.is_face
 

@@ -37,7 +37,8 @@ eyes_image = str(os.getcwd() + "/UtilsAndModels/eyes.png")
 face_cascade = cv2.CascadeClassifier()
 face_cascade.load("UtilsAndModels/frontal_face_detector.xml")
 
-predictor = dlib.shape_predictor(os.getcwd() + "/UtilsAndModels/shape_predictor_68_face_landmarks_new.dat")
+landmark_detector  = cv2.face.createFacemarkLBF()
+landmark_detector.loadModel("UtilsAndModels/lbfmodel.yaml")
 
 
 # Gaze to pixel attributes
