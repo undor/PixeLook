@@ -53,8 +53,6 @@ git clone https://github.com/araddor1/ReadHelper.git
 ```
 pip install -r requirements.txt
 ```
-else, install via visual studio c++
-
 3. Edit the config.txt file (explenation inside)
 
 4. Run demo.py
