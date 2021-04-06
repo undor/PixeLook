@@ -4,8 +4,19 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 from PIL import Image
+import torchvision
 from torchvision import transforms
 
+class ConvBNReLU(nn.Sequential):
+    def __init__(self, in_planes, out_planes, kernel_size=3, stride=1, groups=1, norm_layer=None):
+        padding = (kernel_size - 1) // 2
+        if norm_layer is None:
+            norm_layer = nn.BatchNorm2d
+        super(ConvBNReLU, self).__init__(
+            nn.Conv2d(in_planes, out_planes, kernel_size, stride, padding, groups=groups, bias=False),
+            norm_layer(out_planes),
+            nn.ReLU6(inplace=True)
+        )
 
 class GazeNet(nn.Module):
 
@@ -19,7 +30,7 @@ class GazeNet(nn.Module):
         ])
 
         model = models.mobilenet_v2(pretrained=True)
-        model.features[-1] = models.mobilenetv2.ConvBNReLU(320, 256, kernel_size=1)
+        model.features[-1] = ConvBNReLU(320, 256, kernel_size=1)
         self.backbone = model.features
 
         self.Conv1 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=1, stride=1, padding=0)

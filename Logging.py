@@ -6,7 +6,7 @@ def create_time_file_name(init, file_type):
 
 class Logging:
     def __init__(self):
-        if Not os.path("outputs"):
+        if not os.path("outputs"):
             os.mkdir("outputs")
         self.file = open(create_time_file_name("PixeLookLogging","csv"), "a")
         self.file.write("time,x,y\n")
