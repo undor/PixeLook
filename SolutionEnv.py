@@ -28,6 +28,7 @@ class SolutionEnv:
         for counter_error in range(self.reruns):
             img = self.get_img(input_img)
             cur_frame: FrameData = self.create_frame(img)
+            # debug_for_landmarks_img = img.copy()
             if cur_frame.face_landmark_detect():
                 cur_frame.head_pose_detect()
                 cur_frame = self.pre_process_for_net(cur_frame)
