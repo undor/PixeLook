@@ -19,7 +19,7 @@ class GazeNet(nn.Module):
         ])
 
         model = models.mobilenet_v2(pretrained=True)
-        model.features[-1] = models.mobilenet.ConvBNReLU(320, 256, kernel_size=1)
+        model.features[-1] = models.mobilenetv2.ConvBNReLU(320, 256, kernel_size=1)
         self.backbone = model.features
 
         self.Conv1 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=1, stride=1, padding=0)
