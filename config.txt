@@ -6,15 +6,15 @@ camera_number = 0
 # calib_ratio : usually 1 - change to 2 if bad result
 calib_ratio = 1
 # logs : true / false - enable logs of pixel per time
-logs = false
+logs = true
 
 
 [operation]
-# mode : dots/ screenshots/ test / none
-mode = dots
+# mode : dots/ screenshots / test / none
+mode = screenshots
 # post : true / false - do calculation in post process (only works for screenshots/none)
 post = false
 # webcam : true / false - create video file from webcam  (only works for screenshots)
-webcam = false
+webcam = true
 # test_size : number of points to collect (relevant only for test mode)
-test_size = 5
+test_size = 10
