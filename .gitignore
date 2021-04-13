@@ -1,4 +1,5 @@
 /.vscode/
 /DataSetPreProcess/
+/outputs/*
 *.pyc
 *.avi

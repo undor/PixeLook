@@ -6,7 +6,7 @@ def create_time_file_name(init, file_type):
 
 class Logging:
     def __init__(self):
-        if not os.path("outputs"):
+        if not os.path.exists("outputs"):
             os.mkdir("outputs")
         self.file = open(create_time_file_name("PixeLookLogging","csv"), "a")
         self.file.write("time,x,y\n")
@@ -27,7 +27,6 @@ class Logging_test():
     def add_pixel(self, tag_pixel,cur_pixel,cur_time,errors):
         time = datetime.now() if cur_time is None else cur_time
         cur_time_str = time.strftime("%H:%M:%S:%f")
-        print(tag_pixel,cur_pixel)
         self.file.write(cur_time_str + "," + str(int(tag_pixel[0])) + "," + str(int(tag_pixel[1])))
         self.file.write("," + str(int(cur_pixel[0])) + "," + str(int(cur_pixel[1])))
         for e in errors:
