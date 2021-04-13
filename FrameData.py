@@ -68,7 +68,7 @@ class FrameData:
     def create_show_img(self,pitchyaw):
         r_eye_center , ___  = self.get_eye_centers()
         img = utils.draw_gaze(self.orig_img, eye_pos=r_eye_center, pitchyaw=pitchyaw,thickness=4,length=300)
-        for (x, y) in self.landmarks_all:
+        for (x, y) in self.landmarks_all[0][0]:
             cv2.circle(img, (x, y), 2, (0, 255, 0), -1)
         img = cv2.flip(img,1)
         return img
