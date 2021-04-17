@@ -34,7 +34,7 @@ class FrameData:
         rcenter = tuple([lcenter_x, lcenter_y])
         return rcenter,lcenter
 
-    def face_landmark_detect(self, head_loc=None, debug_img=None):
+    def face_landmark_detect(self, head_loc=None):
         if head_loc is not None:
             return True
         gray = cv2.cvtColor(self.orig_img, cv2.COLOR_BGR2GRAY)
@@ -42,14 +42,7 @@ class FrameData:
         
         if np.size(faces) > 0:
             _, self.landmarks_all = landmark_detector.fit(gray, faces)
-            self.landmarks_6 = self.landmarks_all[0][0][self.relevant_locations, :]
-            if debug_img is not None:
-                for landmark in self.landmarks_6:
-                    cv2.circle(img=debug_img, center=(landmark[0], landmark[1]), radius=3, color=(0, 0, 255), thickness=1)
-                for face in faces:
-                    cv2.rectangle(debug_img, pt1=(face[0], face[1]), pt2=((face[0]+face[2]), (face[1]+face[3])), color=(127, 127, 0), thickness=3)
-                cv2.imshow("gray", debug_img)
-                cv2.waitKey(0)
+            self.landmarks_6 = self.landmarks_all[0][0][self.relevant_locations,:]
             self.is_face = True
         return self.is_face
 
@@ -75,7 +68,7 @@ class FrameData:
     def create_show_img(self,pitchyaw):
         r_eye_center , ___  = self.get_eye_centers()
         img = utils.draw_gaze(self.orig_img, eye_pos=r_eye_center, pitchyaw=pitchyaw,thickness=4,length=300)
-        # for (x, y) in self.landmarks_all:
-        #     cv2.circle(img, (x, y), 2, (0, 255, 0), -1)
+        for (x, y) in self.landmarks_all[0][0]:
+            cv2.circle(img, (x, y), 2, (0, 255, 0), -1)
         img = cv2.flip(img,1)
         return img

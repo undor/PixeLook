@@ -1,16 +1,14 @@
 from datetime import datetime
-import os.path
-
+import os
 
 def create_time_file_name(init, file_type):
-    if not os.path.exists("outputs/"):
-        os.mkdir("outputs/")
-    return "outputs/" + init + "_" + datetime.now().strftime("%d_%m_%H_%M") + "." + file_type
-
+    return "outputs/" +init + "_" + datetime.now().strftime("%d_%m_%H_%M") + "." +file_type
 
 class Logging:
     def __init__(self):
-        self.file = open(create_time_file_name("PixeLookLogging", "csv"), "a")
+        if not os.path.exists("outputs"):
+            os.mkdir("outputs")
+        self.file = open(create_time_file_name("PixeLookLogging","csv"), "a")
         self.file.write("time,x,y\n")
 
     def add_pixel(self, pixel,cur_time):
@@ -20,7 +18,6 @@ class Logging:
 
     def close(self):
         self.file.close()
-
 
 class Logging_test():
     def __init__(self):

@@ -6,7 +6,7 @@ def str_to_bool(str):
     return True if str == "true" else False
 
 def PixeLook_from_config(settings):
-    params = ['screen_size', 'camera_number', 'calib_ratio']
+    params = ['screen_size', 'camera_number', 'calib_ratio',"mean_pixels"]
     for param in params:
         if param not in settings:
             print("missing", param, "in config file.")
@@ -14,7 +14,7 @@ def PixeLook_from_config(settings):
         settings[param] = float(settings[param])
     logs = False if "logs" not in settings else str_to_bool(settings['logs'])
     return PixeLook(screen_size=settings["screen_size"], camera_number=settings["camera_number"],
-                    calib_ratio=settings["calib_ratio"], logs=logs)
+                    calib_ratio=settings["calib_ratio"],mean_pixels= settings["mean_pixels"], logs=logs)
 
 
 def __main__():

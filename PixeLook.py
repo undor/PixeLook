@@ -9,7 +9,7 @@ import cv2
 fps = 4
 
 class PixeLook:
-    def __init__(self, screen_size=13.3,  camera_number=0, calib_ratio=1, logs=False):
+    def __init__(self, screen_size=13.3,  camera_number=0, calib_ratio=1,mean_pixels = 1 , logs=False):
         self.camera_number = int(camera_number)
         self.__calibration_manager = CalibrationManager(camera_number=self.camera_number, screen_size=screen_size)
         self.__shots_defined = False
@@ -20,6 +20,8 @@ class PixeLook:
         self.screen_width = self.__calibration_manager.width_px * self.calib_real_ratio
         self.screen_height = self.__calibration_manager.height_px * self.calib_real_ratio
         self.__with_webcam = False
+        self.__mean_pixels = int(mean_pixels)
+        self.get_pixel = self.get_pixel_mean if self.__mean_pixels > 1 else self.get_pixel_uno
 
     def calibrate(self):
         self.__calibration_manager.calibrate()
@@ -28,11 +30,34 @@ class PixeLook:
         self.pixel_linear, self.pixel_trig = self.__calibration_manager.get_cur_pixel(input_img)
         return self.pixel_linear, self.pixel_trig
 
-    def get_pixel(self,cur_time=None,image=None):
+    def get_pixel_uno(self,cur_time=None,image=None):
+        if image is not None and len(image) == 1:
+            image = image[0]
+            cur_time = cur_time[0]
         pixel_linear, pixel_trig = self.capture(image)
         x = self.__calibration_manager.trig_fix_sys.use_net(pixel_trig)[0] * self.calib_real_ratio
         y = pixel_linear[1] * self.calib_real_ratio
         res = (x,y)
+        if self.logs is not None:
+            self.logs.add_pixel(res,cur_time)
+        return res
+
+    def get_pixel_mean(self,cur_times=None,images=None):
+        before_net_pixels =[]
+        after_net_pixels =[]
+        if images is not None:
+            for i in range(self.__mean_pixels):
+                before_net_pixels.append(self.capture(images[i]))
+        else:
+            for i in range(self.__mean_pixels):
+                before_net_pixels.append(self.capture(None))
+        for i in range(self.__mean_pixels):
+            pixel_linear,pixel_trig = before_net_pixels[i]
+            x = self.__calibration_manager.trig_fix_sys.use_net(pixel_trig)[0] * self.calib_real_ratio
+            y = pixel_linear[1] * self.calib_real_ratio
+            after_net_pixels.append((x,y))
+        res = np.mean(after_net_pixels,axis=0)
+        cur_time = None if cur_times is None else cur_times[int(self.__mean_pixels/2)+1]
         if self.logs is not None:
             self.logs.add_pixel(res,cur_time)
         return res
@@ -92,11 +117,11 @@ class PixeLook:
     def __log_from_images_post(self):
         self.pixels_list =[]
         self.__calibration_manager.env.reruns = 1
-        n = len(self.times)
+        n = len(self.times) - self.__mean_pixels + 1
         if self.__with_webcam:
             self.webcam_post_list = []
         for i in range(n):
-            self.pixels_list.append(self.get_pixel(self.times[i], self.images[i]))
+            self.pixels_list.append(self.get_pixel(self.times[i:i+self.__mean_pixels], self.images[i:i+self.__mean_pixels]))
             if self.__with_webcam:
                 self.webcam_post_list.append(self.__calibration_manager.env.webcam_shot)
             if i % 10 == 0:
