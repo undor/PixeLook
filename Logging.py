@@ -21,7 +21,7 @@ class Logging:
 
 class Logging_test():
     def __init__(self):
-        self.file = open(create_time_file_name("PixelookTestLog","csv"), "a")
+        self.file = open(create_time_file_name("PixelookTestLog", "csv"), "a")
         self.file.write("time,x target,y target,x res,y res,error_x(px),error_y(px),total_error(px),error_x(mm),error_y(mm),total_error(mm)\n")
 
     def add_pixel(self, tag_pixel,cur_pixel,cur_time,errors):

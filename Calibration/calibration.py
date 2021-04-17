@@ -56,7 +56,7 @@ class CalibrationManager:
         y = ht[1] + t * v[1]
         return x[0], y[0]
 
-    def get_cur_pixel(self,input_img=None):
+    def get_cur_pixel(self, input_img=None):
         gaze, ht = self.env.find_gaze(input_img)
         if ht[0] == 0 or ht[1] == 0 or ht[2] == 0:
             # error in find gaze - didn't detect face

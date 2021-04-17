@@ -40,8 +40,9 @@ def convert_to_unit_vector_np(angles):
     z /= norm
     return x, y, z
 
+
 # capture
-def set_camera(width, height ,camera_number=0):
+def set_camera(width, height, camera_number=0):
     cap = cv2.VideoCapture(camera_number)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
