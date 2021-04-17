@@ -30,7 +30,6 @@ class FullScreenApp(object):
         self.text_box = 0
         self.finish = False
 
-
     def print_calib_stage(self, stage):
         s = "Current stage number: " + str(stage) + "\n Please look on the "
         if stage == 0:
@@ -99,16 +98,14 @@ class FullScreenApp(object):
         self.w.delete("all")
         self.master.update()
 
-    def print_pixel(self, pixel, colour=None,clear_prev=False):
-        if(clear_prev):
+    def print_pixel(self, pixel, colour=None, clear_prev=False, with_button=False, delta=15):
+        if clear_prev:
             self.w.delete("all")
             self.master.update()
-        delta = 15
         self.w.focus_set()
-        if colour is not None:
-            self.w.create_oval(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill=colour)
-        else:
-            self.w.create_oval(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill="#FF0000")
+        self.w.create_oval(pixel[0], pixel[1], pixel[0] + delta, pixel[1] + delta, fill=colour if colour is not None else "#FF0000")
+        if with_button:
+            self.move_button_to_pixel(pixel)
         self.counter += 1
         self.master.update()
         return pixel

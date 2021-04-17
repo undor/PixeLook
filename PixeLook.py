@@ -22,11 +22,13 @@ class PixeLook:
         self.__with_webcam = False
         self.__mean_pixels = int(mean_pixels)
         self.get_pixel = self.get_pixel_mean if self.__mean_pixels > 1 else self.get_pixel_uno
+        self.pixel_linear = (0, 0)
+        self.pixel_trig = (0, 0)
 
     def calibrate(self):
         self.__calibration_manager.calibrate()
 
-    def capture(self,input_img=None):
+    def capture(self, input_img=None):
         self.pixel_linear, self.pixel_trig = self.__calibration_manager.get_cur_pixel(input_img)
         return self.pixel_linear, self.pixel_trig
 
@@ -42,9 +44,9 @@ class PixeLook:
             self.logs.add_pixel(res,cur_time)
         return res
 
-    def get_pixel_mean(self,cur_times=None,images=None):
-        before_net_pixels =[]
-        after_net_pixels =[]
+    def get_pixel_mean(self, cur_times=None, images=None):
+        before_net_pixels = []
+        after_net_pixels = []
         if images is not None:
             for i in range(self.__mean_pixels):
                 before_net_pixels.append(self.capture(images[i]))
@@ -52,27 +54,29 @@ class PixeLook:
             for i in range(self.__mean_pixels):
                 before_net_pixels.append(self.capture(None))
         for i in range(self.__mean_pixels):
-            pixel_linear,pixel_trig = before_net_pixels[i]
+            pixel_linear, pixel_trig = before_net_pixels[i]
             x = self.__calibration_manager.trig_fix_sys.use_net(pixel_trig)[0] * self.calib_real_ratio
             y = pixel_linear[1] * self.calib_real_ratio
-            after_net_pixels.append((x,y))
-        res = np.mean(after_net_pixels,axis=0)
+            after_net_pixels.append((x, y))
+        res = np.mean(after_net_pixels, axis=0)
         cur_time = None if cur_times is None else cur_times[int(self.__mean_pixels/2)+1]
         if self.logs is not None:
-            self.logs.add_pixel(res,cur_time)
+            self.logs.add_pixel(res, cur_time)
         return res
 
-    def test_run(self,number_of_dots=20):
+    def test_run(self, test_size=20):
         test_logs = Logging_test()
         import random
-        print (self.__calibration_manager.width_px, self.__calibration_manager.height_px)
-        for i in range(number_of_dots):
-            tag = [random.randint(0, self.__calibration_manager.width_px), random.randint(0, self.__calibration_manager.height_px)]
-            self.__calibration_manager.gui.print_pixel(tag,clear_prev=True)
+        # load any other image to test mode
+        self.__calibration_manager.gui.button.config(image=self.__calibration_manager.gui.end_calib_photo)
+        # print(self.__calibration_manager.width_px, self.__calibration_manager.height_px)
+        for test_dot in range(test_size):
+            random_test_dot = [random.randint(0, self.__calibration_manager.width_px), random.randint(0, self.__calibration_manager.height_px)]
+            self.__calibration_manager.gui.print_pixel(random_test_dot, clear_prev=True, with_button=True)
             self.__calibration_manager.gui.wait_key()
             cur_pix = np.array(self.get_pixel())
-            errors = compute_error(tag,cur_pix,self.__calibration_manager.pixel_per_mm)
-            test_logs.add_pixel(cur_pixel=cur_pix,tag_pixel=tag,cur_time=None,errors=errors)
+            errors = compute_error(random_test_dot, cur_pix, self.__calibration_manager.pixel_per_mm)
+            test_logs.add_pixel(cur_pixel=cur_pix, tag_pixel=random_test_dot, cur_time=None, errors=errors)
 
     def draw_live(self):
         gui = self.__calibration_manager.gui
@@ -157,6 +161,7 @@ class PixeLook:
 
     def __screen_shot_loop(self, resize_factor=1 , post=False,max_frmaes= 10*60*30):
         __out_screen = cv2.VideoWriter(create_time_file_name("PixeLookScreenShot", "avi"), 0, fps, (int(self.screen_width * resize_factor), int(self.screen_height * resize_factor)))
+
         circle_size = int(150 * resize_factor)
         n = max_frmaes if post is False else len(self.pixels_list)
         for i in range(n):
@@ -184,6 +189,7 @@ class PixeLook:
             final_frame = cv2.addWeighted(overlay, 0.3, frame, 0.7, 0)
 
             # write the frames
+
             __out_screen.write(final_frame)
             if self.__with_webcam:
                 webcam_shot = self.webcam_post_list[i] if post else self.__calibration_manager.env.webcam_shot
