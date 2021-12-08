@@ -1,5 +1,5 @@
 # PixelLook
-Multy platform gaze detector based on It's Written All Over Your Face [1] article.
+Multi platform gaze detector based on It's Written All Over Your Face [1] article.
 
 Includes:
 1. Drawing app - draw dots with your eyes
