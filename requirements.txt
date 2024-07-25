@@ -3,6 +3,6 @@ tk
 mss
 numpy
 scipy
-torch==1.7.1
+torch==2.2.0
 torchvision
 pillow
