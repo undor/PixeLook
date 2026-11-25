@@ -18,7 +18,14 @@ class environment_ff(SolutionEnv):
     def init_net_model(self):
         torch.manual_seed(0)
         self.model = GazeNet(device)
-        state_dict = torch.load('FullFaceSolution/model/trainedFullFaceNet.pth', map_location=device)
+        # state_dict of tensors only. weights_only=True (the torch>=2.6 default)
+        # rejects arbitrary pickle opcodes and closes the torch.load RCE
+        # (CVE-2025-32434). This checkpoint is a plain state_dict.
+        state_dict = torch.load(
+            'FullFaceSolution/model/trainedFullFaceNet.pth',
+            map_location=device,
+            weights_only=True,
+        )
         self.model.load_state_dict(state_dict)
         self.model.eval()
 

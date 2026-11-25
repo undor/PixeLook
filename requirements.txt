@@ -1,8 +1,13 @@
-opencv-contrib-python
+# CPU builds are published as torch==X.Y.Z+cpu on the PyTorch CPU index.
+# That local version sorts above the PyPI Linux wheel (which pulls CUDA),
+# so `pip install -r requirements.txt` resolves to CPU wheels.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+opencv-contrib-python>=4.8.1.78
 tk
 mss
-numpy
-scipy
-torch==1.7.1
-torchvision
-pillow
+numpy>=1.26.4
+scipy>=1.11.4
+torch>=2.6.0
+torchvision>=0.21.0
+pillow>=13.0.0

@@ -24,8 +24,8 @@ MOUTH_INDICES: np.ndarray = np.array([48, 54])
 LANDMARKS_6_PNP = sio.loadmat('UtilsAndModels/faceModelGeneric.mat')['model']
 
 # Head Pose Detect attributes
-rvec = np.zeros(3, dtype=np.float)
-tvec = np.array([0, 0, 1], dtype=np.float)
+rvec = np.zeros(3, dtype=np.float64)
+tvec = np.array([0, 0, 1], dtype=np.float64)
 
 
 # Gui attributes
