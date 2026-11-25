@@ -29,7 +29,9 @@ class GazeNet(nn.Module):
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ])
 
-        model = models.mobilenet_v2(pretrained=True)
+        # torchvision>=0.17 removed pretrained=. The trained checkpoint
+        # overwrites these weights, so skip the ImageNet download.
+        model = models.mobilenet_v2(weights=None)
         model.features[-1] = ConvBNReLU(320, 256, kernel_size=1)
         self.backbone = model.features
 

@@ -19,12 +19,16 @@ class FixNet(torch.nn.Module):
         self.init_bias()
 
     def forward(self, x):
-        x[0] = x[0] / self.gui_width
-        x[1] = x[1] / self.gui_height
-        x = self.relu(self.fc1(x))
-        x[0] = x[0] * self.gui_width
-        x[1] = x[1] * self.gui_height
-        return x
+        # Copy before scaling. In-place edits of the ReLU output fail backward
+        # on torch>=1.8 (version counter mismatch during loss.backward).
+        scaled = x.clone()
+        scaled[0] = scaled[0] / self.gui_width
+        scaled[1] = scaled[1] / self.gui_height
+        activated = self.relu(self.fc1(scaled))
+        out = activated.clone()
+        out[0] = out[0] * self.gui_width
+        out[1] = out[1] * self.gui_height
+        return out
 
     def init_weights(self):
         init.eye_(self.fc1.weight)
